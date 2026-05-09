@@ -477,11 +477,7 @@ if res is None:
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-    with col4:
-        st.markdown(f"""<div class="metric-card" style="--accent:#1e9e6b">
-          <div class="lbl">AHP Önerisi</div>
-          <div class="val" style="font-size:1rem">{en_iyi}</div>
-          <div class="lbl">{ETIKET[en_iyi]}</div></div>""", unsafe_allow_html=True)
+    
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -657,7 +653,8 @@ if res is None:
             "Parametre": [
                 "Ödeme Süresi", "Ödeme Planı", "Yıllık TÜFE", "Dizel Fiyatı",
                 "Elektrik Fiyatı", "Şarj Verimi (η)", "Şebeke EF (Türkiye)",
-                "AHP: Emisyon Ağırlığı", "AHP: Maliyet Ağırlığı",
+
+            
             ],
             "Değer": [
                 f"{ANALIZ_YILI} yıl", odeme_plani_adi, f"%{tufe_yuzde:.1f}",
@@ -675,7 +672,7 @@ if res is None:
             "Yıllık CO₂e (ton)": [f"{e['CO2e_ton']:,.1f}" for e in em_listesi],
             f"{ANALIZ_YILI}Y Toplam Maliyet (Milyar TL)": [
                 f"{df_['toplam'].sum()/1e9:,.2f}" for df_ in [df_s1, df_s2, df_s3]],
-            "AHP Skoru": [f"{v:.4f}" for v in ahp],
+           
             "Öneri": ["✅ Önerilen" if ["S1","S2","S3"][i] == en_iyi else "" for i in range(3)],
         })
         st.dataframe(ozet_df, use_container_width=True, hide_index=True)
