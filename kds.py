@@ -668,55 +668,7 @@ else:
         plt.tight_layout()
         st.pyplot(fig4); plt.close(fig4)
 
-    # ──────────────────────────────────────────
-    #  AHP SEKMESİ
-    # ──────────────────────────────────────────
-    with tab_ahp:
-        st.subheader("AHP Analizi – Ağırlıklı Senaryo Değerlendirmesi")
-        st.caption(f"Emisyon Azaltımı: %{w_emisyon*100:.0f} | Maliyet Verimliliği: %{w_maliyet*100:.0f} | {ANALIZ_YILI} Yıl")
-
-        fig5, axes5 = plt.subplots(1, 3, figsize=(13, 5))
-        fig5.suptitle(
-            f"AHP Analizi – Ağırlıklı Senaryo Değerlendirmesi\n"
-            f"(Emisyon %{w_emisyon*100:.0f} | Maliyet %{w_maliyet*100:.0f} | {ANALIZ_YILI} Yıl)",
-            fontweight="bold", fontsize=11
-        )
-        for ax_, vals, baslik in [
-            (axes5[0], em_norm,  "Emisyon Kriteri Skoru\n(CO₂e – küçük = iyi)"),
-            (axes5[1], mal_norm, f"Maliyet Kriteri Skoru\n({ANALIZ_YILI} Yıl Toplam)"),
-            (axes5[2], ahp,      "AHP Bileşik Skoru\n(Kazanan: koyu yeşil)"),
-        ]:
-            rk = [RENK[k] for k in ["S1","S2","S3"]]
-            if ax_ == axes5[2]:
-                rk[np.argmax(ahp)] = "#1e9e6b"
-            bars = ax_.bar(["S1","S2","S3"], vals, color=rk, edgecolor="white", linewidth=1.2)
-            ax_.set_title(baslik, fontweight="bold", fontsize=9)
-            ax_.set_ylabel("Normalize Skor" if ax_ != axes5[2] else "Ağırlıklı Bileşik Skor")
-            for bar, v in zip(bars, vals):
-                ax_.text(bar.get_x()+bar.get_width()/2, v+0.003, f"{v:.4f}",
-                          ha="center", va="bottom", fontsize=8, fontweight="bold")
-        plt.tight_layout()
-        st.pyplot(fig5); plt.close(fig5)
-
-        # AHP skoru tablosu
-        ahp_df = pd.DataFrame({
-            "Senaryo": [ETIKET[k] for k in ["S1","S2","S3"]],
-            "Emisyon Skoru": [f"{v:.4f}" for v in em_norm],
-            "Maliyet Skoru": [f"{v:.4f}" for v in mal_norm],
-            "AHP Bileşik Skoru": [f"{v:.4f}" for v in ahp],
-        })
-        st.dataframe(ahp_df, use_container_width=True, hide_index=True)
-
-        # Kazanan kutu
-        st.markdown(f"""
-        <div class="winner-box">
-          <div class="wlbl">🏆 AHP SONUCU – ÖNERİLEN SENARYO</div>
-          <div class="wval">{ETIKET[en_iyi]}</div>
-          <div style="margin-top:0.5rem; font-size:0.8rem; color:#8b949e;">
-            Emisyon ağırlığı %{w_emisyon*100:.0f} + Maliyet ağırlığı %{w_maliyet*100:.0f} | {ANALIZ_YILI} yıl analiz
-          </div>
-        </div>""", unsafe_allow_html=True)
-
+    
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
