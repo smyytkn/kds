@@ -266,7 +266,7 @@ ETIKET = {
 st.markdown("""
 <div class="hero-block">
   <h1>🚌 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
-  <p>Karabük UlaşımAŞ Toplu Taşıma Filosu · Senaryo Analizi & AHP Değerlendirmesi</p>
+  <p>Karabük UlaşımAŞ Toplu Taşıma Filosu · Senaryo Analizi </p>
   <span class="badge">IPCC Tier 2</span>
   <span class="badge">Karabük Üniversitesi</span>
   <span class="badge">Endüstri Mühendisliği</span>
