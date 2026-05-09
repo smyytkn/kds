@@ -509,11 +509,10 @@ else:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ── Ana sekmeler ──
-    tab_emisyon, tab_maliyet, tab_kumulatif, tab_ahp, tab_tablo = st.tabs([
+    tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
         "🌿 EMİSYON ANALİZİ",
         "💰 MALİYET ANALİZİ",
         "📈 KÜMÜLATİF MALİYET",
-        "🏆 AHP SONUÇLARI",
         "📊 DETAY TABLOLAR",
     ])
 
