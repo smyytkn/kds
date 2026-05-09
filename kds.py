@@ -614,7 +614,7 @@ else:
                     st.pyplot(fig2); plt.close(fig2)
 
                 with col_t:
-                    yillik_df = df_.groupby("yil").mean(numeric_only=True).reset_index()
+                    yillik_df = df_.groupby("yil")[["yakıt", "bakım", "taksit", "toplam"]].mean().reset_index()
                     yillik_df.columns = ["Yıl", "Yakıt (TL)", "Bakım (TL)", "Taksit (TL)", "Toplam (TL)"]
                     for c in ["Yakıt (TL)", "Bakım (TL)", "Taksit (TL)", "Toplam (TL)"]:
                         yillik_df[c] = yillik_df[c].map(lambda x: f"{x:,.0f}")
