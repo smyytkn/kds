@@ -413,6 +413,7 @@ def run_analysis(w_emisyon, w_maliyet):
 # ─────────────────────────────────────────────
 if "results" not in st.session_state:
     st.session_state["results"] = None
+hesapla_btn = st.button("Hesapla")
 
 if hesapla_btn:
     with st.spinner("Analiz çalışıyor…"):
