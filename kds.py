@@ -325,6 +325,7 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
+   
     w_emisyon = st.slider("Emisyon Azaltımı Ağırlığı (%)", min_value=0, max_value=100, value=50) / 100
     w_maliyet = 1 - w_emisyon
     st.caption(f"Maliyet Verimliliği Ağırlığı: %{w_maliyet*100:.0f}")
@@ -413,7 +414,6 @@ def run_analysis(w_emisyon, w_maliyet):
     df_s3 = maliyet_serileri(s3, n_otobüs_mevcut, n_minibüs_mevcut, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
 
   
-# ─────────────────────────────────────────────
 #  BAŞLANGIÇ YA DA HESAP SONRASI GÖSTERİM
 # ─────────────────────────────────────────────
 if "results" not in st.session_state:
@@ -459,7 +459,7 @@ if res is None:
 else:
     em_s1, em_s2, em_s3 = res["em_s1"], res["em_s2"], res["em_s3"]
     df_s1, df_s2, df_s3 = res["df_s1"], res["df_s2"], res["df_s3"]
-   
+    ahp, em_norm, mal_norm, en_iyi = res["ahp"], res["em_norm"], res["mal_norm"], res["en_iyi"]
 
     em_listesi = [em_s1, em_s2, em_s3]
     df_listesi = [df_s1, df_s2, df_s3]
@@ -483,7 +483,11 @@ else:
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-   
+    with col4:
+        st.markdown(f"""<div class="metric-card" style="--accent:#1e9e6b">
+          <div class="lbl">AHP Önerisi</div>
+          <div class="val" style="font-size:1rem">{en_iyi}</div>
+          <div class="lbl">{ETIKET[en_iyi]}</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -492,6 +496,7 @@ else:
         "🌿 EMİSYON ANALİZİ",
         "💰 MALİYET ANALİZİ",
         "📈 KÜMÜLATİF MALİYET",
+       
         "📊 DETAY TABLOLAR",
     ])
 
@@ -646,8 +651,7 @@ else:
         plt.tight_layout()
         st.pyplot(fig4); plt.close(fig4)
 
-
-    # ──────────────────────────────────────────
+   
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
     with tab_tablo:
@@ -659,6 +663,7 @@ else:
             "Parametre": [
                 "Ödeme Süresi", "Ödeme Planı", "Yıllık TÜFE", "Dizel Fiyatı",
                 "Elektrik Fiyatı", "Şarj Verimi (η)", "Şebeke EF (Türkiye)",
+                "AHP: Emisyon Ağırlığı", "AHP: Maliyet Ağırlığı",
             ],
             "Değer": [
                 f"{ANALIZ_YILI} yıl", odeme_plani_adi, f"%{tufe_yuzde:.1f}",
@@ -676,6 +681,7 @@ else:
             "Yıllık CO₂e (ton)": [f"{e['CO2e_ton']:,.1f}" for e in em_listesi],
             f"{ANALIZ_YILI}Y Toplam Maliyet (Milyar TL)": [
                 f"{df_['toplam'].sum()/1e9:,.2f}" for df_ in [df_s1, df_s2, df_s3]],
+            "AHP Skoru": [f"{v:.4f}" for v in ahp],
             "Öneri": ["✅ Önerilen" if ["S1","S2","S3"][i] == en_iyi else "" for i in range(3)],
         })
         st.dataframe(ozet_df, use_container_width=True, hide_index=True)
