@@ -266,7 +266,7 @@ ETIKET = {
 st.markdown("""
 <div class="hero-block">
   <h1>🚌 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
-  <p>Karabük UlaşımAŞ Toplu Taşıma Filosu · Senaryo Analizi </p>
+  <p>Karabük UlaşımAŞ Toplu Taşıma Filosu · Senaryo Analizi & AHP Değerlendirmesi</p>
   <span class="badge">IPCC Tier 2</span>
   <span class="badge">Karabük Üniversitesi</span>
   <span class="badge">Endüstri Mühendisliği</span>
@@ -325,7 +325,7 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
-   
+    st.markdown("### AHP KRİTER AĞIRLIKLARI")
     w_emisyon = st.slider("Emisyon Azaltımı Ağırlığı (%)", min_value=0, max_value=100, value=50) / 100
     w_maliyet = 1 - w_emisyon
     st.caption(f"Maliyet Verimliliği Ağırlığı: %{w_maliyet*100:.0f}")
@@ -413,7 +413,24 @@ def run_analysis(w_emisyon, w_maliyet):
     df_s2 = maliyet_serileri(s2, n_otobüs_ev, n_minibüs_ev, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s3 = maliyet_serileri(s3, n_otobüs_mevcut, n_minibüs_mevcut, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
 
-  
+    # AHP
+    em_d  = np.array([em_s1["CO2e_ton"], em_s2["CO2e_ton"], em_s3["CO2e_ton"]])
+    mal_d = np.array([df_s1["toplam"].sum(), df_s2["toplam"].sum(), df_s3["toplam"].sum()])
+    def norm_min(v):
+        inv = 1.0 / (v + 1e-12); return inv / inv.sum()
+    em_norm  = norm_min(em_d)
+    mal_norm = norm_min(mal_d)
+    ahp      = w_emisyon * em_norm + w_maliyet * mal_norm
+    en_iyi   = ["S1","S2","S3"][np.argmax(ahp)]
+
+    return {
+        "s1": s1, "s2": s2, "s3": s3,
+        "em_s1": em_s1, "em_s2": em_s2, "em_s3": em_s3,
+        "df_s1": df_s1, "df_s2": df_s2, "df_s3": df_s3,
+        "em_norm": em_norm, "mal_norm": mal_norm, "ahp": ahp, "en_iyi": en_iyi,
+    }
+
+# ─────────────────────────────────────────────
 #  BAŞLANGIÇ YA DA HESAP SONRASI GÖSTERİM
 # ─────────────────────────────────────────────
 if "results" not in st.session_state:
@@ -492,11 +509,11 @@ else:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ── Ana sekmeler ──
-    tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
+    tab_emisyon, tab_maliyet, tab_kumulatif, tab_ahp, tab_tablo = st.tabs([
         "🌿 EMİSYON ANALİZİ",
         "💰 MALİYET ANALİZİ",
         "📈 KÜMÜLATİF MALİYET",
-       
+        "🏆 AHP SONUÇLARI",
         "📊 DETAY TABLOLAR",
     ])
 
@@ -651,7 +668,56 @@ else:
         plt.tight_layout()
         st.pyplot(fig4); plt.close(fig4)
 
-   
+    # ──────────────────────────────────────────
+    #  AHP SEKMESİ
+    # ──────────────────────────────────────────
+    with tab_ahp:
+        st.subheader("AHP Analizi – Ağırlıklı Senaryo Değerlendirmesi")
+        st.caption(f"Emisyon Azaltımı: %{w_emisyon*100:.0f} | Maliyet Verimliliği: %{w_maliyet*100:.0f} | {ANALIZ_YILI} Yıl")
+
+        fig5, axes5 = plt.subplots(1, 3, figsize=(13, 5))
+        fig5.suptitle(
+            f"AHP Analizi – Ağırlıklı Senaryo Değerlendirmesi\n"
+            f"(Emisyon %{w_emisyon*100:.0f} | Maliyet %{w_maliyet*100:.0f} | {ANALIZ_YILI} Yıl)",
+            fontweight="bold", fontsize=11
+        )
+        for ax_, vals, baslik in [
+            (axes5[0], em_norm,  "Emisyon Kriteri Skoru\n(CO₂e – küçük = iyi)"),
+            (axes5[1], mal_norm, f"Maliyet Kriteri Skoru\n({ANALIZ_YILI} Yıl Toplam)"),
+            (axes5[2], ahp,      "AHP Bileşik Skoru\n(Kazanan: koyu yeşil)"),
+        ]:
+            rk = [RENK[k] for k in ["S1","S2","S3"]]
+            if ax_ == axes5[2]:
+                rk[np.argmax(ahp)] = "#1e9e6b"
+            bars = ax_.bar(["S1","S2","S3"], vals, color=rk, edgecolor="white", linewidth=1.2)
+            ax_.set_title(baslik, fontweight="bold", fontsize=9)
+            ax_.set_ylabel("Normalize Skor" if ax_ != axes5[2] else "Ağırlıklı Bileşik Skor")
+            for bar, v in zip(bars, vals):
+                ax_.text(bar.get_x()+bar.get_width()/2, v+0.003, f"{v:.4f}",
+                          ha="center", va="bottom", fontsize=8, fontweight="bold")
+        plt.tight_layout()
+        st.pyplot(fig5); plt.close(fig5)
+
+        # AHP skoru tablosu
+        ahp_df = pd.DataFrame({
+            "Senaryo": [ETIKET[k] for k in ["S1","S2","S3"]],
+            "Emisyon Skoru": [f"{v:.4f}" for v in em_norm],
+            "Maliyet Skoru": [f"{v:.4f}" for v in mal_norm],
+            "AHP Bileşik Skoru": [f"{v:.4f}" for v in ahp],
+        })
+        st.dataframe(ahp_df, use_container_width=True, hide_index=True)
+
+        # Kazanan kutu
+        st.markdown(f"""
+        <div class="winner-box">
+          <div class="wlbl">🏆 AHP SONUCU – ÖNERİLEN SENARYO</div>
+          <div class="wval">{ETIKET[en_iyi]}</div>
+          <div style="margin-top:0.5rem; font-size:0.8rem; color:#8b949e;">
+            Emisyon ağırlığı %{w_emisyon*100:.0f} + Maliyet ağırlığı %{w_maliyet*100:.0f} | {ANALIZ_YILI} yıl analiz
+          </div>
+        </div>""", unsafe_allow_html=True)
+
+    # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
     with tab_tablo:
