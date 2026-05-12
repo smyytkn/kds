@@ -266,7 +266,7 @@ ETIKET = {
 st.markdown("""
 <div class="hero-block">
   <h1>🚌 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
-  <p>Karabük UlaşımAŞ Toplu Taşıma Filosu · Senaryo Analizi </p>
+  <p> Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir. </p>
   <span class="badge">IPCC Tier 2</span>
   <span class="badge">Karabük Üniversitesi</span>
   <span class="badge">Endüstri Mühendisliği</span>
