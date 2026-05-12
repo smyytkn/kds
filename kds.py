@@ -264,13 +264,24 @@ ETIKET = {
 #  BAŞLIK
 # ─────────────────────────────────────────────
 st.markdown("""
+<style>
+.hero-block h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.hero-block p {
+    font-size: 22px;
+    line-height: 1.6;
+    margin-top: 0;
+}
+</style>
+
 <div class="hero-block">
   <h1>🚌 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
-  <p> Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir. </p>
-  <span class="badge">IPCC Tier 2</span>
-  <span class="badge">Karabük Üniversitesi</span>
-  <span class="badge">Endüstri Mühendisliği</span>
-  <span class="badge">Özge ÖZBAY & Sümeyye TEKİN</span>
+  <p>
+    Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir.
+  </p>
 </div>
 """, unsafe_allow_html=True)
 
