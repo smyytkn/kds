@@ -291,9 +291,9 @@ with st.sidebar:
 
     st.markdown("### ARAÇ FİYATLARI (TL)")
     fiyat_otobüs_ev  = st.number_input("Elektrikli Otobüs Birim Fiyatı (TL)", min_value=1.0,
-                                        value=8_000_000.0, step=100_000.0, format="%.0f".replace(",", "."))
+                                        value=8_000_000.0, step=100_000.0, format="%.0f")
     fiyat_minibüs_ev = st.number_input("Elektrikli Minibüs Birim Fiyatı (TL)", min_value=0.0,
-                                        value=3_500_000.0, step=100_000.0, format="%.0f".replace(",", "."))
+                                        value=3_500_000.0, step=100_000.0, format="%.0f")
 
     st.markdown("### BAKIM MALİYETLERİ (TL/araç/yıl)")
     bakim_otobüs_dizel  = st.number_input("Dizel Otobüs Bakım", min_value=0.0, value=150_000.0, step=10_000.0, format="%.0f")
@@ -520,12 +520,11 @@ else:
     with tab_emisyon:
         st.subheader("IPCC Tier 2 – Senaryo Bazlı Yıllık Emisyon Karşılaştırması")
 
-        plt.rcParams.update({
-            "font.family": "DejaVu Sans", "axes.titlesize": 12,
-            "axes.labelsize": 10, "xtick.labelsize": 8, "ytick.labelsize": 8,
-            "legend.fontsize": 8, "axes.grid": True, "grid.alpha": 0.3,
-            "axes.spines.top": False, "axes.spines.right": False,
-        })
+        import matplotlib as mpl
+
+        mpl.rcParams['font.family'] = 'DejaVu Sans'
+        mpl.rcParams['axes.unicode_minus'] = False
+        
 
         senaryolar = ["S1", "S2", "S3"]
         etiketler  = [ETIKET[k] for k in senaryolar]
