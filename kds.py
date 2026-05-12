@@ -325,8 +325,6 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
-   hesapla_btn = st.button("Hesapla")
-
 # ─────────────────────────────────────────────
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
@@ -415,6 +413,7 @@ if "results" not in st.session_state:
     st.session_state["results"] = None
 
 
+hesapla_btn = st.button("Hesapla")
 if hesapla_btn:
     with st.spinner("Analiz çalışıyor…"):
         st.session_state["results"] = run_analysis(w_emisyon, w_maliyet)
