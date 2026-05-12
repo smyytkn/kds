@@ -266,12 +266,12 @@ ETIKET = {
 st.markdown("""
 <style>
 .hero-block h1 {
-    font-size: 36px;
+    font-size: 27px;
     margin-bottom: 10px;
 }
 
 .hero-block p {
-    font-size: 22px;
+    font-size: 18px;
     line-height: 1.6;
     margin-top: 0;
 }
