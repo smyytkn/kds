@@ -252,6 +252,8 @@ TUK_OTOBÜS_DIZEL  = 0.33  # L/km
 TUK_MINİBÜS_DIZEL = 0.12  # L/km
 GWP_CH4 = 28
 GWP_N2O = 265
+w_emisyon = 0.5
+w_maliyet = 0.5
 
 RENK = {"S1": "#2166AC", "S2": "#F4A100", "S3": "#1B7837"}
 ETIKET = {
