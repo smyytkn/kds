@@ -469,7 +469,7 @@ else:
     df_listesi = [df_s1, df_s2, df_s3]
 
     # ── Özet metrik kartları ──
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     s2_azalma = (1 - em_s2["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
     s3_azalma = (1 - em_s3["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
     with col1:
