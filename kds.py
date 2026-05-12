@@ -487,11 +487,7 @@ else:
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-    with col4:
-        st.markdown(f"""<div class="metric-card" style="--accent:#1e9e6b">
-          <div class="lbl">AHP Önerisi</div>
-          <div class="val" style="font-size:1rem">{en_iyi}</div>
-          <div class="lbl">{ETIKET[en_iyi]}</div></div>""", unsafe_allow_html=True)
+    
 
     st.markdown("<br>", unsafe_allow_html=True)
 
