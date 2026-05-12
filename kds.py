@@ -325,7 +325,6 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
-    st.markdown("### AHP KRİTER AĞIRLIKLARI")
     w_emisyon = st.slider("Emisyon Azaltımı Ağırlığı (%)", min_value=0, max_value=100, value=50) / 100
     w_maliyet = 1 - w_emisyon
     st.caption(f"Maliyet Verimliliği Ağırlığı: %{w_maliyet*100:.0f}")
