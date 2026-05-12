@@ -325,7 +325,7 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
-   
+   hesapla_btn = st.button("Hesapla")
 
 # ─────────────────────────────────────────────
 #  HESAPLAMALAR
