@@ -291,9 +291,9 @@ with st.sidebar:
 
     st.markdown("### ARAÇ FİYATLARI (TL)")
     fiyat_otobüs_ev  = st.number_input("Elektrikli Otobüs Birim Fiyatı (TL)", min_value=1.0,
-                                        value=8_000_000.0, step=100_000.0, format="%.0f")
+                                        value=8_000_000.0, step=100_000.0, format="%.0f".replace(",", "."))
     fiyat_minibüs_ev = st.number_input("Elektrikli Minibüs Birim Fiyatı (TL)", min_value=0.0,
-                                        value=3_500_000.0, step=100_000.0, format="%.0f")
+                                        value=3_500_000.0, step=100_000.0, format="%.0f".replace(",", "."))
 
     st.markdown("### BAKIM MALİYETLERİ (TL/araç/yıl)")
     bakim_otobüs_dizel  = st.number_input("Dizel Otobüs Bakım", min_value=0.0, value=150_000.0, step=10_000.0, format="%.0f")
