@@ -353,10 +353,12 @@ with st.sidebar:
 
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları
-    s1 = dict(otobüs_dizel=n_otobüs_mevcut, otobüs_ev=0,
+    md = dict(otobüs_dizel=n_otobüs_mevcut, otobüs_ev=0,
                minibüs_dizel=n_minibüs_mevcut, minibüs_ev=0)
-    s2 = dict(otobüs_dizel=n_otobüs_mevcut - n_otobüs_ev, otobüs_ev=n_otobüs_ev,
-               minibüs_dizel=n_minibüs_mevcut - n_minibüs_ev, minibüs_ev=n_minibüs_ev)
+    s1 = dict((otobüs_dizel=n_otobüs_mevcut/(3/2)), otobüs_ev=n_otobüs_mevcut/3,
+               minibüs_dizel=n_minibüs_mevcut/(3/2), minibüs_ev=n_minibüs_mevcut/3)
+    s2 = dict((otobüs_dizel=n_otobüs_mevcut/3), otobüs_ev=n_otobüs_mevcut/(3/2),
+               minibüs_dizel=n_minibüs_mevcut/3, minibüs_ev=n_minibüs_mevcut/(3/2))
     s3 = dict(otobüs_dizel=0, otobüs_ev=n_otobüs_mevcut,
                minibüs_dizel=0, minibüs_ev=n_minibüs_mevcut)
 
