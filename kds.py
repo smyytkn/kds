@@ -300,12 +300,7 @@ with st.sidebar:
     n_otobüs_mevcut  = st.number_input("Dizel Otobüs Sayısı (adet)", min_value=1, value=20, step=1)
     n_minibüs_mevcut = st.number_input("Dizel Minibüs Sayısı (adet)", min_value=0, value=10, step=1)
 
-    st.markdown("### ELEKTRİKLİ GEÇİŞ PLANI")
-    n_otobüs_ev  = st.number_input("EV'e Dönüşecek Otobüs Sayısı", min_value=0,
-                                    max_value=int(n_otobüs_mevcut), value=min(10, int(n_otobüs_mevcut)), step=1)
-    n_minibüs_ev = st.number_input("EV'e Dönüşecek Minibüs Sayısı", min_value=0,
-                                    max_value=int(n_minibüs_mevcut), value=min(5, int(n_minibüs_mevcut)), step=1)
-
+    
     st.markdown("### ARAÇ FİYATLARI (TL)")
     fiyat_otobüs_ev  = st.number_input("Elektrikli Otobüs Birim Fiyatı (TL)", min_value=1.0,
                                         value=8_000_000.0, step=100_000.0, format="%.0f")
