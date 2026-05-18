@@ -638,9 +638,17 @@ else:
                 ax_be.axvline(x=be_ay, color=RENK[kod], linestyle=":", alpha=0.8, linewidth=1.5)
                 ax_be.plot(be_ay, y_val, marker="o", color="red", markersize=7)
                 
+                # Grafik Üzerine Başabaş Çizgilerinin Eklenmesi
+        max_y = max(cum_md.max(), cum_s3.max())
+        for be_ay, kod, label_name in [(be_s1, "S1", "S1 Başabaş"), (be_s2, "S2", "S2 Başabaş"), (be_s3, "S3", "S3 Başabaş")]:
+            if be_ay and be_ay <= ANALIZ_YILI * 12:
+                y_val = cum_md.iloc[be_ay-1]
+                ax_be.axvline(x=be_ay, color=RENK[kod], linestyle=":", alpha=0.8, linewidth=1.5)
+                ax_be.plot(be_ay, y_val, marker="o", color="red", markersize=7)
+                
                 # Metinsel Etiketleme
-yil_tarafı = be_ay / 12
-ax_be.text(be_ay + 2, y_val - (max_y * 0.04), f"{label_name}\n{be_ay}. Ay ({yil_tarafı:.1f} Yıl)", 
+                yil_tarafı = be_ay / 12
+                ax_be.text(be_ay + 2, y_val - (max_y * 0.04), f"{label_name}\n{be_ay}. Ay ({yil_tarafı:.1f} Yıl)", 
                            color=RENK[kod], fontsize=8, fontweight="bold", 
                            bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.2'))
 
