@@ -353,14 +353,14 @@ with st.sidebar:
 
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları
-    md = dict(otobüs_dizel=n_otobüs_mevcut, otobüs_ev=0,
-               minibüs_dizel=n_minibüs_mevcut, minibüs_ev=0)
-    s1 = dict((otobüs_dizel=n_otobüs_mevcut/(3/2)), otobüs_ev=n_otobüs_mevcut/3,
-               minibüs_dizel=n_minibüs_mevcut/(3/2), minibüs_ev=n_minibüs_mevcut/3)
-    s2 = dict((otobüs_dizel=n_otobüs_mevcut/3), otobüs_ev=n_otobüs_mevcut/(3/2),
-               minibüs_dizel=n_minibüs_mevcut/3, minibüs_ev=n_minibüs_mevcut/(3/2))
-    s3 = dict(otobüs_dizel=0, otobüs_ev=n_otobüs_mevcut,
-               minibüs_dizel=0, minibüs_ev=n_minibüs_mevcut)
+    md = dict(otobus_dizel=n_otobus_mevcut, otobus_ev=0,
+               minibus_dizel=n_minibus_mevcut, minibus_ev=0)
+    s1 = dict((otobus_dizel=n_otobus_mevcut/(3/2)), otobus_ev=n_otobus_mevcut/3,
+               minibus_dizel=n_minibus_mevcut/(3/2), minibus_ev=n_minibus_mevcut/3)
+    s2 = dict((otobus_dizel=n_otobus_mevcut/3), otobus_ev=n_otobus_mevcut/(3/2),
+               minibus_dizel=n_minibus_mevcut/3, minibus_ev=n_minibus_mevcut/(3/2))
+    s3 = dict(otobus_dizel=0, otobus_ev=n_otobus_mevcut,
+               minibus_dizel=0, minibus_ev=n_minibus_mevcut)
 
     def emisyon_hesapla(senaryo, km_oto, km_mini):
         r = {}
