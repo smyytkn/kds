@@ -355,9 +355,9 @@ def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları
     md = dict(otobus_dizel=n_otobus_mevcut, otobus_ev=0,
                minibus_dizel=n_minibus_mevcut, minibus_ev=0)
-    s1 = dict((otobus_dizel=n_otobus_mevcut/(3/2)), otobus_ev=n_otobus_mevcut/3,
+    s1 = dict(otobus_dizel=n_otobus_mevcut/(3/2), otobus_ev=n_otobus_mevcut/3,
                minibus_dizel=n_minibus_mevcut/(3/2), minibus_ev=n_minibus_mevcut/3)
-    s2 = dict((otobus_dizel=n_otobus_mevcut/3), otobus_ev=n_otobus_mevcut/(3/2),
+    s2 = dict(otobus_dizel=n_otobus_mevcut/3, otobus_ev=n_otobus_mevcut/(3/2),
                minibus_dizel=n_minibus_mevcut/3, minibus_ev=n_minibus_mevcut/(3/2))
     s3 = dict(otobus_dizel=0, otobus_ev=n_otobus_mevcut,
                minibus_dizel=0, minibus_ev=n_minibus_mevcut)
