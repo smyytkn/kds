@@ -678,10 +678,11 @@ else:
         # BURADAN SONRASINA DOKUNMUYORSUNUZ - MEVCUT KODUNUZDAKİ DÖNGÜ AYNEN DEVAM EDİYOR:
         for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
+                
                 # ... eski kodunuzun devamı ...
 
         # Başabaş Noktası Hesaplama Grafiği
-        fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
+                fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
         
         cum_md = df_md["toplam"].cumsum() / 1e6
         cum_s1 = df_s1["toplam"].cumsum() / 1e6
