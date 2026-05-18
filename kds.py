@@ -253,10 +253,16 @@ TUK_MINİBÜS_DIZEL = 0.12  # L/km
 GWP_CH4 = 28
 GWP_N2O = 265
 
-RENK = {"S1": "#2166AC", "S2": "#F4A100", "S3": "#1B7837"}
+RENK = {
+    "MD": "#555555",
+    "S1": "#2166AC",
+    "S2": "#F4A100",
+    "S3": "#1B7837",
+}
 ETIKET = {
-    "S1": "Senaryo 1 – Mevcut Durum (Tam Dizel)",
-    "S2": "Senaryo 2 – Kısmi EV Geçişi",
+    "MD": "Mevcut Durum (Tam Dizel)",
+    "S1": "Senaryo 1 – 1/3 EV Geçişi",
+    "S2": "Senaryo 2 – 2/3 EV Geçişi",
     "S3": "Senaryo 3 – Tam EV Geçişi",
 }
 
