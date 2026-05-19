@@ -252,8 +252,6 @@ TUK_OTOBÜS_DIZEL  = 0.33  # L/km
 TUK_MINİBÜS_DIZEL = 0.12  # L/km
 GWP_CH4 = 28
 GWP_N2O = 265
-w_emisyon = 0
-w_maliyet = 0
 
 RENK = {
     "MD": "#555555",
@@ -286,10 +284,9 @@ st.markdown("""
 </style>
 
 <div class="hero-block">
-  <h1> 📈ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
+  <h1> 📈 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
   <p>
     Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir.
-   
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -469,55 +466,58 @@ if res is None:
     """, unsafe_allow_html=True)
 
     # Parametreler bilgi kartı
-    col1, col2, col3 , col14= st.columns(4)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #555555; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
-        <div style="color:#aaa; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">MD</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">🚌 Mevcut Durum</div>
-        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filo tamamen dizel araçlardan oluşur. Referans senaryo.</div>
-      </div>
+            <div style="color:#aaa; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">MD</div>
+            <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">🚌 Mevcut Durum</div>
+            <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filo tamamen dizel araçlardan oluşur. Referans senaryo.</div>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #2166AC; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
-        <div style="color:#2166AC; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S1</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 1/3 EV Geçişi</div>
-        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#2166AC">%33</b>"'ü elektrikli araca dönüştürülür."</div>
-        <div style="margin-top:5px;">
-          <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Düşük Yatırım</span>
-          <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Kademeli Geçiş</span>
+            <div style="color:#2166AC; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S1</div>
+            <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 1/3 EV Geçişi</div>
+            <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#2166AC">%33</b>'ü elektrikli araca dönüştürülür.</div>
+            <div style="margin-top:5px;">
+              <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Düşük Yatırım</span>
+              <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Kademeli Geçiş</span>
+            </div>
         </div>
-      </div>
+        """, unsafe_allow_html=True)
     with col3:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #F4A100; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
-        <div style="color:#F4A100; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S2</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 2/3 EV Geçişi</div>
-        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#F4A100">%67</b>"'si elektrikli araca dönüştürülür."</div>
-        <div style="margin-top:5px;">
-          <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Orta Yatırım</span>
-          <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Dengeli Plan</span>
+            <div style="color:#F4A100; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S2</div>
+            <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 2/3 EV Geçişi</div>
+            <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#F4A100">%67</b>'si elektrikli araca dönüştürülür.</div>
+            <div style="margin-top:5px;">
+              <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Orta Yatırım</span>
+              <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Dengeli Plan</span>
+            </div>
         </div>
+        """, unsafe_allow_html=True)
     with col4:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #1B7837; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
-        <div style="color:#1B7837; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S3</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> Tam EV Geçişi</div>
-        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#1B7837">%100</b>"'ü elektrikli araca dönüştürülür."</div>
-        <div style="margin-top:5px;">
-          <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Yüksek Yatırım</span>
-          <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Max. Emisyon Azalımı</span>
+            <div style="color:#1B7837; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S3</div>
+            <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> Tam EV Geçişi</div>
+            <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#1B7837">%100</b>'ü elektrikli araca dönüştürülür.</div>
+            <div style="margin-top:5px;">
+              <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Yüksek Yatırım</span>
+              <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Max. Emisyon Azalımı</span>
+            </div>
         </div>
-      </div>
-    </div>
-                                                                                       
-    <hr style="border-color:#2a3a2e; margin:0.8rem 0;">
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+        
+    st.markdown("""<hr style="border-color:#2a3a2e; margin:0.8rem 0;">""", unsafe_allow_html=True)
      
- else:
-     em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
-     df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
-     ahp, em_norm, mal_norm, en_iyi = res["ahp"], res["em_norm"], res["mal_norm"], res["en_iyi"]
+else:
+    em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
+    df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
+    ahp, em_norm, mal_norm, en_iyi = res["ahp"], res["em_norm"], res["mal_norm"], res["en_iyi"]
 
     em_listesi = [em_s1, em_s2, em_s3]
     df_listesi = [df_s1, df_s2, df_s3]
@@ -528,10 +528,9 @@ if res is None:
     s2_azalma = (1 - em_s2["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     s3_azalma = (1 - em_s3["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     with col1:
-        st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
+        st.markdown(f"""<div class="metric-card" style="--accent:#555555">
           <div class="lbl">Mevcut Durum Yıllık Emisyon</div>
-          <div class="val">{em_md['CO2e_ton']:,.0f}</div>
-          st.markdown(html_icerik, unsafe_allow_html=True)                                                                            
+          <div class="val">{em_md['CO2e_ton']:,.0f}</div>                                                                                   
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
     with col2:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
@@ -549,6 +548,18 @@ if res is None:
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -638,7 +649,6 @@ if res is None:
     with tab_maliyet:
         st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
         
-
         # Grafik Hazırlığı
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
         
@@ -744,37 +754,42 @@ if res is None:
         st.subheader(f"Senaryo Bazlı Kümülatif Maliyet Karşılaştırması – {ANALIZ_YILI} Yıl")
 
         fig3, ax3 = plt.subplots(figsize=(12, 5))
+        
+        # Referans Mevcut Durum Kümülatif Çizgisi
+        cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum() / 1e6
+        ax3.plot(df_md["ay"], cum_md, color=RENK["MD"], linewidth=3, linestyle="--", label=ETIKET["MD"])
+        
+        # Diğer senaryoların kümülatif harcamaları
         for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
-            cumul = df_["toplam"].cumsum() / 1e9
+            cumul = df_["toplam"].cumsum() / 1e6
             ax3.plot(df_["ay"], cumul, color=RENK[kod], linewidth=2.5, label=ETIKET[kod])
-        ax3.set_title(f"Kümülatif Toplam Maliyet ({ANALIZ_YILI} Yıl) | {odeme_plani_adi}", fontweight="bold")
-        ax3.set_xlabel("Ay"); ax3.set_ylabel("Kümülatif Toplam Maliyet (Milyar TL)")
-        ax3.legend(loc="upper left", fontsize=8)
+            
+        ax3.set_title("Zamana Bağlı Toplam Kümülatif Giderler (Yatırım + Yakıt + Bakım)", fontweight="bold")
+        ax3.set_xlabel("Ay", fontweight="bold")
+        ax3.set_ylabel("Toplam Harcama (Milyon TL)", fontweight="bold")
+        ax3.legend(loc="upper left")
+        ax3.grid(True, linestyle=":", alpha=0.5)
         ax3.xaxis.set_major_locator(mticker.MultipleLocator(12))
-        for y in range(1, ANALIZ_YILI+1):
-            ax3.axvline(y*12, color="gray", lw=0.4, alpha=0.3, linestyle="--")
-        plt.tight_layout()
-        st.pyplot(fig3); plt.close(fig3)
+        
+        st.pyplot(fig3)
+        plt.close(fig3)
 
-        # Özet toplam maliyet
-        col_a, col_b, col_c = st.columns(3)
-        for col, kod, df_ in [(col_a,"S1",df_s1),(col_b,"S2",df_s2),(col_c,"S3",df_s3)]:
-            toplam_g = df_["toplam"].sum() / 1e9
-            with col:
-                st.markdown(f"""<div class="metric-card" style="--accent:{RENK[kod]}">
-                  <div class="lbl">{ETIKET[kod]}</div>
-                  <div class="val">{toplam_g:.2f} Milyar TL</div></div>""", unsafe_allow_html=True)
-                
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
     with tab_tablo:
         st.subheader("Senaryolara Ait Aylık Ham Veri Çıktıları")
-        secilen_tablo = st.selectbox("Görüntülenecek Senaryo Verisi:", ["S1", "S2", "S3"])
+        secilen_kod = st.selectbox("Görüntülemek İstediğiniz Senaryoyu Seçin:", ["S1", "S2", "S3"])
         
-        if secilen_tablo == "S1":
-            st.dataframe(df_s1, use_container_width=True, hide_index=True)
-        elif secilen_tablo == "S2":
-            st.dataframe(df_s2, use_container_width=True, hide_index=True)
-        else:
-            st.dataframe(df_s3, use_container_width=True, hide_index=True)
+        orijinal_df = {"S1": df_s1, "S2": df_s2, "S3": df_s3}[secilen_kod]
+        
+        # Biçimlendirilmiş veri tablosu oluşturma
+        gosterim_df = orijinal_df.copy()
+        gosterim_df.columns = ["Ay", "Yıl", "Yakıt Maliyeti (TL)", "Bakım Maliyeti (TL)", "Yatırım Taksiti (TL)", "Toplam Aylık Maliyet (TL)"]
+        
+        st.dataframe(gosterim_df.style.format({
+            "Yakıt Maliyeti (TL)": "{:,.2f}",
+            "Bakım Maliyeti (TL)": "{:,.2f}",
+            "Yatırım Taksiti (TL)": "{:,.2f}",
+            "Toplam Aylık Maliyet (TL)": "{:,.2f}"
+        }), use_container_width=True, hide_index=True)
