@@ -238,7 +238,7 @@ hr {
 # ─────────────────────────────────────────────
 #  SABİT DEĞERLER (IPCC Tier 2)
 # ─────────────────────────────────────────────
-EF_CO2_DIZEL  = 2.690   # kg/L
+EF_CO2_DIZEL   = 2.690   # kg/L
 EF_CO2_BENZIN = 2.350   # kg/L
 EF_CH4_OTOBÜS_DIZEL  = 3.9   # mg/km
 EF_N2O_OTOBÜS_DIZEL  = 3.9   # mg/km
@@ -252,8 +252,8 @@ TUK_OTOBÜS_DIZEL  = 0.33  # L/km
 TUK_MINİBÜS_DIZEL = 0.12  # L/km
 GWP_CH4 = 28
 GWP_N2O = 265
-w_emisyon =0
-w_maliyet=0
+w_emisyon = 0
+w_maliyet = 0
 
 RENK = {
     "MD": "#555555",
@@ -379,6 +379,7 @@ def run_analysis(w_emisyon, w_maliyet):
         r["N2O_kg"]   = n2o_od + n2o_md
         r["CO2e_ton"] = (r["CO2_kg"] + r["CH4_kg"] * GWP_CH4 + r["N2O_kg"] * GWP_N2O) / 1000
         return r
+        
     em_md = emisyon_hesapla(md, km_otobüs_yillik, km_minibüs_yillik)
     em_s1 = emisyon_hesapla(s1, km_otobüs_yillik, km_minibüs_yillik)
     em_s2 = emisyon_hesapla(s2, km_otobüs_yillik, km_minibüs_yillik)
@@ -439,7 +440,7 @@ def run_analysis(w_emisyon, w_maliyet):
 
     return {
         "s1": s1, "s2": s2, "s3": s3,
-        "em_s1": em_s1, "em_s2": em_s2, "em_s3": em_s3,
+        "em_md": em_md, "em_s1": em_s1, "em_s2": em_s2, "em_s3": em_s3,
         "df_md": df_md, "df_s1": df_s1, "df_s2": df_s2, "df_s3": df_s3,
         "em_norm": em_norm, "mal_norm": mal_norm, "ahp": ahp, "en_iyi": en_iyi,
     }
@@ -488,7 +489,7 @@ if res is None:
         </div>""", unsafe_allow_html=True)
 
 else:
-    em_s1, em_s2, em_s3 = res["em_s1"], res["em_s2"], res["em_s3"]
+    em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
     df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
     ahp, em_norm, mal_norm, en_iyi = res["ahp"], res["em_norm"], res["mal_norm"], res["en_iyi"]
 
@@ -497,9 +498,9 @@ else:
 
     # ── Özet metrik kartları ──
     col1, col2, col3, col4 = st.columns(4)
+    s1_azalma = (1 - em_s1["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     s2_azalma = (1 - em_s2["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
-    s2_azalma = (1 - em_s2["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
-    s3_azalma = (1 - em_s3["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
+    s3_azalma = (1 - em_s3["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     with col1:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
           <div class="lbl">MD Yıllık Emisyon</div>
@@ -507,20 +508,20 @@ else:
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
     with col2:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
-          <div class="lbl">S1 Yıllık Emisyon</div>
-          <div class="val">{em_s1['CO2e_ton']:,.0f}</div>
-          <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">S1 Emisyon Azalması</div>
+          <div class="val">▼{s1_azalma:.1f}%</div>
+          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     with col3:
         st.markdown(f"""<div class="metric-card" style="--accent:#F4A100">
           <div class="lbl">S2 Emisyon Azalması</div>
           <div class="val">▼{s2_azalma:.1f}%</div>
-          <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     with col4:
         st.markdown(f"""<div class="metric-card" style="--accent:#1B7837">
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
-          <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-   
+          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+    
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -542,8 +543,7 @@ else:
         mpl.rcParams['font.family'] = 'DejaVu Sans'
         mpl.rcParams['axes.unicode_minus'] = False
 
-        senaryolar = ["S1", "S2", "S3"]
-        etiketler   = [ETIKET[k] for k in senaryolar]
+        senaryolar = ["MD", "S1", "S2", "S3"]
         renkler    = [RENK[k] for k in senaryolar]
 
         fig, axes = plt.subplots(2, 2, figsize=(13, 8))
@@ -551,13 +551,14 @@ else:
             "IPCC Tier 2 – Senaryo Bazlı Yıllık Emisyon Karşılaştırması\nKarabük UlaşımAŞ Toplu Taşıma Filosu",
             fontsize=12, fontweight="bold"
         )
+        em_tum_listesi = [em_md, em_s1, em_s2, em_s3]
         for ax, key, birim, fmt, bolucu in [
-            (axes[0,0], "CO2_kg",   "CO₂ (ton/yıl)",  ",.0f", 1000),
-            (axes[0,1], "CH4_kg",   "CH₄ (kg/yıl)",   ",.3f", 1),
-            (axes[1,0], "N2O_kg",   "N₂O (kg/yıl)",   ",.3f", 1),
+            (axes[0,0], "CO2_kg",   "CO₂ (ton/yıl)",   ",.0f", 1000),
+            (axes[0,1], "CH4_kg",   "CH₄ (kg/yıl)",    ",.3f", 1),
+            (axes[1,0], "N2O_kg",   "N₂O (kg/yıl)",    ",.3f", 1),
             (axes[1,1], "CO2e_ton", "CO₂e (ton/yıl)", ",.1f", 1),
         ]:
-            vals = [e[key] / bolucu for e in em_listesi]
+            vals = [e[key] / bolucu for e in em_tum_listesi]
             bars = ax.bar(["MD","S1","S2","S3"], vals, color=renkler, width=0.5, edgecolor="white", linewidth=1.2)
             ax.set_title(key.replace("_kg","").replace("_ton","").upper() + " Emisyonu", fontweight="bold")
             ax.set_ylabel(birim)
@@ -609,7 +610,7 @@ else:
     # ──────────────────────────────────────────
     with tab_maliyet:
         st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
-       
+        
 
         # Grafik Hazırlığı
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
@@ -674,44 +675,6 @@ else:
         st.pyplot(fig_be)
         plt.close(fig_be)
 
-
-        # Başabaş Noktası Hesaplama Grafiği
-        fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
-        
-        cum_md = df_md["toplam"].cumsum() / 1e6
-        cum_s1 = df_s1["toplam"].cumsum() / 1e6
-        cum_s2 = df_s2["toplam"].cumsum() / 1e6
-        cum_s3 = df_s3["toplam"].cumsum() / 1e6
-        
-        ax_be.plot(df_md["ay"], cum_md, color=RENK["MD"], linestyle="--", linewidth=2.5, label="Mevcut Durum (Referans Tam Dizel)")
-        ax_be.plot(df_s1["ay"], cum_s1, color=RENK["S1"], linewidth=2, label=ETIKET["S1"])
-        ax_be.plot(df_s2["ay"], cum_s2, color=RENK["S2"], linewidth=2, label=ETIKET["S2"])
-        ax_be.plot(df_s3["ay"], cum_s3, color=RENK["S3"], linewidth=2, label=ETIKET["S3"])
-        
-        # Kesişim (Amortisman) Noktalarının Tespiti
-        def find_intersection_month(cum_scenario, cum_base):
-            # İlk yatırım anında scenario > base'dir. Ne zaman scenario < base olursa break-even gerçekleşir.
-            diff = cum_scenario - cum_base
-            passed = diff[diff <= 0]
-            if not passed.empty:
-                return passed.index[0] + 1 # 1-indisli ay yapısı
-            return None
-
-        be_s1 = find_intersection_month(cum_s1, cum_md)
-        be_s2 = find_intersection_month(cum_s2, cum_md)
-        be_s3 = find_intersection_month(cum_s3, cum_md)
-        
-        # Grafik Üzerine Başabaş Çizgilerinin Eklenmesi
-        max_y = max(cum_md.max(), cum_s3.max())
-        for be_ay, kod, label_name in [(be_s1, "S1", "S1 Başabaş"), (be_s2, "S2", "S2 Başabaş"), (be_s3, "S3", "S3 Başabaş")]:
-            if be_ay and be_ay <= ANALIZ_YILI * 12:
-                y_val = cum_md.iloc[be_ay-1]
-                ax_be.axvline(x=be_ay, color=RENK[kod], linestyle=":", alpha=0.8, linewidth=1.5)
-                ax_be.plot(be_ay, y_val, marker="o", color="red", markersize=7)
-                
- 
-
-        
         st.markdown("---")
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
@@ -773,69 +736,18 @@ else:
             with col:
                 st.markdown(f"""<div class="metric-card" style="--accent:{RENK[kod]}">
                   <div class="lbl">{ETIKET[kod]}</div>
-                  <div class="val">{toplam_g:.2f} <span style="font-size:0.75rem">Milyar TL</span></div>
-                  <div class="lbl">{ANALIZ_YILI} Yıl Toplam</div></div>""", unsafe_allow_html=True)
-
-        # Yıllık toplam çubuk grafikleri
-        st.markdown("#### Yıllık Toplam Maliyet Karşılaştırması")
-        fig4, axes4 = plt.subplots(1, 3, figsize=(14, 4), sharey=False)
-        for ax_, kod, df_ in zip(axes4, ["S1","S2","S3"], [df_s1,df_s2,df_s3]):
-            yillik = df_.groupby("yil")["toplam"].sum().reset_index()
-            bars = ax_.bar(yillik["yil"], yillik["toplam"]/1e6, color=RENK[kod], edgecolor="white", linewidth=1)
-            ax_.set_title(ETIKET[kod], fontweight="bold", fontsize=8)
-            ax_.set_xlabel("Yıl"); ax_.set_ylabel("Milyon TL")
-            ax_.set_xticks(yillik["yil"])
-            ax_.tick_params(axis='x', labelsize=7)
-            mx = yillik["toplam"].max()/1e6
-            for bar, v in zip(bars, yillik["toplam"]/1e6):
-                ax_.text(bar.get_x()+bar.get_width()/2, v+mx*0.01, f"{v:.0f}M",
-                          ha="center", va="bottom", fontsize=6)
-        plt.tight_layout()
-        st.pyplot(fig4); plt.close(fig4)
-
+                  <div class="val">{toplam_g:.2f} Milyar TL</div></div>""", unsafe_allow_html=True)
+                
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
     with tab_tablo:
-        st.subheader("Özet Rapor & Detay Tablolar")
-
-        # Özet parametreler
-        st.markdown("#### 🔧 Kullanılan Parametreler")
-        params_df = pd.DataFrame({
-            "Parametre": [
-                "Ödeme Süresi", "Ödeme Planı", "Yıllık TÜFE", "Dizel Fiyatı",
-                "Elektrik Fiyatı", "Şarj Verimi (η)", "Şebeke EF (Türkiye)",
-            ],
-            "Değer": [
-                f"{ANALIZ_YILI} yıl", odeme_plani_adi, f"%{tufe_yuzde:.1f}",
-                f"{dizel_fiyat:.2f} TL/L", f"{elektrik_fiyat:.2f} TL/kWh",
-                f"%{ETA_SARJ*100:.0f}", f"{EF_GRID} kg CO₂/kWh [IEA 2023]",
-            ],
-        })
-        st.dataframe(params_df, use_container_width=True, hide_index=True)
-
-        # Senaryo karşılaştırma
-        st.markdown("#### 📋 Senaryo Karşılaştırma Özeti")
-        ozet_df = pd.DataFrame({
-            "Senaryo": [ETIKET[k] for k in ["S1","S2","S3"]],
-            "Yıllık CO₂e (ton)": [f"{e['CO2e_ton']:,.1f}" for e in em_listesi],
-            f"{ANALIZ_YILI}Y Toplam Maliyet (Milyar TL)": [
-                f"{df_['toplam'].sum()/1e9:,.2f}" for df_ in [df_s1, df_s2, df_s3]],
-            "AHP Skoru": [f"{v:.4f}" for v in ahp],
-            "Öneri": ["✅ Önerilen" if ["S1","S2","S3"][i] == en_iyi else "" for i in range(3)],
-        })
-        st.dataframe(ozet_df, use_container_width=True, hide_index=True)
-
-        # Aylık ham veri indirme
-        st.markdown("#### 💾 Ham Veri İndir")
-        col_d1, col_d2, col_d3 = st.columns(3)
-        for col, kod, df_ in [(col_d1,"S1",df_s1),(col_d2,"S2",df_s2),(col_d3,"S3",df_s3)]:
-            with col:
-                csv = df_.to_csv(index=False).encode("utf-8-sig")
-                st.download_button(
-                    label=f"⬇ {kod} Aylık Veri (CSV)",
-                    data=csv,
-                    file_name=f"senaryo_{kod.lower()}_aylik.csv",
-                    mime="text/csv",
-                    use_container_width=True,
-                )
+        st.subheader("Senaryolara Ait Aylık Ham Veri Çıktıları")
+        secilen_tablo = st.selectbox("Görüntülenecek Senaryo Verisi:", ["S1", "S2", "S3"])
+        
+        if secilen_tablo == "S1":
+            st.dataframe(df_s1, use_container_width=True, hide_index=True)
+        elif secilen_tablo == "S2":
+            st.dataframe(df_s2, use_container_width=True, hide_index=True)
+        else:
+            st.dataframe(df_s3, use_container_width=True, hide_index=True)
