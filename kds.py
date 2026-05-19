@@ -289,8 +289,12 @@ st.markdown("""
   <h1> 📈ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
   <p>
     Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir.
-    MD - MEVCUT DURUM SENARYOSU    S1 - 1/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU    S2 - 2/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU  S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU 
+   
   </p>
+  <h1>  MD - MEVCUT DURUM SENARYOSU    
+        S1 - 1/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU    
+        S2 - 2/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU  
+        S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU </h1>
 </div>
 """, unsafe_allow_html=True)
 
