@@ -489,8 +489,7 @@ if res is None:
           <div class="val">%90</div>
         </div>""", unsafe_allow_html=True)
     with st.sidebar:
-        # ── YENİ: Senaryo Açıklama Kartları ──
-    st.markdown("""
+        st.markdown("""
     <div style="margin-bottom: 1.2rem;">
       <div style="color:#1e9e6b; font-family:'IBM Plex Mono',monospace; font-size:0.85rem; letter-spacing:0.1em; margin-bottom:0.6rem;">
         📌 SENARYO TANIMI
@@ -535,6 +534,7 @@ if res is None:
 
     <hr style="border-color:#2a3a2e; margin:0.8rem 0;">
     """, unsafe_allow_html=True)
+    
     
  else:
      em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
