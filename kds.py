@@ -434,12 +434,14 @@ def run_analysis(w_emisyon, w_maliyet):
         inv = 1.0 / (v + 1e-12); return inv / inv.sum()
     em_norm  = norm_min(em_d)
     mal_norm = norm_min(mal_d)
-  
+    ahp      = w_emisyon * em_norm + w_maliyet * mal_norm
+    en_iyi   = ["S1","S2","S3"][np.argmax(ahp)]
 
     return {
         "s1": s1, "s2": s2, "s3": s3,
         "em_s1": em_s1, "em_s2": em_s2, "em_s3": em_s3,
         "df_md": df_md, "df_s1": df_s1, "df_s2": df_s2, "df_s3": df_s3,
+        "em_norm": em_norm, "mal_norm": mal_norm, "ahp": ahp, "en_iyi": en_iyi,
     }
 
 # ─────────────────────────────────────────────
