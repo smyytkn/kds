@@ -289,6 +289,12 @@ st.markdown("""
   <h1> 📈ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
   <p>
     Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir.
+    
+    MD - MEVCUT DURUM SENARYOSU
+    S1 - 1/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
+    S2 - 2/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
+    S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
+    
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -503,22 +509,22 @@ else:
     s3_azalma = (1 - em_s3["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     with col1:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
-          <div class="lbl">MD Yıllık Emisyon</div>
+          <div class="lbl">Mevcut Durum Yıllık Emisyon</div>
           <div class="val">{em_md['CO2e_ton']:,.0f}</div>
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
     with col2:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
-          <div class="lbl">S1 Emisyon Azalması</div>
+          <div class="lbl">Senaryo 1 – 1/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s1_azalma:.1f}%</div>
           <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     with col3:
         st.markdown(f"""<div class="metric-card" style="--accent:#F4A100">
-          <div class="lbl">S2 Emisyon Azalması</div>
+          <div class="lbl">Senaryo 2 – 2/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s2_azalma:.1f}%</div>
           <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     with col4:
         st.markdown(f"""<div class="metric-card" style="--accent:#1B7837">
-          <div class="lbl">S3 Emisyon Azalması</div>
+          <div class="lbl">Senaryo 3 – 3/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
     
