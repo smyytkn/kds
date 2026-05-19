@@ -594,17 +594,7 @@ else:
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
-    # ──────────────────────────────────────────
-    #  MALİYET SEKMESİ
-    # ──────────────────────────────────────────
-    with tab_maliyet:
-        st.subheader("📈 Senaryo Bazlı Başabaş Analizi")
-       
-
-       
-        for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
-            with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
-                
+   
 # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
