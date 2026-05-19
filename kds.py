@@ -292,8 +292,7 @@ st.markdown("""
     MD - MEVCUT DURUM SENARYOSU
     S1 - 1/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
     S2 - 2/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
-    S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
-    
+    S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU 
   </p>
 </div>
 """, unsafe_allow_html=True)
