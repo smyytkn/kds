@@ -599,16 +599,8 @@ else:
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
     with tab_maliyet:
-        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
-        st.markdown("""
-        Bu grafik, her bir senaryonun **Mevcut Durum (Tam Dizel)** referansına göre elde ettiği kümülatif net kârı (tasarrufu) göstermektedir.
+        st.subheader("📈 Senaryo Bazlı Başabaş Analizi")
         
-        **Kâr Formülü:**  
-        $$\\text{Kâr} = (\\text{Dizel Yakıt} + \\text{Dizel Bakım}) - (\\text{EV Yakıt} + \\text{EV Bakım} + \\text{EV Taksit})$$
-        
-        Kümülatif kârın **0 TL çizgisini kestiği nokta**, ilgili senaryonun kendini amorti ederek **net kâra geçtiği zamanı** ifade eder.
-        """)
-
         # Grafik Hazırlığı
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
         
