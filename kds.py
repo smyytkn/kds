@@ -488,7 +488,7 @@ if res is None:
           <div class="lbl">Şarj Verimi</div>
           <div class="val">%90</div>
         </div>""", unsafe_allow_html=True)
-with st.sidebar:
+    with st.sidebar:
     # ── YENİ: Senaryo Açıklama Kartları ──
     st.markdown("""
     <div style="margin-bottom: 1.2rem;">
