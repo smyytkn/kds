@@ -427,23 +427,7 @@ def run_analysis(w_emisyon, w_maliyet):
     df_s2 = maliyet_serileri(s2, n_otobüs_mevcut*(2/3), n_minibüs_mevcut*(2/3), fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s3 = maliyet_serileri(s3, n_otobüs_mevcut, n_minibüs_mevcut, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
 
-    # AHP
-    em_d  = np.array([em_s1["CO2e_ton"], em_s2["CO2e_ton"], em_s3["CO2e_ton"]])
-    mal_d = np.array([df_s1["toplam"].sum(), df_s2["toplam"].sum(), df_s3["toplam"].sum()])
-    def norm_min(v):
-        inv = 1.0 / (v + 1e-12); return inv / inv.sum()
-    em_norm  = norm_min(em_d)
-    mal_norm = norm_min(mal_d)
-    ahp      = w_emisyon * em_norm + w_maliyet * mal_norm
-    en_iyi   = ["S1","S2","S3"][np.argmax(ahp)]
-
-    return {
-        "s1": s1, "s2": s2, "s3": s3,
-        "em_s1": em_s1, "em_s2": em_s2, "em_s3": em_s3,
-        "df_md": df_md, "df_s1": df_s1, "df_s2": df_s2, "df_s3": df_s3,
-        "em_norm": em_norm, "mal_norm": mal_norm, "ahp": ahp, "en_iyi": en_iyi,
-    }
-
+   
 # ─────────────────────────────────────────────
 #  BAŞLANGIÇ YA DA HESAP SONRASI GÖSTERİM
 # ─────────────────────────────────────────────
