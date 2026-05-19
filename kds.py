@@ -605,71 +605,18 @@ else:
         for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
                 
-                # ... eski kodunuzun devamı ...
+# ──────────────────────────────────────────
+    #  MALİYET SEKMESİ
+    # ──────────────────────────────────────────
+    with tab_maliyet:
+        st.subheader("📈 Senaryo Bazlı Başabaş Analizi")
+       
 
-        # Başabaş Noktası Hesaplama Grafiği
-                fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
-        
-        cum_md = df_md["toplam"].cumsum() / 1e6
-        cum_s1 = df_s1["toplam"].cumsum() / 1e6
-        cum_s2 = df_s2["toplam"].cumsum() / 1e6
-        cum_s3 = df_s3["toplam"].cumsum() / 1e6
-        
-        ax_be.plot(df_md["ay"], cum_md, color=RENK["MD"], linestyle="--", linewidth=2.5, label="Mevcut Durum (Referans Tam Dizel)")
-        ax_be.plot(df_s1["ay"], cum_s1, color=RENK["S1"], linewidth=2, label=ETIKET["S1"])
-        ax_be.plot(df_s2["ay"], cum_s2, color=RENK["S2"], linewidth=2, label=ETIKET["S2"])
-        ax_be.plot(df_s3["ay"], cum_s3, color=RENK["S3"], linewidth=2, label=ETIKET["S3"])
-        
-        # Kesişim (Amortisman) Noktalarının Tespiti
-        def find_intersection_month(cum_scenario, cum_base):
-            # İlk yatırım anında scenario > base'dir. Ne zaman scenario < base olursa break-even gerçekleşir.
-            diff = cum_scenario - cum_base
-            passed = diff[diff <= 0]
-            if not passed.empty:
-                return passed.index[0] + 1 # 1-indisli ay yapısı
-            return None
-
-        be_s1 = find_intersection_month(cum_s1, cum_md)
-        be_s2 = find_intersection_month(cum_s2, cum_md)
-        be_s3 = find_intersection_month(cum_s3, cum_md)
-        
-        # Grafik Üzerine Başabaş Çizgilerinin Eklenmesi
-        max_y = max(cum_md.max(), cum_s3.max())
-        for be_ay, kod, label_name in [(be_s1, "S1", "S1 Başabaş"), (be_s2, "S2", "S2 Başabaş"), (be_s3, "S3", "S3 Başabaş")]:
-            if be_ay and be_ay <= ANALIZ_YILI * 12:
-                y_val = cum_md.iloc[be_ay-1]
-                ax_be.axvline(x=be_ay, color=RENK[kod], linestyle=":", alpha=0.8, linewidth=1.5)
-                ax_be.plot(be_ay, y_val, marker="o", color="red", markersize=7)
+       
+        for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
+            with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
                 
-                # Grafik Üzerine Başabaş Çizgilerinin Eklenmesi
-        max_y = max(cum_md.max(), cum_s3.max())
-        for be_ay, kod, label_name in [(be_s1, "S1", "S1 Başabaş"), (be_s2, "S2", "S2 Başabaş"), (be_s3, "S3", "S3 Başabaş")]:
-            if be_ay and be_ay <= ANALIZ_YILI * 12:
-                y_val = cum_md.iloc[be_ay-1]
-                ax_be.axvline(x=be_ay, color=RENK[kod], linestyle=":", alpha=0.8, linewidth=1.5)
-                ax_be.plot(be_ay, y_val, marker="o", color="red", markersize=7)
-                
-                # Metinsel Etiketleme
-                yil_tarafı = be_ay / 12
-                ax_be.text(be_ay + 2, y_val - (max_y * 0.04), f"{label_name}\n{be_ay}. Ay ({yil_tarafı:.1f} Yıl)", 
-                           color=RENK[kod], fontsize=8, fontweight="bold", 
-                           bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.2'))
-
-        ax_be.set_title(f"Senaryoların Kümülatif Maliyet ve Amortisman Kırılım Eğrisi ({ANALIZ_YILI} Yıl Projeksiyonu)", fontweight="bold", fontsize=11)
-        ax_be.set_xlabel("Proje Zaman Ekseni (Ay)")
-        ax_be.set_ylabel("Kümülatif Toplam Harcama (Milyon TL)")
-        ax_be.legend(loc="upper left", fontsize=9)
-        ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
-        ax_be.grid(True, which='both', linestyle=':', alpha=0.5)
-        
-        for y in range(1, ANALIZ_YILI+1):
-            ax_be.axvline(y*12, color="gray", lw=0.4, alpha=0.25, linestyle="-")
-            
-        plt.tight_layout()
-        st.pyplot(fig_be)
-        plt.close(fig_be)
-        
-        st.markdown("---")
+               
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
