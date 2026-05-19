@@ -673,14 +673,7 @@ else:
         plt.close(fig_be)
         
         st.markdown("---")
-        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
-        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
-        # BURADAN SONRASINA DOKUNMUYORSUNUZ - MEVCUT KODUNUZDAKİ DÖNGÜ AYNEN DEVAM EDİYOR:
-        for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
-            with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
-                
-                # ... eski kodunuzun devamı ...
 
         # Başabaş Noktası Hesaplama Grafiği
                 fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
