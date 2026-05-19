@@ -666,7 +666,7 @@ else:
 
 
         # Başabaş Noktası Hesaplama Grafiği
-                fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
+        fig_be, ax_be = plt.subplots(figsize=(13, 5.5))
         
         cum_md = df_md["toplam"].cumsum() / 1e6
         cum_s1 = df_s1["toplam"].cumsum() / 1e6
