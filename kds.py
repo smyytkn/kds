@@ -531,6 +531,7 @@ if res is None:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
           <div class="lbl">Mevcut Durum Yıllık Emisyon</div>
           <div class="val">{em_md['CO2e_ton']:,.0f}</div>
+          st.markdown(html_icerik, unsafe_allow_html=True)                                                                            
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
     with col2:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
