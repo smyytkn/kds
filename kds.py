@@ -289,12 +289,11 @@ st.markdown("""
   <h1> 📈ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
   <p>
     Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu desteklemektedir.
-   
-  </p>
-  <h1>  MD - MEVCUT DURUM SENARYOSU    
+   MD - MEVCUT DURUM SENARYOSU    
         S1 - 1/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU    
         S2 - 2/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU  
-        S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU </h1>
+        S3 - 3/3 ELEKTİRKLİ ARACA GEÇİŞ SENARYOSU
+  </p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -302,6 +301,53 @@ st.markdown("""
 #  SIDEBAR – GİRİŞ PARAMETRELERİ
 # ─────────────────────────────────────────────
 with st.sidebar:
+     # ── YENİ: Senaryo Açıklama Kartları ──
+    st.markdown("""
+    <div style="margin-bottom: 1.2rem;">
+      <div style="color:#1e9e6b; font-family:'IBM Plex Mono',monospace; font-size:0.85rem; letter-spacing:0.1em; margin-bottom:0.6rem;">
+        📌 SENARYO TANIMI
+      </div>
+
+      <div style="background:#1a1f2e; border-left:3px solid #555555; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+        <div style="color:#aaa; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">MD</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">🚌 Mevcut Durum</div>
+        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filo tamamen dizel araçlardan oluşur. Referans senaryo.</div>
+      </div>
+
+      <div style="background:#1a1f2e; border-left:3px solid #2166AC; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+        <div style="color:#2166AC; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S1</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡ 1/3 EV Geçişi</div>
+        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#2166AC">%33</b>'ü elektrikli araca dönüştürülür.</div>
+        <div style="margin-top:5px;">
+          <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Düşük Yatırım</span>
+          <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Kademeli Geçiş</span>
+        </div>
+      </div>
+
+      <div style="background:#1a1f2e; border-left:3px solid #F4A100; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+        <div style="color:#F4A100; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S2</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡ 2/3 EV Geçişi</div>
+        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#F4A100">%67</b>'si elektrikli araca dönüştürülür.</div>
+        <div style="margin-top:5px;">
+          <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Orta Yatırım</span>
+          <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Dengeli Plan</span>
+        </div>
+      </div>
+
+      <div style="background:#1a1f2e; border-left:3px solid #1B7837; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+        <div style="color:#1B7837; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S3</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡⚡ Tam EV Geçişi</div>
+        <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#1B7837">%100</b>'ü elektrikli araca dönüştürülür.</div>
+        <div style="margin-top:5px;">
+          <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Yüksek Yatırım</span>
+          <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Max. Emisyon Azalımı</span>
+        </div>
+      </div>
+    </div>
+
+    <hr style="border-color:#2a3a2e; margin:0.8rem 0;">
+    """, unsafe_allow_html=True)
+    
     st.markdown("## 📋 FİLO BİLGİLERİ")
     st.markdown("### MEVCUT FİLO")
     n_otobüs_mevcut  = st.number_input("Dizel Otobüs Sayısı (adet)", min_value=1, value=20, step=1)
