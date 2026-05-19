@@ -379,7 +379,7 @@ def run_analysis(w_emisyon, w_maliyet):
         r["N2O_kg"]   = n2o_od + n2o_md
         r["CO2e_ton"] = (r["CO2_kg"] + r["CH4_kg"] * GWP_CH4 + r["N2O_kg"] * GWP_N2O) / 1000
         return r
-
+    em_md = emisyon_hesapla(md, km_otobüs_yillik, km_minibüs_yillik)
     em_s1 = emisyon_hesapla(s1, km_otobüs_yillik, km_minibüs_yillik)
     em_s2 = emisyon_hesapla(s2, km_otobüs_yillik, km_minibüs_yillik)
     em_s3 = emisyon_hesapla(s3, km_otobüs_yillik, km_minibüs_yillik)
