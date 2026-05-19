@@ -490,7 +490,7 @@ if res is None:
 else:
     em_s1, em_s2, em_s3 = res["em_s1"], res["em_s2"], res["em_s3"]
     df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
-    ahp, em_norm, mal_norm, en_iyi = res["ahp"], res["em_norm"], res["mal_norm"], res["en_iyi"]
+
 
     em_listesi = [em_s1, em_s2, em_s3]
     df_listesi = [df_s1, df_s2, df_s3]
