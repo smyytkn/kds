@@ -469,39 +469,17 @@ if res is None:
     """, unsafe_allow_html=True)
 
     # Parametreler bilgi kartı
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 , col14= st.columns(4)
     with col1:
         st.markdown("""
-        <div class="metric-card" style="--accent:#2166AC">
-          <div class="lbl">IPCC Metodolojisi</div>
-          <div class="val" style="font-size:1.1rem">Tier 2</div>
-        </div>""", unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div class="metric-card" style="--accent:#1e9e6b">
-          <div class="lbl">Şebeke EF (Türkiye)</div>
-          <div class="val">0.43 <span style="font-size:0.8rem">kg CO₂/kWh</span></div>
-        </div>""", unsafe_allow_html=True)
-    with col3:
-        st.markdown("""
-        <div class="metric-card" style="--accent:#F4A100">
-          <div class="lbl">Şarj Verimi</div>
-          <div class="val">%90</div>
-        </div>""", unsafe_allow_html=True)
-    with st.sidebar:
-        st.markdown("""
-    <div style="margin-bottom: 1.2rem;">
-      <div style="color:#1e9e6b; font-family:'IBM Plex Mono',monospace; font-size:0.85rem; letter-spacing:0.1em; margin-bottom:0.6rem;">
-        📌 SENARYO TANIMI
-      </div>
-
-      <div style="background:#1a1f2e; border-left:3px solid #555555; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+        <div style="background:#1a1f2e; border-left:3px solid #555555; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#aaa; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">MD</div>
         <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">🚌 Mevcut Durum</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filo tamamen dizel araçlardan oluşur. Referans senaryo.</div>
       </div>
-
-      <div style="background:#1a1f2e; border-left:3px solid #2166AC; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+    with col2:
+        st.markdown("""
+        <div style="background:#1a1f2e; border-left:3px solid #2166AC; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#2166AC; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S1</div>
         <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡ 1/3 EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#2166AC">%33</b>'ü elektrikli araca dönüştürülür.</div>
@@ -510,8 +488,9 @@ if res is None:
           <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Kademeli Geçiş</span>
         </div>
       </div>
-
-      <div style="background:#1a1f2e; border-left:3px solid #F4A100; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+    with col3:
+        st.markdown("""
+        <div style="background:#1a1f2e; border-left:3px solid #F4A100; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#F4A100; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S2</div>
         <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡ 2/3 EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#F4A100">%67</b>'si elektrikli araca dönüştürülür.</div>
@@ -519,9 +498,9 @@ if res is None:
           <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Orta Yatırım</span>
           <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px; margin-left:3px;">Dengeli Plan</span>
         </div>
-      </div>
-
-      <div style="background:#1a1f2e; border-left:3px solid #1B7837; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
+    with col4:
+        st.markdown("""
+        <div style="background:#1a1f2e; border-left:3px solid #1B7837; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#1B7837; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S3</div>
         <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡⚡ Tam EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#1B7837">%100</b>'ü elektrikli araca dönüştürülür.</div>
@@ -531,11 +510,10 @@ if res is None:
         </div>
       </div>
     </div>
-
+                                                                                       
     <hr style="border-color:#2a3a2e; margin:0.8rem 0;">
     """, unsafe_allow_html=True)
-    
-    
+     
  else:
      em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
      df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
