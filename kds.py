@@ -514,11 +514,7 @@ else:
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-    with col4:
-        st.markdown(f"""<div class="metric-card" style="--accent:#1e9e6b">
-          <div class="lbl">AHP Önerisi</div>
-          <div class="val" style="font-size:1rem">{en_iyi}</div>
-          <div class="lbl">{ETIKET[en_iyi]}</div></div>""", unsafe_allow_html=True)
+   
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -795,13 +791,11 @@ else:
             "Parametre": [
                 "Ödeme Süresi", "Ödeme Planı", "Yıllık TÜFE", "Dizel Fiyatı",
                 "Elektrik Fiyatı", "Şarj Verimi (η)", "Şebeke EF (Türkiye)",
-                "AHP: Emisyon Ağırlığı", "AHP: Maliyet Ağırlığı",
             ],
             "Değer": [
                 f"{ANALIZ_YILI} yıl", odeme_plani_adi, f"%{tufe_yuzde:.1f}",
                 f"{dizel_fiyat:.2f} TL/L", f"{elektrik_fiyat:.2f} TL/kWh",
                 f"%{ETA_SARJ*100:.0f}", f"{EF_GRID} kg CO₂/kWh [IEA 2023]",
-                f"%{w_emisyon*100:.0f}", f"%{w_maliyet*100:.0f}",
             ],
         })
         st.dataframe(params_df, use_container_width=True, hide_index=True)
