@@ -481,7 +481,7 @@ if res is None:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #2166AC; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#2166AC; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S1</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡ 1/3 EV Geçişi</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 1/3 EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#2166AC">%33</b>'ü elektrikli araca dönüştürülür.</div>
         <div style="margin-top:5px;">
           <span style="background:#2166AC22; color:#2166AC; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Düşük Yatırım</span>
@@ -492,7 +492,7 @@ if res is None:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #F4A100; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#F4A100; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S2</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡ 2/3 EV Geçişi</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> 2/3 EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#F4A100">%67</b>'si elektrikli araca dönüştürülür.</div>
         <div style="margin-top:5px;">
           <span style="background:#F4A10022; color:#F4A100; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Orta Yatırım</span>
@@ -502,7 +502,7 @@ if res is None:
         st.markdown("""
         <div style="background:#1a1f2e; border-left:3px solid #1B7837; border-radius:8px; padding:0.7rem 0.9rem; margin-bottom:0.5rem;">
         <div style="color:#1B7837; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">S3</div>
-        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;">⚡⚡⚡ Tam EV Geçişi</div>
+        <div style="color:#e6edf3; font-size:0.82rem; font-weight:600;"> Tam EV Geçişi</div>
         <div style="color:#8b949e; font-size:0.75rem; margin-top:2px;">Filonun <b style="color:#1B7837">%100</b>'ü elektrikli araca dönüştürülür.</div>
         <div style="margin-top:5px;">
           <span style="background:#1B783722; color:#1B7837; border-radius:3px; font-size:0.68rem; padding:1px 6px;">Yüksek Yatırım</span>
