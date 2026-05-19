@@ -497,19 +497,25 @@ else:
 
     # ── Özet metrik kartları ──
     col1, col2, col3, col4 = st.columns(4)
+    s2_azalma = (1 - em_s2["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     s2_azalma = (1 - em_s2["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
     s3_azalma = (1 - em_s3["CO2e_ton"] / em_s1["CO2e_ton"]) * 100 if em_s1["CO2e_ton"] > 0 else 0
     with col1:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
+          <div class="lbl">MD Yıllık Emisyon</div>
+          <div class="val">{em_md['CO2e_ton']:,.0f}</div>
+          <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
           <div class="lbl">S1 Yıllık Emisyon</div>
           <div class="val">{em_s1['CO2e_ton']:,.0f}</div>
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
-    with col2:
+    with col3:
         st.markdown(f"""<div class="metric-card" style="--accent:#F4A100">
           <div class="lbl">S2 Emisyon Azalması</div>
           <div class="val">▼{s2_azalma:.1f}%</div>
           <div class="lbl">S1'e kıyasla</div></div>""", unsafe_allow_html=True)
-    with col3:
+    with col4:
         st.markdown(f"""<div class="metric-card" style="--accent:#1B7837">
           <div class="lbl">S3 Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
@@ -552,7 +558,7 @@ else:
             (axes[1,1], "CO2e_ton", "CO₂e (ton/yıl)", ",.1f", 1),
         ]:
             vals = [e[key] / bolucu for e in em_listesi]
-            bars = ax.bar(["S1","S2","S3"], vals, color=renkler, width=0.5, edgecolor="white", linewidth=1.2)
+            bars = ax.bar(["MD","S1","S2","S3"], vals, color=renkler, width=0.5, edgecolor="white", linewidth=1.2)
             ax.set_title(key.replace("_kg","").replace("_ton","").upper() + " Emisyonu", fontweight="bold")
             ax.set_ylabel(birim)
             mx = max(vals) if max(vals) > 0 else 1
@@ -568,25 +574,33 @@ else:
         st.markdown("#### Emisyon Karşılaştırma Tablosu")
         tablo_data = {
             "Gösterge": ["CO₂ (ton/yıl)", "CH₄ (kg/yıl)", "N₂O (kg/yıl)", "CO₂e (ton/yıl)"],
-            "S1 – Mevcut": [
+            "MD – Mevcut Durum": [
+                f"{em_md['CO2_kg']/1000:,.1f}", f"{em_md['CH4_kg']:,.3f}",
+                f"{em_md['N2O_kg']:,.3f}", f"{em_md['CO2e_ton']:,.2f}"],
+            "S1 – 1/3 EV": [
                 f"{em_s1['CO2_kg']/1000:,.1f}", f"{em_s1['CH4_kg']:,.3f}",
                 f"{em_s1['N2O_kg']:,.3f}", f"{em_s1['CO2e_ton']:,.2f}"],
-            "S2 – Kısmi EV": [
+            "S1 Azalma": [
+                f"▼%{(1-em_s1['CO2_kg']/em_md['CO2_kg'])*100:.1f}" if em_md['CO2_kg']>0 else "-",
+                f"▼%{(1-em_s1['CH4_kg']/em_md['CH4_kg'])*100:.1f}" if em_md['CH4_kg']>0 else "-",
+                f"▼%{(1-em_s1['N2O_kg']/em_md['N2O_kg'])*100:.1f}" if em_md['N2O_kg']>0 else "-",
+                f"▼%{(1-em_s1['CO2e_ton']/em_md['CO2e_ton'])*100:.1f}" if em_md['CO2e_ton']>0 else "-"],
+            "S2 – 2/3 EV": [
                 f"{em_s2['CO2_kg']/1000:,.1f}", f"{em_s2['CH4_kg']:,.3f}",
                 f"{em_s2['N2O_kg']:,.3f}", f"{em_s2['CO2e_ton']:,.2f}"],
             "S2 Azalma": [
-                f"▼%{(1-em_s2['CO2_kg']/em_s1['CO2_kg'])*100:.1f}" if em_s1['CO2_kg']>0 else "-",
-                f"▼%{(1-em_s2['CH4_kg']/em_s1['CH4_kg'])*100:.1f}" if em_s1['CH4_kg']>0 else "-",
-                f"▼%{(1-em_s2['N2O_kg']/em_s1['N2O_kg'])*100:.1f}" if em_s1['N2O_kg']>0 else "-",
-                f"▼%{(1-em_s2['CO2e_ton']/em_s1['CO2e_ton'])*100:.1f}" if em_s1['CO2e_ton']>0 else "-"],
-            "S3 – Tam EV": [
+                f"▼%{(1-em_s2['CO2_kg']/em_md['CO2_kg'])*100:.1f}" if em_md['CO2_kg']>0 else "-",
+                f"▼%{(1-em_s2['CH4_kg']/em_md['CH4_kg'])*100:.1f}" if em_md['CH4_kg']>0 else "-",
+                f"▼%{(1-em_s2['N2O_kg']/em_md['N2O_kg'])*100:.1f}" if em_md['N2O_kg']>0 else "-",
+                f"▼%{(1-em_s2['CO2e_ton']/em_md['CO2e_ton'])*100:.1f}" if em_md['CO2e_ton']>0 else "-"],
+            "S3 – 3/3 EV": [
                 f"{em_s3['CO2_kg']/1000:,.1f}", f"{em_s3['CH4_kg']:,.3f}",
                 f"{em_s3['N2O_kg']:,.3f}", f"{em_s3['CO2e_ton']:,.2f}"],
             "S3 Azalma": [
-                f"▼%{(1-em_s3['CO2_kg']/em_s1['CO2_kg'])*100:.1f}" if em_s1['CO2_kg']>0 else "-",
-                f"▼%{(1-em_s3['CH4_kg']/em_s1['CH4_kg'])*100:.1f}" if em_s1['CH4_kg']>0 else "-",
-                f"▼%{(1-em_s3['N2O_kg']/em_s1['N2O_kg'])*100:.1f}" if em_s1['N2O_kg']>0 else "-",
-                f"▼%{(1-em_s3['CO2e_ton']/em_s1['CO2e_ton'])*100:.1f}" if em_s1['CO2e_ton']>0 else "-"],
+                f"▼%{(1-em_s3['CO2_kg']/em_md['CO2_kg'])*100:.1f}" if em_md['CO2_kg']>0 else "-",
+                f"▼%{(1-em_s3['CH4_kg']/em_md['CH4_kg'])*100:.1f}" if em_md['CH4_kg']>0 else "-",
+                f"▼%{(1-em_s3['N2O_kg']/em_md['N2O_kg'])*100:.1f}" if em_md['N2O_kg']>0 else "-",
+                f"▼%{(1-em_s3['CO2e_ton']/em_md['CO2e_ton'])*100:.1f}" if em_md['CO2e_ton']>0 else "-"],
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
