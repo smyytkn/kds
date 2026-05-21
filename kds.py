@@ -550,10 +550,18 @@ else:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # AHP Kazanan Öneri Kutusu
+   
+    # ── Ana sekmeler ──
+    tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
+        "🌿 EMİSYON ANALİZİ",
+        "💰 MALİYET ANALİZİ",
+        "📈 KÜMÜLATİF MALİYET",
+        "📊 DETAY TABLOLAR",
+    ])
+ #  Kazanan Öneri Kutusu
     st.markdown(f"""
     <div class="winner-box">
-        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO </div>
         <div class="wval">{ETIKET[en_iyi]}</div>
         <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
             Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
@@ -562,14 +570,6 @@ else:
     """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Ana sekmeler ──
-    tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
-        "🌿 EMİSYON ANALİZİ",
-        "💰 MALİYET ANALİZİ",
-        "📈 KÜMÜLATİF MALİYET",
-        "📊 DETAY TABLOLAR",
-    ])
 
     # ──────────────────────────────────────────
     #  EMİSYON SEKMESİ
