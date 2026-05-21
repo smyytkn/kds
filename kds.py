@@ -346,7 +346,10 @@ with st.sidebar:
 # ─────────────────────────────────────────────
 
 def run_analysis(w_emisyon, w_maliyet):
-    # Senaryo tanımları
+    # ... yukarısı senin eski kodun (Aynı kalıyor) ...
+
+def run_analysis(w_emisyon, w_maliyet):
+    # Senaryo tanımları (Bunlara dokunma)
     md = dict(otobüs_dizel=n_otobüs_mevcut, otobüs_ev=0,
                minibüs_dizel=n_minibüs_mevcut, minibüs_ev=0)
     s1 = dict(otobüs_dizel=n_otobüs_mevcut*(2/3), otobüs_ev=n_otobüs_mevcut/3,
@@ -357,25 +360,7 @@ def run_analysis(w_emisyon, w_maliyet):
                minibüs_dizel=0, minibüs_ev=n_minibüs_mevcut)
 
     def emisyon_hesapla(senaryo, km_oto, km_mini):
-        r = {}
-        oto_km_d  = (senaryo["otobüs_dizel"] / max(n_otobüs_mevcut, 1)) * km_oto
-        co2_od    = oto_km_d * TUK_OTOBÜS_DIZEL * EF_CO2_DIZEL
-        ch4_od    = oto_km_d * EF_CH4_OTOBÜS_DIZEL / 1e6
-        n2o_od    = oto_km_d * EF_N2O_OTOBÜS_DIZEL / 1e6
-        oto_km_ev = (senaryo["otobüs_ev"] / max(n_otobüs_mevcut, 1)) * km_oto
-        co2_oev   = oto_km_ev * (E_OTOBÜS_EV / ETA_SARJ) * EF_GRID
-
-        mini_km_d  = (senaryo["minibüs_dizel"] / max(n_minibüs_mevcut, 1)) * km_mini if n_minibüs_mevcut > 0 else 0
-        co2_md     = mini_km_d * TUK_MINİBÜS_DIZEL * EF_CO2_DIZEL
-        ch4_md     = mini_km_d * EF_CH4_MINİBÜS_DIZEL / 1e6
-        n2o_md     = mini_km_d * EF_N2O_MINİBÜS_DIZEL / 1e6
-        mini_km_ev = (senaryo["minibüs_ev"] / max(n_minibüs_mevcut, 1)) * km_mini if n_minibüs_mevcut > 0 else 0
-        co2_mev    = mini_km_ev * (E_MINİBÜS_EV / ETA_SARJ) * EF_GRID
-
-        r["CO2_kg"]   = co2_od + co2_oev + co2_md + co2_mev
-        r["CH4_kg"]   = ch4_od + ch4_md
-        r["N2O_kg"]   = n2o_od + n2o_md
-        r["CO2e_ton"] = (r["CO2_kg"] + r["CH4_kg"] * GWP_CH4 + r["N2O_kg"] * GWP_N2O) / 1000
+        # ... emisyon hesaplama kodların aynen duruyor ...
         return r
 
     em_md = emisyon_hesapla(md, km_otobüs_yillik, km_minibüs_yillik)
@@ -383,42 +368,70 @@ def run_analysis(w_emisyon, w_maliyet):
     em_s2 = emisyon_hesapla(s2, km_otobüs_yillik, km_minibüs_yillik)
     em_s3 = emisyon_hesapla(s3, km_otobüs_yillik, km_minibüs_yillik)
 
+
+    # ──────────────────────────────────────────────────────────────
+    # BURADAN BAŞLAYAN ESKİ "def maliyet_serileri" KISMINI SİL
+    # VE YERİNE BENİM SANA VERDİĞİM YENİ KODU YAPIŞTIR:
+    # ──────────────────────────────────────────────────────────────
     def maliyet_serileri(senaryo, n_arac_ev_oto, n_arac_ev_mini,
                          fiyat_oto_ev, fiyat_mini_ev, tufe, yil, odeme_plan):
+
         ayl_yakıt_d = (
             senaryo["otobüs_dizel"]  * (km_otobüs_yillik  / n_otobüs_mevcut  if n_otobüs_mevcut  else 0) * TUK_OTOBÜS_DIZEL  * dizel_fiyat +
             senaryo["minibüs_dizel"] * (km_minibüs_yillik / n_minibüs_mevcut if n_minibüs_mevcut else 0) * TUK_MINİBÜS_DIZEL * dizel_fiyat
         ) / 12
+
         ayl_yakıt_ev = (
             senaryo["otobüs_ev"]  * (km_otobüs_yillik  / n_otobüs_mevcut  if n_otobüs_mevcut  else 0) * (E_OTOBÜS_EV  / ETA_SARJ) * elektrik_fiyat +
             senaryo["minibüs_ev"] * (km_minibüs_yillik / n_minibüs_mevcut if n_minibüs_mevcut else 0) * (E_MINİBÜS_EV / ETA_SARJ) * elektrik_fiyat
         ) / 12
+
         ayl_bakım = (
             senaryo["otobüs_dizel"]  * bakim_otobüs_dizel  +
             senaryo["minibüs_dizel"] * bakim_minibüs_dizel +
             senaryo["otobüs_ev"]     * bakim_otobüs_ev     +
             senaryo["minibüs_ev"]    * bakim_minibüs_ev
         ) / 12
+
         yatirim = n_arac_ev_oto * fiyat_oto_ev + n_arac_ev_mini * fiyat_mini_ev
-        if odeme_plan == 1:
-            taksit_sabit = yatirim / (yil * 12) if yatirim > 0 and yil > 0 else 0
-        else:
-            if tufe > 0:
-                carpan_t = sum((1 + tufe) ** t for t in range(yil))
-                tst = yatirim / carpan_t if carpan_t > 0 else 0
+
+        taksit_sabit_aylik = 0
+        tst_baslangic_aylik = 0
+
+        if yatirim > 0 and yil > 0:
+            if odeme_plan == 1:
+                taksit_sabit_aylik = yatirim / (yil * 12)
             else:
-                tst = yatirim / yil if yil > 0 else 0
+                carpan_t = sum((1 + tufe) ** t for t in range(yil))
+                tst_baslangic_aylik = (yatirim / carpan_t) / 12 if carpan_t > 0 else 0
 
         kayitlar = []
         for ay in range(1, yil * 12 + 1):
             yn = (ay - 1) // 12
             yc = (1 + tufe) ** yn
+
             yakıt = (ayl_yakıt_d + ayl_yakıt_ev) * yc
             bakım = ayl_bakım * yc
-            taksit = (taksit_sabit if odeme_plan == 1 else ((tst / 12) * yc if yatirim > 0 else 0))
-            kayitlar.append({"ay": ay, "yil": yn + 1, "yakıt": yakıt,
-                             "bakım": bakım, "taksit": taksit, "toplam": yakıt + bakım + taksit})
+
+            if odeme_plan == 1:
+                taksit = taksit_sabit_aylik
+            else:
+                taksit = tst_baslangic_aylik * yc
+
+            kayitlar.append({
+                "ay": ay, "yil": yn + 1, "yakıt": yakıt,
+                "bakım": bakım, "taksit": taksit, "toplam": yakıt + bakım + taksit
+            })
+
         return pd.DataFrame(kayitlar)
+    # ──────────────────────────────────────────────────────────────
+    # YAPIŞTIRMA İŞLEMİ BURADA BİTİYOR
+    # ──────────────────────────────────────────────────────────────
+
+
+    # Aşağıdaki kodlar yine senin orijinal kodların olarak devam ediyor...
+    df_md = maliyet_serileri(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
+    df_s1 = maliyet_serileri(s1, n_otobüs_mevcut/3, n_minibüs_mevcut/3, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
 
     # Tam Dizel / Mevcut Durum senaryosunun maliyet referansı için (yatırımsız)
     df_md = maliyet_serileri(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
@@ -647,7 +660,7 @@ else:
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
 
-        st.info("TABLODAKİ AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
+        st.info("Tablodaki Azalma Değerleri Mevcut Duruma Göre Kıyaslanmıştır.")
 
     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
