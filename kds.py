@@ -346,7 +346,7 @@ with st.sidebar:
 st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
 
         # Grafik Hazırlığı
-    fig_be, ax_be = plt.subplots(figsize=(13, 6))
+fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
         # Referans dizel maliyet serileri
     cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
