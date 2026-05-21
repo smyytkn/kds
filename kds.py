@@ -265,7 +265,8 @@ ETIKET = {
     "S2": "Senaryo 2 – 2/3 EV Geçişi",
     "S3": "Senaryo 3 – Tam EV Geçişi",
 }
- ANALIZ_YILI=passed_zero = df_sc["ay"][cum_kar >= 0]
+
+ANALIZ_YILI=passed_zero = df_sc["ay"][cum_kar >= 0]
 
 # ─────────────────────────────────────────────
 #  BAŞLIK
