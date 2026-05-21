@@ -561,10 +561,10 @@ else:
 
 
     ])
-      # AHP Kazanan Öneri Kutusu
+      #  Kazanan Öneri Kutusu
     st.markdown(f"""
     <div class="winner-box">
-        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO </div>
         <div class="wval">{ETIKET[en_iyi]}</div>
         <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
             Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
