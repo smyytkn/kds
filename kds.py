@@ -536,17 +536,17 @@ else:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
           <div class="lbl">Senaryo 1 – 1/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s1_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMA KIYASLA</div></div>""", unsafe_allow_html=True)
     with col3:
         st.markdown(f"""<div class="metric-card" style="--accent:#F4A100">
           <div class="lbl">Senaryo 2 – 2/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s2_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMA KIYASLA </div></div>""", unsafe_allow_html=True)
     with col4:
         st.markdown(f"""<div class="metric-card" style="--accent:#1B7837">
           <div class="lbl">Senaryo 3 – 3/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMA KIYASLA</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -554,8 +554,8 @@ else:
 
     # ── Ana sekmeler ──
     tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
-        "🌿 EMİSYON ANALİZİ",
-        "💰 MALİYET ANALİZİ",
+        "♻️EMİSYON ANALİZİ",
+        "💹MALİYET ANALİZİ",
         "📈 KÜMÜLATİF MALİYET",
         "📊 DETAY TABLOLAR",
 
@@ -578,7 +578,7 @@ else:
     #  EMİSYON SEKMESİ
     # ──────────────────────────────────────────
     with tab_emisyon:
-        st.subheader("IPCC Tier 2 – Senaryo Bazlı Yıllık Emisyon Karşılaştırması")
+        st.subheader(" Senaryo Bazlı Yıllık Emisyon Karşılaştırması")
 
         import matplotlib as mpl
         mpl.rcParams['font.family'] = 'DejaVu Sans'
@@ -645,6 +645,12 @@ else:
                 f"▼%{(1-em_s3['CO2e_ton']/em_md['CO2e_ton'])*100:.1f}" if em_md['CO2e_ton']>0 else "-"],
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
+
+
+        st.text_input (" TABLODAKİ AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR. ")
+
+
+
 
 
 
