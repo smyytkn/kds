@@ -358,7 +358,7 @@ def run_analysis(w_emisyon, w_maliyet):
               minibüs_dizel=0, minibüs_ev=n_minibüs_mevcut)
 
 
-      def emisyon_hesapla(senaryo, km_oto, km_mini):
+    def emisyon_hesapla(senaryo, km_oto, km_mini):
         # Dışarıdaki araç sayılarından bağımsız, sadece senaryo sözlüğündeki
         # araç adetlerini baz alan güvenli emisyon simülasyonu
         oto_dizel  = senaryo.get("otobüs_dizel", 0)
