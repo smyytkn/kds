@@ -643,6 +643,8 @@ else:
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
+    st.info("TABLODAKİ AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
+
     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
