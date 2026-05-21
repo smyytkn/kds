@@ -345,9 +345,6 @@ with st.sidebar:
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
 
-
-
-def run_analysis(w_emisyon, w_maliyet):
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları
     md = dict(otobüs_dizel=n_otobüs_mevcut, otobüs_ev=0,
