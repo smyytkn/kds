@@ -345,8 +345,6 @@ with st.sidebar:
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
 
-def run_analysis(w_emisyon, w_maliyet):
-    # ... yukarısı senin eski kodun (Aynı kalıyor) ...
 
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları (Bunlara dokunma)
