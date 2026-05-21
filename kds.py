@@ -326,7 +326,7 @@ with st.sidebar:
     tufe_yuzde  = st.number_input("Yıllık TÜFE Oranı (%)", min_value=0.0, value=30.0, step=1.0)
     tufe_orani  = tufe_yuzde / 100.0
 
-    ANALIZ_YILI = 20
+   
 
     odeme_plani = st.radio(
         "Ödeme Planı",
@@ -670,7 +670,7 @@ else:
             ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
 
             # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
-            passed_zero = df_sc["ay"][cum_kar >= 0]
+            ANALIZ_YILI=passed_zero = df_sc["ay"][cum_kar >= 0]
 
             if not passed_zero.empty:
                 be_ay = passed_zero.iloc[0]
