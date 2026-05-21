@@ -342,11 +342,8 @@ with st.sidebar:
     w_maliyet = 0.5
 
     hesapla_btn = st.button("🔍 ANALİZİ ÇALIŞTIR", use_container_width=True)
- # ──────────────────────────────────────────
-    #  MALİYET SEKMESİ
-    # ──────────────────────────────────────────
-    with tab_maliyet:
-        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+
+st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
 
         # Grafik Hazırlığı
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
@@ -447,6 +444,9 @@ with st.sidebar:
                                  height=min(40 + ANALIZ_YILI * 35, 500))
 
    
+
+   
+        
 # ─────────────────────────────────────────────
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
