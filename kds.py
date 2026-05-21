@@ -377,7 +377,7 @@ def run_analysis(w_emisyon, w_maliyet):
         r["N2O_kg"]   = n2o_od + n2o_md
         r["CO2e_ton"] = (r["CO2_kg"] + r["CH4_kg"] * GWP_CH4 + r["N2O_kg"] * GWP_N2O) / 1000
         return r
-        
+
     em_md = emisyon_hesapla(md, km_otobüs_yillik, km_minibüs_yillik)
     em_s1 = emisyon_hesapla(s1, km_otobüs_yillik, km_minibüs_yillik)
     em_s2 = emisyon_hesapla(s2, km_otobüs_yillik, km_minibüs_yillik)
@@ -511,9 +511,9 @@ if res is None:
             </div>
         </div>
         """, unsafe_allow_html=True)
-        
+
     st.markdown("""<hr style="border-color:#2a3a2e; margin:0.8rem 0;">""", unsafe_allow_html=True)
-     
+
 else:
     em_md, em_s1, em_s2, em_s3 = res["em_md"], res["em_s1"], res["em_s2"], res["em_s3"]
     df_md, df_s1, df_s2, df_s3 = res["df_md"], res["df_s1"], res["df_s2"], res["df_s3"]
@@ -530,7 +530,7 @@ else:
     with col1:
         st.markdown(f"""<div class="metric-card" style="--accent:#555555">
           <div class="lbl">Mevcut Durum Yıllık Emisyon</div>
-          <div class="val">{em_md['CO2e_ton']:,.0f}</div>                                                                                   
+          <div class="val">{em_md['CO2e_ton']:,.0f}</div>
           <div class="lbl">ton CO₂e/yıl</div></div>""", unsafe_allow_html=True)
     with col2:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
@@ -547,21 +547,10 @@ else:
           <div class="lbl">Senaryo 3 – 3/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
           <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # AHP Kazanan Öneri Kutusu
-    st.markdown(f"""
-    <div class="winner-box">
-        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
-        <div class="wval">{ETIKET[en_iyi]}</div>
-        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
-            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+
 
     # ── Ana sekmeler ──
     tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
@@ -643,52 +632,65 @@ else:
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
+         # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
     with tab_maliyet:
         st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
-        
+
         # Grafik Hazırlığı
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
-        
+
         # Referans dizel maliyet serileri
         cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
-        
+
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
         senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
-        
+
         for kod, df_sc in senaryo_listesi:
             # Senaryonun toplam maliyet serisi
             cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
-            
+
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
             cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
-            
+
             # Grafiğe çizgi ekleme
             ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
-            
+
             # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
             passed_zero = df_sc["ay"][cum_kar >= 0]
-            
+
             if not passed_zero.empty:
                 be_ay = passed_zero.iloc[0]
                 be_kar = cum_kar.iloc[be_ay - 1]
                 be_yil = be_ay / 12
-                
+
                 # Başabaş noktasını kırmızı halka ile işaretle
                 ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
-                
+
                 # Metinsel Etiketleme
                 offset = 5 if kod == "S3" else (-15 if kod == "S1" else -5)
-                ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)", 
-                               xy=(be_ay, be_kar), 
+                ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)",
+                               xy=(be_ay, be_kar),
                                xytext=(be_ay + 3, be_kar + offset),
                                color=RENK[kod], fontsize=8, fontweight="bold",
                                arrowprops=dict(arrowstyle="->", color=RENK[kod], alpha=0.6),
                                bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', boxstyle='round,pad=0.2'))
             else:
-                ax_be.text(df_sc["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi", 
+                ax_be.text(df_sc["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
                            color=RENK[kod], fontsize=8, linestyle="--")
 
         # Kar/Zarar Eşiği (0 Çizgisi)
@@ -703,11 +705,11 @@ else:
         ax_be.legend(loc="upper left", fontsize=9)
         ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
         ax_be.grid(True, which='both', linestyle=':', alpha=0.5)
-        
+
         # Yılları dikey çizgilerle ayırma
         for y in range(1, ANALIZ_YILI + 1):
             ax_be.axvline(y * 12, color="gray", lw=0.4, alpha=0.25, linestyle="-")
-            
+
         plt.tight_layout()
         st.pyplot(fig_be)
         plt.close(fig_be)
@@ -747,6 +749,19 @@ else:
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
                                  height=min(40 + ANALIZ_YILI * 35, 500))
 
+                     # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # ──────────────────────────────────────────
     #  KÜMÜLATİF MALİYET SEKMESİ
     # ──────────────────────────────────────────
@@ -754,25 +769,38 @@ else:
         st.subheader(f"Senaryo Bazlı Kümülatif Maliyet Karşılaştırması – {ANALIZ_YILI} Yıl")
 
         fig3, ax3 = plt.subplots(figsize=(12, 5))
-        
+
         # Referans Mevcut Durum Kümülatif Çizgisi
         cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum() / 1e6
         ax3.plot(df_md["ay"], cum_md, color=RENK["MD"], linewidth=3, linestyle="--", label=ETIKET["MD"])
-        
+
         # Diğer senaryoların kümülatif harcamaları
         for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
             cumul = df_["toplam"].cumsum() / 1e6
             ax3.plot(df_["ay"], cumul, color=RENK[kod], linewidth=2.5, label=ETIKET[kod])
-            
+
         ax3.set_title("Zamana Bağlı Toplam Kümülatif Giderler (Yatırım + Yakıt + Bakım)", fontweight="bold")
         ax3.set_xlabel("Ay", fontweight="bold")
         ax3.set_ylabel("Toplam Harcama (Milyon TL)", fontweight="bold")
         ax3.legend(loc="upper left")
         ax3.grid(True, linestyle=":", alpha=0.5)
         ax3.xaxis.set_major_locator(mticker.MultipleLocator(12))
-        
+
         st.pyplot(fig3)
         plt.close(fig3)
+
+         # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
@@ -780,16 +808,18 @@ else:
     with tab_tablo:
         st.subheader("Senaryolara Ait Aylık Ham Veri Çıktıları")
         secilen_kod = st.selectbox("Görüntülemek İstediğiniz Senaryoyu Seçin:", ["S1", "S2", "S3"])
-        
+
         orijinal_df = {"S1": df_s1, "S2": df_s2, "S3": df_s3}[secilen_kod]
-        
+
         # Biçimlendirilmiş veri tablosu oluşturma
         gosterim_df = orijinal_df.copy()
         gosterim_df.columns = ["Ay", "Yıl", "Yakıt Maliyeti (TL)", "Bakım Maliyeti (TL)", "Yatırım Taksiti (TL)", "Toplam Aylık Maliyet (TL)"]
-        
+
         st.dataframe(gosterim_df.style.format({
             "Yakıt Maliyeti (TL)": "{:,.2f}",
             "Bakım Maliyeti (TL)": "{:,.2f}",
             "Yatırım Taksiti (TL)": "{:,.2f}",
             "Toplam Aylık Maliyet (TL)": "{:,.2f}"
         }), use_container_width=True, hide_index=True)
+
+
