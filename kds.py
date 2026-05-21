@@ -649,11 +649,6 @@ else:
 
         st.text_input (" TABLODAKİ AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR. ")
 
-
-
-
-
-
     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
