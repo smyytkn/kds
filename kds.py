@@ -555,7 +555,6 @@ else:
     tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
         "♻️ EMİSYON ANALİZİ",
         "💹 MALİYET ANALİZİ",
-        "📈 KÜMÜLATİF MALİYET",
         "📊 DETAY TABLOLAR",
     ])
  #  Kazanan Öneri Kutusu
@@ -749,33 +748,7 @@ else:
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
                                  height=min(40 + ANALIZ_YILI * 35, 500))
 
-    # ──────────────────────────────────────────
-    #  KÜMÜLATİF MALİYET SEKMESİ
-    # ──────────────────────────────────────────
-    with tab_kumulatif:
-        st.subheader(f"Senaryo Bazlı Kümülatif Maliyet Karşılaştırması – {ANALIZ_YILI} Yıl")
-
-        fig3, ax3 = plt.subplots(figsize=(12, 5))
-
-        # Referans Mevcut Durum Kümülatif Çizgisi
-        cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum() / 1e6
-        ax3.plot(df_md["ay"], cum_md, color=RENK["MD"], linewidth=3, linestyle="--", label=ETIKET["MD"])
-
-        # Diğer senaryoların kümülatif harcamaları
-        for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
-            cumul = df_["toplam"].cumsum() / 1e6
-            ax3.plot(df_["ay"], cumul, color=RENK[kod], linewidth=2.5, label=ETIKET[kod])
-
-        ax3.set_title("Zamana Bağlı Toplam Kümülatif Giderler (Yatırım + Yakıt + Bakım)", fontweight="bold")
-        ax3.set_xlabel("Ay", fontweight="bold")
-        ax3.set_ylabel("Toplam Harcama (Milyon TL)", fontweight="bold")
-        ax3.legend(loc="upper left")
-        ax3.grid(True, linestyle=":", alpha=0.5)
-        ax3.xaxis.set_major_locator(mticker.MultipleLocator(12))
-
-        st.pyplot(fig3)
-        plt.close(fig3)
-
+   
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
