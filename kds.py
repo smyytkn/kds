@@ -3,7 +3,6 @@ ELEKTRİKLİ ARACA GEÇİŞ SÜRECİ İÇİN KARAR DESTEK SİSTEMİ
 IPCC Tier 2 Metodolojisi & XGBoost Destekli Senaryo Analizi
 Karabük Üniversitesi – Endüstri Mühendisliği Lisans Bitirme Tezi
 Özge ÖZBAY & Sümeyye TEKİN
-
 Streamlit Uygulaması
 """
 
@@ -345,8 +344,6 @@ with st.sidebar:
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
 
-def run_analysis(w_emisyon, w_maliyet):
-    # ... yukarısı senin eski kodun (Aynı kalıyor) ...
 
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları (Bunlara dokunma)
