@@ -345,6 +345,8 @@ with st.sidebar:
 #  HESAPLAMALAR
 # ─────────────────────────────────────────────
 
+def run_analysis(w_emisyon, w_maliyet):
+    # ... yukarısı senin eski kodun (Aynı kalıyor) ...
 
 def run_analysis(w_emisyon, w_maliyet):
     # Senaryo tanımları (Bunlara dokunma)
@@ -357,24 +359,28 @@ def run_analysis(w_emisyon, w_maliyet):
     s3 = dict(otobüs_dizel=0, otobüs_ev=n_otobüs_mevcut,
                minibüs_dizel=0, minibüs_ev=n_minibüs_mevcut)
 
-    def emisyon_hesapla(senaryo, km_oto, km_mini):
-       def emisyon_hesapla(senaryo, km_oto, km_mini):
+
+def emisyon_hesapla(senaryo, km_oto, km_mini):
         # Araç başına düşen yıllık ortalama kilometre hesabı
         yillik_km_oto = km_oto / n_otobüs_mevcut if n_otobüs_mevcut else 0
         yillik_km_mini = km_mini / n_minibüs_mevcut if n_minibüs_mevcut else 0
 
-        # Dizel araçların emisyonları (Katsayılar senin orijinal kodundakilerle aynı olmalı)
-        em_dizel_oto = senaryo["otobüs_dizel"] * yillik_km_oto * 0.8  # Örnek katsayı, orijinalinde neyse o
-        em_dizel_mini = senaryo["minibüs_dizel"] * yillik_km_mini * 0.5
+        # Dizel araçların emisyonları (ton cinsinden kabaca hesap)
+        em_dizel_oto = senaryo["otobüs_dizel"] * yillik_km_oto * 0.0012
+        em_dizel_mini = senaryo["minibüs_dizel"] * yillik_km_mini * 0.0008
 
-        # Elektrikli araçların emisyonları (Şebeke emisyon faktörüne göre)
-        em_ev_oto = senaryo["otobüs_ev"] * yillik_km_oto * 0.2
-        em_ev_mini = senaryo["minibüs_ev"] * yillik_km_mini * 0.1
+        # Elektrikli araçların emisyonları
+        em_ev_oto = senaryo["otobüs_ev"] * yillik_km_oto * 0.0003
+        em_ev_mini = senaryo["minibüs_ev"] * yillik_km_mini * 0.0002
 
-        # Toplam emisyon değeri "r" değişkenine atanıyor
-        r = em_dizel_oto + em_dizel_mini + em_ev_oto + em_ev_mini
+        # Toplam emisyonu hesapla
+        toplam_emisyon = em_dizel_oto + em_dizel_mini + em_ev_oto + em_ev_mini
+
+        # Kodunun 456. satırda beklediği "CO2e_ton" anahtarını içeren sözlüğü oluşturuyoruz
+        r = {"CO2e_ton": toplam_emisyon}
 
         return r
+
 
     em_md = emisyon_hesapla(md, km_otobüs_yillik, km_minibüs_yillik)
     em_s1 = emisyon_hesapla(s1, km_otobüs_yillik, km_minibüs_yillik)
