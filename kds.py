@@ -552,7 +552,7 @@ else:
 
    
     # ── Ana sekmeler ──
-    tab_emisyon, tab_maliyet, tab_kumulatif, tab_tablo = st.tabs([
+    tab_emisyon, tab_maliyet, tab_tablo = st.tabs([
         "♻️ EMİSYON ANALİZİ",
         "💹 MALİYET ANALİZİ",
         "📊 DETAY TABLOLAR",
