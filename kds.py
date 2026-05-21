@@ -390,11 +390,8 @@ def run_analysis(w_emisyon, w_maliyet):
     # YAPIŞTIRMA İŞLEMİ BURADA BİTİYOR
     # ──────────────────────────────────────────────────────────────
 
-
-
-
     # Tam Dizel / Mevcut Durum senaryosunun maliyet referansı için (yatırımsız)
-    df_md = maliyet_serileri(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
+    df_md = maliyet_serileri(md, 1, 1, 1, 1, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s1 = maliyet_serileri(s1, n_otobüs_mevcut/3, n_minibüs_mevcut/3, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s2 = maliyet_serileri(s2, n_otobüs_mevcut*(2/3), n_minibüs_mevcut*(2/3), fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s3 = maliyet_serileri(s3, n_otobüs_mevcut, n_minibüs_mevcut, fiyat_otobüs_ev, fiyat_minibüs_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
