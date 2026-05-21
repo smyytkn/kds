@@ -369,7 +369,7 @@ def run_analysis(w_emisyon, w_maliyet):
         co2_md     = mini_km_d * TUK_MINİBÜS_DIZEL * EF_CO2_DIZEL
         ch4_md     = mini_km_d * EF_CH4_MINİBÜS_DIZEL / 1e6
         n2o_md     = mini_km_d * EF_N2O_MINİBÜS_DIZEL / 1e6
-        mini_km_ev = (senaryo["minibüş_ev"] / max(n_minibüs_mevcut, 1)) * km_mini if n_minibüs_mevcut > 0 else 0
+        mini_km_ev = (senaryo["minibüs_ev"] / max(n_minibüs_mevcut, 1)) * km_mini if n_minibüs_mevcut > 0 else 0
         co2_mev    = mini_km_ev * (E_MINİBÜS_EV / ETA_SARJ) * EF_GRID
 
         r["CO2_kg"]   = co2_od + co2_oev + co2_md + co2_mev
