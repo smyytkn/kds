@@ -390,9 +390,9 @@ for kod, df_sc in senaryo_listesi:
                            color=RENK[kod], fontsize=8, linestyle="--")
 
         # Kar/Zarar Eşiği (0 Çizgisi)
-        ax_be.axhline(0, color="black", linestyle="-", linewidth=1.2, alpha=0.7)
-        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[0], color="#fcd7d7", alpha=0.15, label="Zarar Bölgesi")
-        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[1], color="#ddf4e8", alpha=0.15, label="Net Kâr Bölgesi")
+          ax_be.axhline(0, color="black", linestyle="-", linewidth=1.2, alpha=0.7)
+          ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[0], color="#fcd7d7", alpha=0.15, label="Zarar Bölgesi")
+          ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[1], color="#ddf4e8", alpha=0.15, label="Net Kâr Bölgesi")
 
         # Grafik Tasarımı ve Düzenlemeler
         ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıllık Süreç)", fontweight="bold", fontsize=12)
