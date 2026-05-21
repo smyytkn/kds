@@ -632,7 +632,18 @@ else:
         }
         st.dataframe(pd.DataFrame(tablo_data), use_container_width=True, hide_index=True)
 
-        
+         # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
@@ -738,7 +749,18 @@ else:
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
                                  height=min(40 + ANALIZ_YILI * 35, 500))
 
- 
+                     # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ──────────────────────────────────────────
     #  KÜMÜLATİF MALİYET SEKMESİ
@@ -767,7 +789,7 @@ else:
         st.pyplot(fig3)
         plt.close(fig3)
 
-  
+
 
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
@@ -789,4 +811,15 @@ else:
             "Toplam Aylık Maliyet (TL)": "{:,.2f}"
         }), use_container_width=True, hide_index=True)
 
+         # AHP Kazanan Öneri Kutusu
+    st.markdown(f"""
+    <div class="winner-box">
+        <div class="wlbl">🏆 ÖNERİLEN OPTİMAL SENARYO (AHP SONUCU)</div>
+        <div class="wval">{ETIKET[en_iyi]}</div>
+        <div style="font-size:0.85rem; color:#8b949e; margin-top:6px;">
+            Emisyon azaltımı ve toplam maliyet kriterleri %50-%50 ağırlıklandırılarak yapılan analitik hiyerarşi süreci sonucunda en dengeli geçiş stratejisi seçilmiştir.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    st.markdown("<br>", unsafe_allow_html=True)
