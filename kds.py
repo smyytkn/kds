@@ -536,17 +536,17 @@ else:
         st.markdown(f"""<div class="metric-card" style="--accent:#2166AC">
           <div class="lbl">Senaryo 1 – 1/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s1_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMLA KIYASLA</div></div>""", unsafe_allow_html=True)
     with col3:
         st.markdown(f"""<div class="metric-card" style="--accent:#F4A100">
           <div class="lbl">Senaryo 2 – 2/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s2_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMLA KIYASLA</div></div>""", unsafe_allow_html=True)
     with col4:
         st.markdown(f"""<div class="metric-card" style="--accent:#1B7837">
           <div class="lbl">Senaryo 3 – 3/3 EV Geçişi Emisyon Azalması</div>
           <div class="val">▼{s3_azalma:.1f}%</div>
-          <div class="lbl">MD'ye kıyasla</div></div>""", unsafe_allow_html=True)
+          <div class="lbl">MEVCUT DURUMLA KIYASLA</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
