@@ -488,81 +488,100 @@ else:
         for kod, df_sc, yatirim, aciklama in senaryo_liste:
             st.markdown(f"### {ETIKET[kod]}")
 
-            aylar = df_md["ay"].values  # 1..ANALIZ_YILI*12
+            toplam_ay = ANALIZ_YILI * 12
 
-            # ── Başabaş mantığı ──
-            # MD eğrisi   : birikimli dizel işletme maliyeti (yakıt_dizel + bakım_dizel), 0'dan başlar
-            # Senaryo eğrisi: yatırım tutarı (gün 0 peşin) + birikimli EV işletme maliyeti (yakıt_ev + bakım_ev)
-            # NOT: df_sc'deki "taksit" sütunu yatırımın taksitlendirilmiş halidir.
-            #      Başabaş grafiğinde yatırımı peşin gösterdiğimiz için taksiti KULLANMIYORUZ.
-            #      Sadece EV'in yakıt+bakım işletme giderlerini kümülatif ekliyoruz.
+            # ── Başabaş eğrilerini ay ay inşa et ──
+            # MD eğrisi  : ay 0'da 0 TL, her ay o ayın dizel işletme maliyeti (yakıt+bakım) eklenir
+            # Sx eğrisi  : ay 0'da yatırım tutarı, her ay o ayın EV+karma işletme maliyeti (yakıt+bakım) eklenir
+            # İki eğri kesiştiğinde = başabaş noktası
+            #
+            # Neden başabaş noktaları farklı çıkmalı?
+            #   S1 az yatırım (düşük başlangıç) ama az tasarruf (1/3 EV)  → orta vadede kesişir
+            #   S2 orta yatırım, orta tasarruf (2/3 EV)
+            #   S3 çok yatırım (yüksek başlangıç) ama çok tasarruf (tam EV) → farklı noktada kesişir
 
-            cum_md_isletme = (df_md["yakıt"] + df_md["bakım"]).cumsum().values
+            aylar_grafik = list(range(0, toplam_ay + 1))   # 0..120 (ay 0 = başlangıç)
 
-            # Senaryo EV işletme: yakıt(ev kısmı) + bakım(ev kısmı)
-            # df_sc zaten karışık filoya göre hesaplanmış: EV araçların enerji+bakım + dizel araçların yakıt+bakım
-            # Taksit sütununu hariç bırak, yatırımı ay=0'da peşin say
-            cum_sc_isletme = (df_sc["yakıt"] + df_sc["bakım"]).cumsum().values
-            cum_sc_toplam  = yatirim + cum_sc_isletme   # peşin yatırım + birikimli işletme
+            # MD: ay 0'da 0, sonraki aylarda birikimli işletme maliyeti
+            md_kumulatif = [0.0]
+            for i in range(toplam_ay):
+                md_kumulatif.append(md_kumulatif[-1] + df_md["yakıt"].iloc[i] + df_md["bakım"].iloc[i])
 
-            # Başabaş: MD birikimli maliyet >= Senaryo birikimli maliyet olduğu ilk ay
-            diff = cum_md_isletme - cum_sc_toplam
-            idx_be = np.where(diff >= 0)[0]
+            # Sx: ay 0'da yatırım tutarı, sonraki aylarda birikimli EV+karma işletme maliyeti eklenir
+            sc_kumulatif = [float(yatirim)]
+            for i in range(toplam_ay):
+                sc_kumulatif.append(sc_kumulatif[-1] + df_sc["yakıt"].iloc[i] + df_sc["bakım"].iloc[i])
+
+            md_arr = np.array(md_kumulatif)
+            sc_arr = np.array(sc_kumulatif)
+
+            # Başabaş: MD eğrisi Sx eğrisini geçtiği (MD >= Sx) ilk ay indeksi
+            idx_be = np.where(md_arr >= sc_arr)[0]
 
             fig_bb, ax_bb = plt.subplots(figsize=(13, 5))
 
-            ax_bb.plot(aylar, cum_md_isletme / 1e6,
-                       color=RENK["MD"], lw=2.5, label="MD – Mevcut Durum Kümülatif Maliyet")
-            ax_bb.plot(aylar, cum_sc_toplam / 1e6,
-                       color=RENK[kod], lw=2.5, linestyle="--", label=f"{ETIKET[kod]} Kümülatif Maliyet (Yatırım + İşletme)")
+            ax_bb.plot(aylar_grafik, md_arr / 1e6,
+                       color=RENK["MD"], lw=2.5,
+                       label="MD – Kümülatif Dizel İşletme Maliyeti (0'dan başlar)")
+            ax_bb.plot(aylar_grafik, sc_arr / 1e6,
+                       color=RENK[kod], lw=2.5, linestyle="--",
+                       label=f"{ETIKET[kod]} – Araç Yatırımı + Kümülatif EV İşletme Maliyeti")
 
-            # Yatırım başlangıç noktası
-            ax_bb.scatter([1], [yatirim / 1e6], color=RENK[kod], s=80, zorder=5,
-                          label=f"Araç Yatırım Başlangıcı: {yatirim/1e6:,.1f} M TL")
+            # Ay 0 yatırım noktası
+            ax_bb.scatter([0], [yatirim / 1e6], color=RENK[kod], s=100, zorder=6,
+                          label=f"Başlangıç Yatırımı: {yatirim/1e6:,.1f} M TL")
+
+            net_son = (md_arr[-1] - sc_arr[-1]) / 1e6
 
             if len(idx_be) > 0:
-                be_idx = idx_be[0]
-                be_ay  = aylar[be_idx]
-                be_yil = be_ay / 12
-                be_val = cum_md_isletme[be_idx] / 1e6
-                ax_bb.scatter([be_ay], [be_val], color="red", s=120, zorder=6, marker="*")
+                be_idx  = int(idx_be[0])
+                be_ay   = be_idx          # ay 0 bazlı
+                be_yil  = be_ay / 12
+                be_val  = md_arr[be_idx] / 1e6   # kesişme noktasındaki TL değeri
+
+                ax_bb.scatter([be_ay], [be_val], color="red", s=180, zorder=7, marker="*")
+
+                # Etiket: grafiğin sağına taşma yapmadan konumlandır
+                x_text = min(be_ay + max(3, ANALIZ_YILI * 0.6), toplam_ay - 5)
+                y_text = be_val * 1.08
                 ax_bb.annotate(
-                    f"  BAŞABAŞ\n  {be_ay}. Ay ({be_yil:.1f} yıl)\n  {be_val:,.1f} M TL",
+                    f"BAŞABAŞ\n{be_ay}. Ay ({be_yil:.1f} yıl)\n{be_val:,.1f} M TL",
                     xy=(be_ay, be_val),
-                    xytext=(be_ay + max(3, ANALIZ_YILI*1.2), be_val * 0.95),
+                    xytext=(x_text, y_text),
                     color="red", fontsize=9, fontweight="bold",
-                    arrowprops=dict(arrowstyle="->", color="red", alpha=0.7),
-                    bbox=dict(facecolor="white", alpha=0.85, edgecolor="red", boxstyle="round,pad=0.3")
+                    arrowprops=dict(arrowstyle="->", color="red", lw=1.4, alpha=0.8),
+                    bbox=dict(facecolor="white", alpha=0.9, edgecolor="red", boxstyle="round,pad=0.3")
                 )
-                # Başabaş sonrası bölge
-                ax_bb.fill_between(aylar[be_idx:],
-                                   cum_md_isletme[be_idx:] / 1e6,
-                                   cum_sc_toplam[be_idx:] / 1e6,
-                                   alpha=0.15, color="#1B7837", label="Kümülatif Tasarruf Bölgesi")
-                toplam_tasarruf = (cum_md_isletme[-1] - cum_sc_toplam[-1]) / 1e6
+                # Başabaş sonrası tasarruf bölgesi (MD üstte, Sx altta)
+                ax_bb.fill_between(
+                    aylar_grafik[be_idx:],
+                    md_arr[be_idx:] / 1e6,
+                    sc_arr[be_idx:] / 1e6,
+                    alpha=0.18, color="#1B7837", label=f"Net Tasarruf Bölgesi ({net_son:+.1f} M TL)"
+                )
                 ax_bb.set_title(
-                    f"{ETIKET[kod]} Başabaş Analizi\n"
-                    f"Başabaş: {be_ay}. Ay ({be_yil:.1f} Yıl) | "
-                    f"{ANALIZ_YILI} Yıl Sonu Net Tasarruf: {toplam_tasarruf:+,.1f} M TL",
+                    f"{ETIKET[kod]} – Başabaş Analizi  |  "
+                    f"Başabaş: {be_ay}. Ay ({be_yil:.1f} Yıl)  |  "
+                    f"{ANALIZ_YILI} Yıl Sonu Net: {net_son:+,.1f} M TL",
                     fontweight="bold", fontsize=11
                 )
             else:
-                toplam_tasarruf = (cum_md_isletme[-1] - cum_sc_toplam[-1]) / 1e6
                 ax_bb.set_title(
-                    f"{ETIKET[kod]} Başabaş Analizi\n"
-                    f"⚠️ {ANALIZ_YILI} yıl içinde başabaş noktasına ulaşılamadı | "
-                    f"{ANALIZ_YILI} Yıl Sonu Fark: {toplam_tasarruf:+,.1f} M TL",
+                    f"{ETIKET[kod]} – Başabaş Analizi\n"
+                    f"⚠️ {ANALIZ_YILI} yıl içinde başabaş noktasına ulaşılamadı  |  "
+                    f"{ANALIZ_YILI} Yıl Sonu Net: {net_son:+,.1f} M TL",
                     fontweight="bold", fontsize=11
                 )
 
             # Yıl çizgileri
+            y_min = min(0, sc_arr.min() / 1e6) * 0.98
             for y in range(1, ANALIZ_YILI + 1):
-                ax_bb.axvline(y * 12, color="gray", lw=0.4, alpha=0.25, linestyle="-")
-                ax_bb.text(y * 12, ax_bb.get_ylim()[0] if ax_bb.get_ylim()[0] > 0 else 0,
-                           f" Y{y}", fontsize=6, color="gray", va="bottom")
+                ax_bb.axvline(y * 12, color="gray", lw=0.4, alpha=0.25)
+                ax_bb.text(y * 12 + 0.3, y_min, f"Y{y}", fontsize=6, color="#888", va="bottom")
 
+            ax_bb.set_xlim(0, toplam_ay + 2)
             ax_bb.set_xlabel("Zaman (Ay)", fontweight="bold")
-            ax_bb.set_ylabel("Kümülatif Maliyet (Milyon TL)", fontweight="bold")
+            ax_bb.set_ylabel("Kümülatif Ödenen Tutar (Milyon TL)", fontweight="bold")
             ax_bb.xaxis.set_major_locator(mticker.MultipleLocator(12))
             ax_bb.grid(True, linestyle=":", alpha=0.4)
             ax_bb.legend(loc="upper left", fontsize=8)
@@ -590,7 +609,7 @@ else:
             with col_c:
                 st.markdown(f"""<div class="metric-card" style="--accent:{RENK[kod]}">
                   <div class="lbl">{ANALIZ_YILI} Yıl Sonu Net Fark</div>
-                  <div class="val">{(cum_md_isletme[-1] - cum_sc_toplam[-1])/1e6:+,.1f} M TL</div>
+                  <div class="val">{net_son:+,.1f} M TL</div>
                   <div class="lbl">+ Tasarruf / - Zarar</div></div>""", unsafe_allow_html=True)
 
             st.markdown("<br>", unsafe_allow_html=True)
