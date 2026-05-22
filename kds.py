@@ -659,18 +659,18 @@ else:
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
         senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
-        for kod, df_sc in senaryo_listesi:
+        for kod, df_s1 in senaryo_listesi:
             # Senaryonun toplam maliyet serisi
             cum_s1_toplam = (df_s1["yakıt"] + df_s1["bakım"] + df_s1["taksit"]).cumsum()
 
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
-            cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
+            cum_kar = (cum_md_yakit_bakim - cum_s1_toplam) / 1e6
 
             # Grafiğe çizgi ekleme
-            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+            ax_be.plot(df_s1["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
 
             # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
-            passed_zero = df_sc["ay"][cum_kar >= 0]
+            passed_zero = df_s1["ay"][cum_kar >= 0]
 
             if not passed_zero.empty:
                 be_ay = passed_zero.iloc[0]
@@ -689,7 +689,7 @@ else:
                                arrowprops=dict(arrowstyle="->", color=RENK[kod], alpha=0.6),
                                bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', boxstyle='round,pad=0.2'))
             else:
-                ax_be.text(df_sc["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
+                ax_be.text(df_s1["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
                            color=RENK[kod], fontsize=8, linestyle="--")
 
         # Kar/Zarar Eşiği (0 Çizgisi)
