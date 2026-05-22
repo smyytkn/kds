@@ -326,7 +326,7 @@ with st.sidebar:
     tufe_yuzde  = st.number_input("Yıllık TÜFE Oranı (%)", min_value=0.0, value=30.0, step=1.0)
     tufe_orani  = tufe_yuzde / 100.0
 
-    ANALIZ_YILI = 20
+    ANALIZ_YILI = 10
 
     odeme_plani = st.radio(
         "Ödeme Planı",
