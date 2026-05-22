@@ -341,6 +341,11 @@ with st.sidebar:
 
     hesapla_btn = st.button("🔍 ANALİZİ ÇALIŞTIR", use_container_width=True)
 
+    tab_emisyon, tab_maliyet, tab_tablo = st.tabs([
+        "♻️ EMİSYON ANALİZİ",
+        "💹 MALİYET ANALİZİ",
+        "📊 DETAY TABLOLAR",
+    ])
 # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
