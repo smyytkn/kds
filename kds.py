@@ -661,7 +661,7 @@ else:
 
         for kod, df_sc in senaryo_listesi:
             # Senaryonun toplam maliyet serisi
-            cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
+            cum_s1_toplam = (df_s1["yakıt"] + df_s1["bakım"] + df_s1["taksit"]).cumsum()
 
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
             cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
