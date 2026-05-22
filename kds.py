@@ -650,60 +650,65 @@ else:
     with tab_maliyet:
         
 
-        st.subheader("📈 Senaryo Bazlı Toplam Maliyet Karşılaştırması")
+        with tab_maliyet:
 
-    senaryo_isimleri = [
-        "MD",
-        "S1",
-        "S2",
-        "S3"
+    st.subheader("📈 Senaryo Bazlı Kümülatif Toplam Maliyet Analizi")
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+
+    senaryolar = [
+        ("MD", df_md),
+        ("S1", df_s1),
+        ("S2", df_s2),
+        ("S3", df_s3),
     ]
 
-    toplam_maliyetler = [
-        df_md["toplam"].sum() / 1e6,
-        df_s1["toplam"].sum() / 1e6,
-        df_s2["toplam"].sum() / 1e6,
-        df_s3["toplam"].sum() / 1e6,
-    ]
+    for kod, df_ in senaryolar:
 
-    renkler = [
-        RENK["MD"],
-        RENK["S1"],
-        RENK["S2"],
-        RENK["S3"]
-    ]
+        # Kümülatif toplam maliyet
+        kumulatif = df_["toplam"].cumsum() / 1e6
 
-    fig, ax = plt.subplots(figsize=(11, 6))
+        ax.plot(
+            df_["ay"],
+            kumulatif,
+            linewidth=3,
+            color=RENK[kod],
+            label=ETIKET[kod]
+        )
 
-    bars = ax.bar(
-        senaryo_isimleri,
-        toplam_maliyetler,
-        color=renkler,
-        width=0.6
-    )
+        # Son noktaya değer yaz
+        ax.text(
+            df_["ay"].iloc[-1],
+            kumulatif.iloc[-1],
+            f"{kumulatif.iloc[-1]:,.0f}",
+            fontsize=8,
+            color=RENK[kod],
+            fontweight="bold"
+        )
 
     ax.set_title(
-        f"{ANALIZ_YILI} Yıllık Toplam Maliyet Karşılaştırması",
-        fontweight="bold",
-        fontsize=13
+        f"{ANALIZ_YILI} Yıllık Kümülatif Toplam Maliyet Karşılaştırması",
+        fontsize=13,
+        fontweight="bold"
     )
 
-    ax.set_ylabel("Toplam Maliyet (Milyon TL)")
-    ax.set_xlabel("Senaryolar")
+    ax.set_xlabel("Ay")
+    ax.set_ylabel("Kümülatif Toplam Maliyet (Milyon TL)")
 
-    ax.grid(axis="y", linestyle=":", alpha=0.4)
+    ax.grid(True, linestyle=":", alpha=0.5)
 
-    # Değerleri bar üstüne yaz
-    for bar, val in zip(bars, toplam_maliyetler):
+    ax.legend()
 
-        ax.text(
-            bar.get_x() + bar.get_width()/2,
-            bar.get_height(),
-            f"{val:,.1f}",
-            ha="center",
-            va="bottom",
-            fontsize=9,
-            fontweight="bold"
+    ax.xaxis.set_major_locator(mticker.MultipleLocator(12))
+
+    # Yıllık ayırıcı çizgiler
+    for y in range(1, ANALIZ_YILI + 1):
+        ax.axvline(
+            y * 12,
+            color="gray",
+            lw=0.5,
+            alpha=0.3,
+            linestyle="--"
         )
 
     plt.tight_layout()
@@ -711,35 +716,6 @@ else:
     st.pyplot(fig)
 
     plt.close(fig)
-
-    st.markdown("---")
-
-    st.subheader("📊 Senaryo Bazlı Toplam Maliyet Özeti")
-
-    ozet_df = pd.DataFrame({
-        "Senaryo": [
-            ETIKET["MD"],
-            ETIKET["S1"],
-            ETIKET["S2"],
-            ETIKET["S3"]
-        ],
-        "Toplam Maliyet (TL)": [
-            df_md["toplam"].sum(),
-            df_s1["toplam"].sum(),
-            df_s2["toplam"].sum(),
-            df_s3["toplam"].sum(),
-        ]
-    })
-
-    ozet_df["Toplam Maliyet (TL)"] = ozet_df[
-        "Toplam Maliyet (TL)"
-    ].map(lambda x: f"{x:,.0f}")
-
-    st.dataframe(
-        ozet_df,
-        use_container_width=True,
-        hide_index=True
-    )
     # ──────────────────────────────────────────
     #  DETAY TABLOLAR SEKMESİ
     # ──────────────────────────────────────────
