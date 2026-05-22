@@ -716,6 +716,123 @@ else:
         st.markdown("---")
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+        
+        for kod, df_s2 in senaryo_listesi:
+            # Senaryonun toplam maliyet serisi
+            cum_s2_toplam = (df_s2["yakıt"] + df_s2["bakım"] + df_s2["taksit"]).cumsum()
+
+            # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
+            cum_kar = (cum_md_yakit_bakim - cum_s1_toplam) / 1e6
+
+            # Grafiğe çizgi ekleme
+            ax_be.plot(df_s2["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+
+            # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
+            passed_zero = df_s2["ay"][cum_kar >= 0]
+
+            if not passed_zero.empty:
+                be_ay = passed_zero.iloc[0]
+                be_kar = cum_kar.iloc[be_ay - 1]
+                be_yil = be_ay / 12
+
+                # Başabaş noktasını kırmızı halka ile işaretle
+                ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
+
+                # Metinsel Etiketleme
+                offset = 5 if kod == "S3" else (-15 if kod == "S1" else -5)
+                ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)",
+                               xy=(be_ay, be_kar),
+                               xytext=(be_ay + 3, be_kar + offset),
+                               color=RENK[kod], fontsize=8, fontweight="bold",
+                               arrowprops=dict(arrowstyle="->", color=RENK[kod], alpha=0.6),
+                               bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', boxstyle='round,pad=0.2'))
+            else:
+                ax_be.text(df_s2["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
+                           color=RENK[kod], fontsize=8, linestyle="--")
+
+        # Kar/Zarar Eşiği (0 Çizgisi)
+        ax_be.axhline(0, color="black", linestyle="-", linewidth=1.2, alpha=0.7)
+        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[0], color="#fcd7d7", alpha=0.15, label="Zarar Bölgesi")
+        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[1], color="#ddf4e8", alpha=0.15, label="Net Kâr Bölgesi")
+
+        # Grafik Tasarımı ve Düzenlemeler
+        ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıllık Süreç)", fontweight="bold", fontsize=12)
+        ax_be.set_xlabel("Zaman Ekseni (Ay)", fontweight="bold")
+        ax_be.set_ylabel("Kümülatif Net Kâr / Tasarruf (Milyon TL)", fontweight="bold")
+        ax_be.legend(loc="upper left", fontsize=9)
+        ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
+        ax_be.grid(True, which='both', linestyle=':', alpha=0.5)
+
+        # Yılları dikey çizgilerle ayırma
+        for y in range(1, ANALIZ_YILI + 1):
+            ax_be.axvline(y * 12, color="gray", lw=0.4, alpha=0.25, linestyle="-")
+
+        plt.tight_layout()
+        st.pyplot(fig_be)
+        plt.close(fig_be)
+
+        st.markdown("---")
+        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
+        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+
+        for kod, df_s3 in senaryo_listesi:
+            # Senaryonun toplam maliyet serisi
+            cum_s3_toplam = (df_s3["yakıt"] + df_s1["bakım"] + df_s3["taksit"]).cumsum()
+
+            # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
+            cum_kar = (cum_md_yakit_bakim - cum_s3_toplam) / 1e6
+
+            # Grafiğe çizgi ekleme
+            ax_be.plot(df_s3["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+
+            # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
+            passed_zero = df_s3["ay"][cum_kar >= 0]
+
+            if not passed_zero.empty:
+                be_ay = passed_zero.iloc[0]
+                be_kar = cum_kar.iloc[be_ay - 1]
+                be_yil = be_ay / 12
+
+                # Başabaş noktasını kırmızı halka ile işaretle
+                ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
+
+                # Metinsel Etiketleme
+                offset = 5 if kod == "S3" else (-15 if kod == "S1" else -5)
+                ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)",
+                               xy=(be_ay, be_kar),
+                               xytext=(be_ay + 3, be_kar + offset),
+                               color=RENK[kod], fontsize=8, fontweight="bold",
+                               arrowprops=dict(arrowstyle="->", color=RENK[kod], alpha=0.6),
+                               bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', boxstyle='round,pad=0.2'))
+            else:
+                ax_be.text(df_s1["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
+                           color=RENK[kod], fontsize=8, linestyle="--")
+
+        # Kar/Zarar Eşiği (0 Çizgisi)
+        ax_be.axhline(0, color="black", linestyle="-", linewidth=1.2, alpha=0.7)
+        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[0], color="#fcd7d7", alpha=0.15, label="Zarar Bölgesi")
+        ax_be.fill_between(df_md["ay"], 0, ax_be.get_ylim()[1], color="#ddf4e8", alpha=0.15, label="Net Kâr Bölgesi")
+
+        # Grafik Tasarımı ve Düzenlemeler
+        ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıllık Süreç)", fontweight="bold", fontsize=12)
+        ax_be.set_xlabel("Zaman Ekseni (Ay)", fontweight="bold")
+        ax_be.set_ylabel("Kümülatif Net Kâr / Tasarruf (Milyon TL)", fontweight="bold")
+        ax_be.legend(loc="upper left", fontsize=9)
+        ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
+        ax_be.grid(True, which='both', linestyle=':', alpha=0.5)
+
+        # Yılları dikey çizgilerle ayırma
+        for y in range(1, ANALIZ_YILI + 1):
+            ax_be.axvline(y * 12, color="gray", lw=0.4, alpha=0.25, linestyle="-")
+
+        plt.tight_layout()
+        st.pyplot(fig_be)
+        plt.close(fig_be)
+
+        st.markdown("---")
+        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
+        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+
 
         for df_, kod in [(df_s1,"S1"), (df_s2,"S2"), (df_s3,"S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
