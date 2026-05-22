@@ -372,7 +372,8 @@ with st.sidebar:
             if not passed_zero.empty:
                 be_ay = passed_zero.iloc[0]
                 be_kar = cum_kar.iloc[be_ay - 1]
-                be_yil = be_ay / 12=ANALIZ_YILI
+                be_yil = be_ay / 12
+                ANALIZ_YILI=be_yil
 
                 # Başabaş noktasını kırmızı halka ile işaretle
                 ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
