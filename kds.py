@@ -648,8 +648,9 @@ else:
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
     with tab_maliyet:
+        
 
-    st.subheader("📈 Senaryo Bazlı Toplam Maliyet Karşılaştırması")
+        st.subheader("📈 Senaryo Bazlı Toplam Maliyet Karşılaştırması")
 
     senaryo_isimleri = [
         "MD",
