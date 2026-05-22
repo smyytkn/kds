@@ -471,9 +471,11 @@ else:
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | Analiz Süresi: {ANALIZ_YILI} Yıl")
         st.markdown("""
         <div class="info-box">
-        <b>Grafik Açıklaması:</b> Her grafik, Mevcut Durum (MD) kümülatif maliyetini 0'dan başlatarak gösterir.
-        Senaryo eğrisi ise araç yatırım maliyetiyle (peşin) başlayıp işletme tasarrufları sayesinde düşer.
-        İki eğrinin kesiştiği nokta <b>başabaş noktasıdır</b>: o andan itibaren EV seçeneği MD'den daha avantajlı olur.
+        <b>Grafik Açıklaması:</b>
+        <b>MD (gri) eğrisi</b> 0'dan başlar; her ay birikimli dizel işletme maliyeti (yakıt + bakım) eklenerek yükselir.
+        <b>Senaryo (renkli) eğrisi</b> araç yatırım maliyetiyle başlar; üzerine EV işletme maliyeti (yakıt + bakım) aylık eklenir.
+        EV işletme maliyeti daha düşük olduğundan senaryo eğrisi daha yavaş yükselir ve bir noktada MD eğrisini keser.
+        <b>Kesişme noktası = başabaş noktası</b>: bu andan sonra EV geçişi toplam maliyette MD'den daha avantajlı olur.
         </div>
         """, unsafe_allow_html=True)
 
@@ -488,16 +490,22 @@ else:
 
             aylar = df_md["ay"].values  # 1..ANALIZ_YILI*12
 
-            # MD kümülatif işletme maliyeti (yakıt+bakım), 0'dan başlar
+            # ── Başabaş mantığı ──
+            # MD eğrisi   : birikimli dizel işletme maliyeti (yakıt_dizel + bakım_dizel), 0'dan başlar
+            # Senaryo eğrisi: yatırım tutarı (gün 0 peşin) + birikimli EV işletme maliyeti (yakıt_ev + bakım_ev)
+            # NOT: df_sc'deki "taksit" sütunu yatırımın taksitlendirilmiş halidir.
+            #      Başabaş grafiğinde yatırımı peşin gösterdiğimiz için taksiti KULLANMIYORUZ.
+            #      Sadece EV'in yakıt+bakım işletme giderlerini kümülatif ekliyoruz.
+
             cum_md_isletme = (df_md["yakıt"] + df_md["bakım"]).cumsum().values
 
-            # Senaryo kümülatif toplam maliyet; yatırım peşin olarak ay 0'da eklenir
-            # Sonra her ay işletme maliyeti eklenir (yakıt+bakım+taksit burada sadece işletme kısmı olmalı)
-            # Kullanıcı mantığı: Senaryo grafik = yatırım + kümülatif işletme (taksit dahil)
-            # MD grafik = 0 + kümülatif işletme (dizel)
-            cum_sc_toplam = yatirim + (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum().values
+            # Senaryo EV işletme: yakıt(ev kısmı) + bakım(ev kısmı)
+            # df_sc zaten karışık filoya göre hesaplanmış: EV araçların enerji+bakım + dizel araçların yakıt+bakım
+            # Taksit sütununu hariç bırak, yatırımı ay=0'da peşin say
+            cum_sc_isletme = (df_sc["yakıt"] + df_sc["bakım"]).cumsum().values
+            cum_sc_toplam  = yatirim + cum_sc_isletme   # peşin yatırım + birikimli işletme
 
-            # Başabaş: MD kümülatif >= Senaryo kümülatif olduğu ilk ay
+            # Başabaş: MD birikimli maliyet >= Senaryo birikimli maliyet olduğu ilk ay
             diff = cum_md_isletme - cum_sc_toplam
             idx_be = np.where(diff >= 0)[0]
 
