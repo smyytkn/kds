@@ -648,11 +648,8 @@ else:
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
     with tab_maliyet:
-        
-
-        with tab_maliyet:
-
-    st.subheader("📈 Senaryo Bazlı Kümülatif Toplam Maliyet Analizi")
+    
+         st.subheader("📈 Senaryo Bazlı Kümülatif Toplam Maliyet Analizi")
 
     fig, ax = plt.subplots(figsize=(13, 6))
 
