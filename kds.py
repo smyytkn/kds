@@ -552,7 +552,7 @@ if hesapla_btn:
 res = st.session_state["results"]
 
     # ── DETAY TABLOLAR ──────────────────────────────────────────
-    with tab_tablo:
+     with tab_tablo:
         st.subheader("Senaryolara Ait Aylık Ham Veri Çıktıları")
         sec = st.selectbox("Görüntülemek İstediğiniz Senaryoyu Seçin:", ["S1","S2","S3"])
         gdf = {"S1":df_s1,"S2":df_s2,"S3":df_s3}[sec].copy()
