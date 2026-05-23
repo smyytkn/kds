@@ -183,122 +183,7 @@ with st.sidebar:
     hesapla_btn = st.button("🔍 ANALİZİ ÇALIŞTIR", use_container_width=True)
 
 
-# ─── TOPSIS FONKSİYONU ───
-def topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy):
-    """
-    3 kriter (hepsi minimize):
-      C1: CO2e emisyonu (ton/yıl)
-      C2: Toplam maliyet (20 yıl TL)
-      C3: Yatırım maliyeti (TL)
-    """
-    M = np.array([
-        [em_s1["CO2e_ton"], df_s1["toplam"].sum(), yat1],
-        [em_s2["CO2e_ton"], df_s2["toplam"].sum(), yat2],
-        [em_s3["CO2e_ton"], df_s3["toplam"].sum(), yat3],
-    ], dtype=float)
 
-    # Adım 1 – Vektör normalizasyonu
-    denom = np.sqrt((M**2).sum(axis=0))
-    denom[denom == 0] = 1e-12
-    R = M / denom
-
-    # Adım 2 – Ağırlıklı normalize matris
-    W = np.array([we, wm, wy])
-    V = R * W
-
-    # Adım 3 – İdeal çözümler (minimize → en küçük = pozitif ideal)
-    PIS = V.min(axis=0)
-    NIS = V.max(axis=0)
-
-    # Adım 4 – Öklid uzaklıkları
-    d_pos = np.sqrt(((V - PIS)**2).sum(axis=1))
-    d_neg = np.sqrt(((V - NIS)**2).sum(axis=1))
-
-    # Adım 5 – Yakınlık skoru
-    C = d_neg / (d_pos + d_neg + 1e-12)
-    en_iyi = ["S1","S2","S3"][int(np.argmax(C))]
-
-    return {"M": M, "R": R, "V": V, "PIS": PIS, "NIS": NIS,
-            "d_pos": d_pos, "d_neg": d_neg, "C": C, "en_iyi": en_iyi}
-
-
-# ─── ANA HESAPLAMA ───
-def run_analysis(we, wm, wy):
-    md = dict(otobus_d=n_otobus, otobus_e=0, mini_d=n_mini, mini_e=0)
-    s1 = dict(otobus_d=n_otobus*(2/3), otobus_e=n_otobus/3, mini_d=n_mini*(2/3), mini_e=n_mini/3)
-    s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
-    s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
-
-    def em(sc, km_o, km_m):
-        o_km_d  = (sc["otobus_d"] / max(n_otobus,1)) * km_o
-        o_km_e  = (sc["otobus_e"] / max(n_otobus,1)) * km_o
-        m_km_d  = (sc["mini_d"] / max(n_mini,1)) * km_m if n_mini>0 else 0
-        m_km_e  = (sc["mini_e"] / max(n_mini,1)) * km_m if n_mini>0 else 0
-        co2  = o_km_d*TUK_OTOBUS*EF_CO2_DIZEL + o_km_e*(E_OTOBUS_EV/ETA_SARJ)*EF_GRID
-        co2 += m_km_d*TUK_MINI*EF_CO2_DIZEL   + m_km_e*(E_MINI_EV/ETA_SARJ)*EF_GRID
-        ch4  = (o_km_d*EF_CH4_OTOBUS + m_km_d*EF_CH4_MINI) / 1e6
-        n2o  = (o_km_d*EF_N2O_OTOBUS + m_km_d*EF_N2O_MINI) / 1e6
-        co2e = (co2 + ch4*GWP_CH4 + n2o*GWP_N2O) / 1000
-        return {"CO2_kg": co2, "CH4_kg": ch4, "N2O_kg": n2o, "CO2e_ton": co2e}
-
-    em_md = em(md, km_otobus, km_mini)
-    em_s1 = em(s1, km_otobus, km_mini)
-    em_s2 = em(s2, km_otobus, km_mini)
-    em_s3 = em(s3, km_otobus, km_mini)
-
-    def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
-        ay_yak_d = (sc["otobus_d"]*(km_otobus/max(n_otobus,1))*TUK_OTOBUS*dizel_fiyat +
-                    sc["mini_d"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*TUK_MINI*dizel_fiyat) / 12
-        ay_yak_e = (sc["otobus_e"]*(km_otobus/max(n_otobus,1))*(E_OTOBUS_EV/ETA_SARJ)*elektrik_fiyat +
-                    sc["mini_e"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*(E_MINI_EV/ETA_SARJ)*elektrik_fiyat) / 12
-        ay_bak = (sc["otobus_d"]*bak_otobus_d + sc["mini_d"]*bak_mini_d +
-                  sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
-        yat = n_ev_o*f_o + n_ev_m*f_m
-        taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
-        if plan==2 and tufe>0:
-            carpan = sum((1+tufe)**t for t in range(yil))
-            tst = yat/carpan if carpan>0 else 0
-        else:
-            tst = yat/yil if plan==2 and yat>0 else 0
-
-        rows = []
-        for ay in range(1, yil*12+1):
-            yn = (ay-1)//12
-            yc = (1+tufe)**yn
-            yak  = (ay_yak_d + ay_yak_e)*yc
-            bak  = ay_bak*yc
-            taks = (taksit_sabit if plan==1 else ((tst/12)*yc if yat>0 else 0))
-            rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
-        return pd.DataFrame(rows)
-
-    df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s1 = maliyet(s1, n_otobus/3, n_mini/3, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s2 = maliyet(s2, n_otobus*(2/3), n_mini*(2/3), fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s3 = maliyet(s3, n_otobus, n_mini, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
-
-    yat1 = (n_otobus/3)*fiyat_otobus_ev + (n_mini/3)*fiyat_mini_ev
-    yat2 = (n_otobus*(2/3))*fiyat_otobus_ev + (n_mini*(2/3))*fiyat_mini_ev
-    yat3 = n_otobus*fiyat_otobus_ev + n_mini*fiyat_mini_ev
-
-    t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
-
-    return {
-        "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
-        "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
-        "yat1":yat1,"yat2":yat2,"yat3":yat3,
-        "topsis":t, "en_iyi":t["en_iyi"],
-    }
-
-
-# ─── SESSION STATE ───
-if "results" not in st.session_state:
-    st.session_state["results"] = None
-
-if hesapla_btn:
-    with st.spinner("TOPSIS analizi çalışıyor…"):
-        st.session_state["results"] = run_analysis(w_emisyon, w_maliyet, w_yatirim)
-
-res = st.session_state["results"]
 
 # ─── SONUÇSUZ EKRAN ───
 if res is None:
@@ -549,6 +434,122 @@ else:
                         yd[c] = yd[c].map(lambda x: f"{x:,.0f}")
                     yd["Yıl"] = yd["Yıl"].astype(int)
                     st.dataframe(yd, use_container_width=True, hide_index=True, height=min(40+ANALIZ_YILI*35,500))
+                    # ─── TOPSIS FONKSİYONU ───
+def topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy):
+    """
+    3 kriter (hepsi minimize):
+      C1: CO2e emisyonu (ton/yıl)
+      C2: Toplam maliyet (20 yıl TL)
+      C3: Yatırım maliyeti (TL)
+    """
+    M = np.array([
+        [em_s1["CO2e_ton"], df_s1["toplam"].sum(), yat1],
+        [em_s2["CO2e_ton"], df_s2["toplam"].sum(), yat2],
+        [em_s3["CO2e_ton"], df_s3["toplam"].sum(), yat3],
+    ], dtype=float)
+
+    # Adım 1 – Vektör normalizasyonu
+    denom = np.sqrt((M**2).sum(axis=0))
+    denom[denom == 0] = 1e-12
+    R = M / denom
+
+    # Adım 2 – Ağırlıklı normalize matris
+    W = np.array([we, wm, wy])
+    V = R * W
+
+    # Adım 3 – İdeal çözümler (minimize → en küçük = pozitif ideal)
+    PIS = V.min(axis=0)
+    NIS = V.max(axis=0)
+
+    # Adım 4 – Öklid uzaklıkları
+    d_pos = np.sqrt(((V - PIS)**2).sum(axis=1))
+    d_neg = np.sqrt(((V - NIS)**2).sum(axis=1))
+
+    # Adım 5 – Yakınlık skoru
+    C = d_neg / (d_pos + d_neg + 1e-12)
+    en_iyi = ["S1","S2","S3"][int(np.argmax(C))]
+
+    return {"M": M, "R": R, "V": V, "PIS": PIS, "NIS": NIS,
+            "d_pos": d_pos, "d_neg": d_neg, "C": C, "en_iyi": en_iyi}
+
+
+# ─── ANA HESAPLAMA ───
+def run_analysis(we, wm, wy):
+    md = dict(otobus_d=n_otobus, otobus_e=0, mini_d=n_mini, mini_e=0)
+    s1 = dict(otobus_d=n_otobus*(2/3), otobus_e=n_otobus/3, mini_d=n_mini*(2/3), mini_e=n_mini/3)
+    s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
+    s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
+
+    def em(sc, km_o, km_m):
+        o_km_d  = (sc["otobus_d"] / max(n_otobus,1)) * km_o
+        o_km_e  = (sc["otobus_e"] / max(n_otobus,1)) * km_o
+        m_km_d  = (sc["mini_d"] / max(n_mini,1)) * km_m if n_mini>0 else 0
+        m_km_e  = (sc["mini_e"] / max(n_mini,1)) * km_m if n_mini>0 else 0
+        co2  = o_km_d*TUK_OTOBUS*EF_CO2_DIZEL + o_km_e*(E_OTOBUS_EV/ETA_SARJ)*EF_GRID
+        co2 += m_km_d*TUK_MINI*EF_CO2_DIZEL   + m_km_e*(E_MINI_EV/ETA_SARJ)*EF_GRID
+        ch4  = (o_km_d*EF_CH4_OTOBUS + m_km_d*EF_CH4_MINI) / 1e6
+        n2o  = (o_km_d*EF_N2O_OTOBUS + m_km_d*EF_N2O_MINI) / 1e6
+        co2e = (co2 + ch4*GWP_CH4 + n2o*GWP_N2O) / 1000
+        return {"CO2_kg": co2, "CH4_kg": ch4, "N2O_kg": n2o, "CO2e_ton": co2e}
+
+    em_md = em(md, km_otobus, km_mini)
+    em_s1 = em(s1, km_otobus, km_mini)
+    em_s2 = em(s2, km_otobus, km_mini)
+    em_s3 = em(s3, km_otobus, km_mini)
+
+    def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
+        ay_yak_d = (sc["otobus_d"]*(km_otobus/max(n_otobus,1))*TUK_OTOBUS*dizel_fiyat +
+                    sc["mini_d"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*TUK_MINI*dizel_fiyat) / 12
+        ay_yak_e = (sc["otobus_e"]*(km_otobus/max(n_otobus,1))*(E_OTOBUS_EV/ETA_SARJ)*elektrik_fiyat +
+                    sc["mini_e"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*(E_MINI_EV/ETA_SARJ)*elektrik_fiyat) / 12
+        ay_bak = (sc["otobus_d"]*bak_otobus_d + sc["mini_d"]*bak_mini_d +
+                  sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
+        yat = n_ev_o*f_o + n_ev_m*f_m
+        taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
+        if plan==2 and tufe>0:
+            carpan = sum((1+tufe)**t for t in range(yil))
+            tst = yat/carpan if carpan>0 else 0
+        else:
+            tst = yat/yil if plan==2 and yat>0 else 0
+
+        rows = []
+        for ay in range(1, yil*12+1):
+            yn = (ay-1)//12
+            yc = (1+tufe)**yn
+            yak  = (ay_yak_d + ay_yak_e)*yc
+            bak  = ay_bak*yc
+            taks = (taksit_sabit if plan==1 else ((tst/12)*yc if yat>0 else 0))
+            rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
+        return pd.DataFrame(rows)
+
+    df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
+    df_s1 = maliyet(s1, n_otobus/3, n_mini/3, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
+    df_s2 = maliyet(s2, n_otobus*(2/3), n_mini*(2/3), fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
+    df_s3 = maliyet(s3, n_otobus, n_mini, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
+
+    yat1 = (n_otobus/3)*fiyat_otobus_ev + (n_mini/3)*fiyat_mini_ev
+    yat2 = (n_otobus*(2/3))*fiyat_otobus_ev + (n_mini*(2/3))*fiyat_mini_ev
+    yat3 = n_otobus*fiyat_otobus_ev + n_mini*fiyat_mini_ev
+
+    t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
+
+    return {
+        "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
+        "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
+        "yat1":yat1,"yat2":yat2,"yat3":yat3,
+        "topsis":t, "en_iyi":t["en_iyi"],
+    }
+
+
+# ─── SESSION STATE ───
+if "results" not in st.session_state:
+    st.session_state["results"] = None
+
+if hesapla_btn:
+    with st.spinner("TOPSIS analizi çalışıyor…"):
+        st.session_state["results"] = run_analysis(w_emisyon, w_maliyet, w_yatirim)
+
+res = st.session_state["results"]
 
     # ── DETAY TABLOLAR ──────────────────────────────────────────
     with tab_tablo:
