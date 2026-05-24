@@ -408,23 +408,23 @@ else:
     cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum()
     
     # Her senaryo için ayrı grafik oluştur
-    for kod, df_sc in [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]:
-        fig_be, ax_be = plt.subplots(figsize=(13, 6))
+        for kod, df_sc in [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]:
+            fig_be, ax_be = plt.subplots(figsize=(13, 6))
         
-        cum_sc = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
-        cum_kar = (cum_sc - cum_md) / 1e6
+            cum_sc = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
+            cum_kar = (cum_sc - cum_md) / 1e6
         
         # ✅ Yeni taşıt (Senaryo) çizgisi
-        ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=3, label=f"{ETIKET[kod]} (Kümülatif)")
+            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=3, label=f"{ETIKET[kod]} (Kümülatif)")
         
         # ✅ Eski taşıt (Modası Geçmiş) çizgisi
-        cum_md_normalized = cum_md / 1e6
-        ax_be.plot(df_sc["ay"], cum_md_normalized.iloc[:len(df_sc)], color="blue", 
-                   linewidth=3, label="Modası Geçmiş Sistem (Kümülatif)", linestyle="--")
+            cum_md_normalized = cum_md / 1e6
+            ax_be.plot(df_sc["ay"], cum_md_normalized.iloc[:len(df_sc)], color="blue", 
+                       linewidth=3, label="Modası Geçmiş Sistem (Kümülatif)", linestyle="--")
         
         # ✅ Başabaş noktasını bul ve işaretle
-        kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
-        breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
+            kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
+            breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
         
         if not breakeven_indices.empty:
             be_idx = breakeven_indices[0]
@@ -477,12 +477,12 @@ else:
         
         st.markdown("---")
     
-    st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
-    st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
+        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
     
-    for df_, kod in [(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
-        with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
-            cg, ct = st.columns([2, 1])
+        for df_, kod in [(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
+            with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
+                 cg, ct = st.columns([2, 1])
             with cg:
                 fig2, ax2 = plt.subplots(figsize=(10, 4))
                 renk = RENK[kod]
