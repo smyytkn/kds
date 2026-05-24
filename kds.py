@@ -386,7 +386,20 @@ else:
 
         # Referans dizel maliyet serileri
         cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
+        
+        cum_md = (
+        df_md["yakıt"] +
+        df_md["bakım"]
+        ).cumsum() / 1e6
 
+        ax_be.plot(
+        df_md["ay"],
+        cum_md,
+        color="black",
+        linewidth=3,
+        linestyle="--",
+        label="Mevcut Durum"
+        )
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
         senaryo_listesi = [("MD", df_md),("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
