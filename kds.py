@@ -411,8 +411,8 @@ else:
     for kod, df_sc in [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]:
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
         
-            cum_sc = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
-            cum_kar = (cum_sc - cum_md) / 1e6
+        cum_sc = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
+        cum_kar = (cum_sc - cum_md) / 1e6
         
         # ✅ Yeni taşıt (Senaryo) çizgisi
             ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=3, label=f"{ETIKET[kod]} (Kümülatif)")
