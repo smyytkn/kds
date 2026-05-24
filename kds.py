@@ -378,22 +378,21 @@ else:
 # ──────────────────────────────────────────
 #  MALİYET SEKMESİ
 # ──────────────────────────────────────────
-with tab_maliyet:
+    with tab_maliyet:
+        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
 
-    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
-
-    fig_be, ax_be = plt.subplots(figsize=(13, 6))
+        fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
     # =========================
     # MEVCUT DURUM (MD)
     # =========================
-    cum_md_toplam = (
+        cum_md_toplam = (
         df_md["yakıt"] +
         df_md["bakım"]
     ).cumsum() / 1e6
 
     # MD referans çizgisi
-    ax_be.plot(
+        ax_be.plot(
         df_md["ay"],
         cum_md_toplam,
         color="black",
@@ -405,32 +404,32 @@ with tab_maliyet:
     # =========================
     # SENARYOLAR
     # =========================
-    senaryo_listesi = [
+        senaryo_listesi = [
         ("S1", df_s1),
         ("S2", df_s2),
         ("S3", df_s3)
     ]
 
-    for kod, df_sc in senaryo_listesi:
+        for kod, df_sc in senaryo_listesi:
 
         # EV toplam maliyet
-        cum_sc_toplam = (
+            cum_sc_toplam = (
             df_sc["yakıt"] +
             df_sc["bakım"] +
             df_sc["taksit"]
         ).cumsum()
 
         # Dizel referansı
-        cum_md_ref = (
+            cum_md_ref = (
             df_md["yakıt"] +
             df_md["bakım"]
         ).cumsum()
 
         # Kümülatif Kâr
-        cum_kar = (cum_md_ref - cum_sc_toplam) / 1e6
+            cum_kar = (cum_md_ref - cum_sc_toplam) / 1e6
 
         # Eğri çizimi
-        ax_be.plot(
+            ax_be.plot(
             df_sc["ay"],
             cum_kar,
             color=RENK[kod],
@@ -441,11 +440,10 @@ with tab_maliyet:
         # =========================
         # BAŞABAŞ NOKTASI
         # =========================
-        be_noktasi = np.where(cum_kar >= 0)[0]
+            be_noktasi = np.where(cum_kar >= 0)[0]
 
-        if len(be_noktasi) > 0:
-
-            be_index = be_noktasi[0]
+            if len(be_noktasi) > 0:
+                be_index = be_noktasi[0]
 
             be_ay = df_sc["ay"].iloc[be_index]
             be_kar = cum_kar.iloc[be_index]
