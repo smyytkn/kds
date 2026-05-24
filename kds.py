@@ -230,51 +230,68 @@ def run_analysis(we, wm, wy):
     em_s2 = em(s2, km_otobus, km_mini)
     em_s3 = em(s3, km_otobus, km_mini)
 
-    def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
-        ay_yak_d = (sc["otobus_d"]*(km_otobus/max(n_otobus,1))*TUK_OTOBUS*dizel_fiyat +
-                    sc["mini_d"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*TUK_MINI*dizel_fiyat) / 12
-        ay_yak_e = (sc["otobus_e"]*(km_otobus/max(n_otobus,1))*(E_OTOBUS_EV/ETA_SARJ)*elektrik_fiyat +
-                    sc["mini_e"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*(E_MINI_EV/ETA_SARJ)*elektrik_fiyat) / 12
-        ay_bak = (sc["otobus_d"]*bak_otobus_d + sc["mini_d"]*bak_mini_d +
-                  sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
-        yat = n_ev_o*f_o + n_ev_m*f_m
-        taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
-        # SABİT TAKSİT
-        aylik_sabit_taksit = yat / (yil * 12) if yat > 0 else 0
+def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
 
-        rows = []
-        # SABİT AYLIK TAKSİT
-aylik_taksit = yat / (yil * 12) if yat > 0 else 0
+    ay_yak_d = (
+        sc["otobus_d"]
+        * (km_otobus / max(n_otobus, 1))
+        * TUK_OTOBUS
+        * dizel_fiyat
+    ) / 12
 
-for ay in range(1, yil*12 + 1):
+    ay_yak_e = (
+        sc["otobus_e"]
+        * (km_otobus / max(n_otobus, 1))
+        * (E_OTOBUS_EV / ETA_SARJ)
+        * elektrik_fiyat
+    ) / 12
 
-    yn = (ay - 1) // 12
+    ay_bak = (
+        sc["otobus_d"] * bak_otobus_d
+        + sc["mini_d"] * bak_mini_d
+        + sc["otobus_e"] * bak_otobus_e
+        + sc["mini_e"] * bak_mini_e
+    ) / 12
 
-    # ENFLASYON ÇARPANI
-    yc = (1 + tufe) ** yn
+    yat = n_ev_o * f_o + n_ev_m * f_m
 
-    # YAKIT VE BAKIM HER İKİ PLANDA DA ARTAR
-    yak = (ay_yak_d + ay_yak_e) * yc
-    bak = ay_bak * yc
+    rows = []
 
-    # ÖDEME PLANI FARKI
-    if plan == 1:
-        # SABİT TAKSİT
-        taks = aylik_taksit
+    # SABİT AYLIK TAKSİT
+    aylik_taksit = yat / (yil * 12) if yat > 0 else 0
 
-    else:
-        # TÜFE BAZLI TAKSİT
-        taks = aylik_taksit * yc
+    for ay in range(1, yil * 12 + 1):
 
-    rows.append({
-        "ay": ay,
-        "yil": yn + 1,
-        "yakıt": yak,
-        "bakım": bak,
-        "taksit": taks,
-        "toplam": yak + bak + taks
-    })
- return pd.DataFrame(rows)
+        yn = (ay - 1) // 12
+
+        # ENFLASYON ÇARPANI
+        yc = (1 + tufe) ** yn
+
+        # YAKIT VE BAKIM
+        yak = (ay_yak_d + ay_yak_e) * yc
+        bak = ay_bak * yc
+
+        # ÖDEME PLANI
+        if plan == 1:
+
+            # SABİT TAKSİT
+            taks = aylik_taksit
+
+        else:
+
+            # TÜFE BAZLI TAKSİT
+            taks = aylik_taksit * yc
+
+        rows.append({
+            "ay": ay,
+            "yil": yn + 1,
+            "yakıt": yak,
+            "bakım": bak,
+            "taksit": taks,
+            "toplam": yak + bak + taks
+        })
+
+    return pd.DataFrame(rows)
 
     df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s1 = maliyet(s1, n_otobus/3, n_mini/3, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
