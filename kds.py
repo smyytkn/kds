@@ -274,7 +274,7 @@ for ay in range(1, yil*12 + 1):
         "taksit": taks,
         "toplam": yak + bak + taks
     })
-        return pd.DataFrame(rows)
+    return pd.DataFrame(rows)
 
     df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
     df_s1 = maliyet(s1, n_otobus/3, n_mini/3, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
