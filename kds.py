@@ -375,8 +375,6 @@ else:
         st.dataframe(pd.DataFrame(tablo), use_container_width=True, hide_index=True)
         st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
 
-   
-Gemini ile sohbet
 # ── MALİYET SEKMESİ ─────────────────────────────────────────
 
     with tab_maliyet:
