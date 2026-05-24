@@ -232,7 +232,7 @@ def run_analysis(we, wm, wy):
 
     def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
 
-    ay_yak_d = (
+        ay_yak_d = (
         sc["otobus_d"] *
         (km_otobus / max(n_otobus, 1)) *
         TUK_OTOBUS *
