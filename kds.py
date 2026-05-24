@@ -407,12 +407,15 @@ else:
         fig_be, ax_be = plt.subplots(figsize=(13,6))
         cum_md = (df_md["yakıt"]+df_md["bakım"]).cumsum()
         for kod, df_sc in [("S1",df_s1),("S2",df_s2),("S3",df_s3)]:
+             
             cum_sc = (df_sc["yakıt"]+df_sc["bakım"]+df_sc["taksit"]).cumsum()
             cum_kar = (cum_sc - cum_md) / 1e6
-            kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
-            breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
+    
+    # ✅ ÇİZGİLERİ ÇİZ (döngü içinde!)
+    ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, 
+               label=f"{ETIKET[kod]} Kâr Eğrisi")
 
-         ax_be.axhline(0, color="black", linewidth=1.2, alpha=0.7)
+        ax_be.axhline(0, color="black", linewidth=1.2, alpha=0.7)
         ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)", fontweight="bold", fontsize=12)
         ax_be.set_xlabel("Zaman (Ay)"); ax_be.set_ylabel("Kümülatif Net Kâr (Milyon TL)")
         ax_be.legend(loc="upper left", fontsize=9)
