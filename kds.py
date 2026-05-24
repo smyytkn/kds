@@ -377,9 +377,10 @@ else:
 
         # ── MALİYET SEKMESİ ─────────────────────────────────────────
     # ── MALİYET SEKMESİ (TAMAMEN DÜZELTİLMİŞ) ─────────────────────────────────────────
-with tab_maliyet:
-    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Maliyet Analizi")
-    st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+    with tab_maliyet:
+        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Maliyet Analizi")
+        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+
     
     # ✅ MEVCİT DURUM KÜMÜLATİF MALİYETİ (sadece yakıt + bakım, TAKSİT YOK!)
     cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum()
