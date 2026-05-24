@@ -239,23 +239,23 @@ def run_analysis(we, wm, wy):
         dizel_fiyat
     ) / 12
 
-    ay_yak_e = (
+        ay_yak_e = (
         sc["otobus_e"] *
         (km_otobus / max(n_otobus, 1)) *
         (E_OTOBUS_EV / ETA_SARJ) *
         elektrik_fiyat
     ) / 12
 
-    ay_bak = (
+        ay_bak = (
         sc["otobus_d"] * bak_otobus_d +
         sc["mini_d"] * bak_mini_d +
         sc["otobus_e"] * bak_otobus_e +
         sc["mini_e"] * bak_mini_e
     ) / 12
 
-    yat = n_ev_o * f_o + n_ev_m * f_m
+        yat = n_ev_o * f_o + n_ev_m * f_m
 
-    rows = []
+        rows = []
 
     # Sabit aylık taksit
     aylik_taksit = yat / (yil * 12) if yat > 0 else 0
