@@ -422,7 +422,7 @@ else:
     ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
     ax_be.grid(True, linestyle=':', alpha=0.5)
     for y in range(1, ANALIZ_YILI+1): ax_be.axvline(y*12, color="gray", lw=0.4, alpha=0.25)
-        plt.tight_layout(); st.pyplot(fig_be); plt.close(fig_be)
+    plt.tight_layout(); st.pyplot(fig_be); plt.close(fig_be)
 
         
        
