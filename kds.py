@@ -403,7 +403,7 @@ else:
         st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
     # ── MALİYET SEKMESİ ─────────────────────────────────────────
     with tab_maliyet:
-    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
     
     # DÜZELTME 1: Grafik nesnesini döngünün dışında oluşturuyoruz
     fig_be, ax_be = plt.subplots(figsize=(13, 6))
@@ -482,6 +482,7 @@ else:
                     
                 yd["Yıl"] = yd["Yıl"].astype(int)
                 st.dataframe(yd, use_container_width=True, hide_index=True, height=min(40 + ANALIZ_YILI * 35, 500))
+    
       # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
         st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
