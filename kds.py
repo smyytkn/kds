@@ -122,7 +122,7 @@ ETIKET = {
     "S3": "Senaryo 3 – Tam EV Geçişi",
 }
 
-ANALIZ_YILI = 20
+ANALIZ_YILI = 10
 
 # ─── BAŞLIK ───
 st.markdown("""
@@ -401,99 +401,63 @@ else:
         label="Mevcut Durum (Dizel)"
     )
 
+  
+
     # =========================
-    # SENARYOLAR
+    # S1
     # =========================
-        senaryo_listesi = [
-        ("S1", df_s1),
-        ("S2", df_s2),
-        ("S3", df_s3)
-    ]
+        cum_s1_toplam = (
+        df_s1["yakıt"] +
+        df_s1["bakım"]+
+        df_s1["taksit]
+    ).cumsum() / 1e6
 
-        for kod, df_sc in senaryo_listesi:
+    # MD referans çizgisi
+        ax_be.plot(
+        df_s1["ay"],
+        cum_s1_toplam,
+        color="red",
+        linewidth=3,
+        linestyle="--",
+        label="S1)"
+    )
+    # =========================
+    # S2
+    # =========================
+        cum_s2_toplam = (
+        df_s2["yakıt"] +
+        df_s2["bakım"]+
+        df_s2["taksit]
+    ).cumsum() / 1e6
 
-        # EV toplam maliyet
-            cum_sc_toplam = (
-            df_sc["yakıt"] +
-            df_sc["bakım"] +
-            df_sc["taksit"]
-        ).cumsum()
+    # MD referans çizgisi
+        ax_be.plot(
+        df_s2["ay"],
+        cum_s2_toplam,
+        color="green",
+        linewidth=3,
+        linestyle="--",
+        label="S2)"
+    )
 
-        # Dizel referansı
-            cum_md_ref = (
-            df_md["yakıt"] +
-            df_md["bakım"]
-        ).cumsum()
+    # =========================
+    # S3
+    # =========================
+        cum_s3_toplam = (
+        df_s3["yakıt"] +
+        df_s3["bakım"]+
+        df_s3["taksit]
+    ).cumsum() / 1e6
 
-        # Kümülatif Kâr
-            cum_kar = (cum_md_ref - cum_sc_toplam) / 1e6
-
-        # Eğri çizimi
-            ax_be.plot(
-            df_sc["ay"],
-            cum_kar,
-            color=RENK[kod],
-            linewidth=2.5,
-            label=f"{ETIKET[kod]} Kâr Eğrisi"
-        )
-
-        # =========================
-        # BAŞABAŞ NOKTASI
-        # =========================
-            be_noktasi = np.where(cum_kar >= 0)[0]
-
-            if len(be_noktasi) > 0:
-                be_index = be_noktasi[0]
-
-            be_ay = df_sc["ay"].iloc[be_index]
-            be_kar = cum_kar.iloc[be_index]
-            be_yil = be_ay / 12
-
-            # Başabaş noktasını kırmızı halka ile işaretle
-            ax_be.plot(
-                be_ay,
-                be_kar,
-                marker="o",
-                color="red",
-                markersize=8,
-                zorder=5
-            )
-
-            # Metinsel Etiketleme
-            offset = (
-                5 if kod == "S3"
-                else (-15 if kod == "S1" else -5)
-            )
-
-            ax_be.annotate(
-                f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)",
-                xy=(be_ay, be_kar),
-                xytext=(be_ay + 3, be_kar + offset),
-                color=RENK[kod],
-                fontsize=8,
-                fontweight="bold",
-                arrowprops=dict(
-                    arrowstyle="->",
-                    color=RENK[kod],
-                    alpha=0.6
-                ),
-                bbox=dict(
-                    facecolor="white",
-                    alpha=0.8,
-                    edgecolor="none",
-                    boxstyle="round,pad=0.2"
-                )
-            )
-
-        else:
-
-            ax_be.text(
-                df_sc["ay"].iloc[-1],
-                cum_kar.iloc[-1],
-                " Amorti Edilemedi",
-                color=RENK[kod],
-                fontsize=8
-            )
+    # MD referans çizgisi
+        ax_be.plot(
+        df_s3["ay"],
+        cum_s3_toplam,
+        color="yellow",
+        linewidth=3,
+        linestyle="--",
+        label="S3)"
+    )
 
     # =========================
     # KAR / ZARAR ALANI
