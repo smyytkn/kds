@@ -402,54 +402,84 @@ else:
         st.dataframe(pd.DataFrame(tablo), use_container_width=True, hide_index=True)
         st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
 
-    # ── MALİYET SEKMESİ ─────────────────────────────────────────
     with tab_maliyet:
-        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+
+    # ── DEBUG: İlk 6 ayı göster ──
+    with st.expander("🔍 DEBUG – İlk 6 Ay Maliyet Verileri", expanded=True):
+        debug_cols = st.columns(4)
+        for col, (kod, df_) in zip(debug_cols, [("MD",df_md),("S1",df_s1),("S2",df_s2),("S3",df_s3)]):
+            with col:
+                st.caption(f"**{kod}**")
+                st.dataframe(
+                    df_[["ay","yakıt","bakım","taksit","toplam"]].head(6).style.format("{:,.0f}"),
+                    use_container_width=True, hide_index=True
+                )
+
+        # Kümülatif kâr ilk 12 ay
+        cum_md_dbg = df_md["toplam"].cumsum().values
+        st.markdown("**Kümülatif Kâr (MD - EV) ilk 12 ay:**")
+        rows = {"Ay": list(range(1,13))}
+        for kod, df_sc in [("S1",df_s1),("S2",df_s2),("S3",df_s3)]:
+            cum_sc = df_sc["toplam"].cumsum().values
+            rows[f"Kâr {kod} (TL)"] = [f"{(cum_md_dbg[i]-cum_sc[i]):,.0f}" for i in range(12)]
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+    # ── DÜZELTILMIŞ BAŞABAŞ HESABI ──
     fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
-    cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values  # numpy array
+    # MD toplam (yakıt + bakım, taksit=0 zaten)
+    cum_md = df_md["toplam"].cumsum().values
+
+    herhangi_amorti = False
 
     for kod, df_sc in [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]:
-        cum_sc = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum().values
-        cum_kar = (cum_md - cum_sc) / 1e6  # Milyon TL
+        # EV toplam = yakıt + bakım + taksit (yatırım ödemesi)
+        cum_sc = df_sc["toplam"].cumsum().values
+        cum_kar = (cum_md - cum_sc) / 1e6
         aylar = df_sc["ay"].values
 
-        ax_be.plot(aylar, cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]}")
+        ax_be.plot(aylar, cum_kar, color=RENK[kod], linewidth=2.5,
+                   label=ETIKET[kod])
 
-        # Başabaş noktası: kâr ilk kez 0'ı geçtiği an
         gecis_idx = np.where(cum_kar >= 0)[0]
+
         if len(gecis_idx) > 0:
+            herhangi_amorti = True
             be_idx = gecis_idx[0]
             be_ay  = int(aylar[be_idx])
             be_kar = float(cum_kar[be_idx])
 
             ax_be.plot(be_ay, be_kar, marker="o", color=RENK[kod],
-                       markersize=9, zorder=5, markeredgecolor="white", markeredgewidth=1.5)
+                       markersize=9, zorder=5,
+                       markeredgecolor="white", markeredgewidth=1.5)
 
-            offsets = {"S1": (8, 12), "S2": (8, -18), "S3": (8, 6)}
-            dx, dy = offsets.get(kod, (8, 6))
+            offsets = {"S1": (4, 8), "S2": (4, -14), "S3": (4, 4)}
+            dx, dy = offsets.get(kod, (4, 4))
 
             ax_be.annotate(
-                f"Başabaş: {be_ay}. Ay\n({be_ay / 12:.1f} Yıl)",
+                f"Başabaş: {be_ay}. Ay\n({be_ay/12:.1f} Yıl)",
                 xy=(be_ay, be_kar),
                 xytext=(be_ay + dx, be_kar + dy),
                 color=RENK[kod], fontsize=8, fontweight="bold",
                 arrowprops=dict(arrowstyle="->", color=RENK[kod], lw=1.4),
-                bbox=dict(facecolor="white", alpha=0.85, edgecolor=RENK[kod],
-                          boxstyle="round,pad=0.3"),
+                bbox=dict(facecolor="white", alpha=0.9,
+                          edgecolor=RENK[kod], boxstyle="round,pad=0.3"),
             )
         else:
-            # Analiz süresi içinde başabaş yoksa son noktaya not düş
+            son_ay  = int(aylar[-1])
+            son_kar = float(cum_kar[-1])
             ax_be.annotate(
-                f"⚠ {ANALIZ_YILI} yılda\namorti edilemedi",
-                xy=(aylar[-1], float(cum_kar[-1])),
-                xytext=(aylar[-1] - 20, float(cum_kar[-1]) - 15),
+                f"⚠ {ANALIZ_YILI} yılda\namorti edilemedi\n({son_kar:+.1f}M TL)",
+                xy=(son_ay, son_kar),
+                xytext=(son_ay - 25, son_kar - 10),
                 color=RENK[kod], fontsize=8,
-                bbox=dict(facecolor="white", alpha=0.8, edgecolor=RENK[kod],
-                          boxstyle="round,pad=0.3"),
+                bbox=dict(facecolor="white", alpha=0.85,
+                          edgecolor=RENK[kod], boxstyle="round,pad=0.3"),
             )
 
-    ax_be.axhline(0, color="black", linewidth=1.4, linestyle="--", alpha=0.6, label="Başabaş Çizgisi (0)")
+    ax_be.axhline(0, color="black", linewidth=1.4,
+                  linestyle="--", alpha=0.7, label="Başabaş (Sıfır Çizgisi)")
     ax_be.set_title(
         f"Kümülatif Kâr / Zarar ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)",
         fontweight="bold", fontsize=12,
@@ -459,17 +489,17 @@ else:
     ax_be.legend(loc="upper left", fontsize=9)
     ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
     ax_be.grid(True, linestyle=":", alpha=0.5)
-
     for y in range(1, ANALIZ_YILI + 1):
         ax_be.axvline(y * 12, color="gray", lw=0.4, alpha=0.25)
 
     plt.tight_layout()
     st.pyplot(fig_be)
     plt.close(fig_be)
-        
 
-
-        
+    if not herhangi_amorti:
+        st.warning(f"⚠️ Hiçbir senaryo {ANALIZ_YILI} yıllık analiz süresinde başabaşa ulaşamadı. "
+                   "Analiz yılını artırmayı veya elektrik/dizel fiyatlarını gözden geçirmeyi deneyin.")
+    
       # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
         st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
