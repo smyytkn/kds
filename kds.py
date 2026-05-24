@@ -404,7 +404,7 @@ else:
 
     # ── MALİYET SEKMESİ ─────────────────────────────────────────
     with tab_maliyet:
-    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
     fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
     cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values  # numpy array
@@ -466,6 +466,10 @@ else:
     plt.tight_layout()
     st.pyplot(fig_be)
     plt.close(fig_be)
+        
+
+
+        
       # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
         st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
