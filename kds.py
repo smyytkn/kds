@@ -390,49 +390,38 @@ else:
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
         senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
-    for kod, df_sc in senaryo_listesi:
-        
-        # Senaryonun toplam maliyet serisi
-        cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
+ # Her senaryo için kümülatif kâr hesaplama ve çizdirme
+        senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
+
+        for kod, df_sc in senaryo_listesi:
+            # Senaryonun toplam maliyet serisi
+            cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
 
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
-        cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
+            cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
 
-            # Grafiğe çizgi ekleme - Eksik ayları engellemek için tüm index boyunca çizdiriyoruz
-        ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+            # Grafiğe çizgi ekleme
+            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
 
-            # --- DÜZELTİLEN BAŞABAŞ NOKTASI BULMA MANTIĞI ---
-            # Kârın kalıcı olarak veya ilk kez eksi değerlerden ARTIYA geçtiği gerçek ayı bulalım.
-            # İlk ay doğrudan sıfırdan büyük başlarsa diye önlem alıyoruz:
-            
-            # Yöntem: cum_kar değerinin 0'ı alttan yukarı doğru kestiği indeksi bulmak
-            # Eğer yatırım başta yapılıyorsa kâr negatif başlar, sonra pozitife döner.
+            # --- BAŞABAŞ NOKTASI BULMA ---
             positive_indices = df_sc.index[cum_kar >= 0]
             
             be_ay = None
             if not positive_indices.empty:
-                # Eğer ilk aylarda dalgalanma varsa, yatırım maliyetinin (taksitlerin) başladığı
-                # ve kârın gerçekten kalıcı yükselişe geçtiği noktayı yakalamak için:
                 for idx in positive_indices:
-                    # 1. aydan büyük ve bir önceki ay zararda olan (gerçek kesişim) noktası
                     if idx > 0 and cum_kar.loc[idx - 1] < 0:
                         be_ay = df_sc.loc[idx, "ay"]
                         be_kar = cum_kar.loc[idx]
                         break
                 
-                # Eğer yukarıdaki mantığa uyan bir kesişim yoksa ama seri hep pozitifse ilk pozitif elemanı al
                 if be_ay is None:
                     be_ay = df_sc.loc[positive_indices[0], "ay"]
                     be_kar = cum_kar.loc[positive_indices[0]]
 
-            # Başabaş noktası bulunduysa işaretle
             if be_ay is not None:
                 be_yil = be_ay / 12
-
-                # Başabaş noktasını kırmızı halka ile işaretle
                 ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
 
-                # Metinsel Etiketleme (Çakışmaları önlemek için dinamik offset)
                 offset = 15 if kod == "S3" else (-25 if kod == "S1" else -5)
                 ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_yil:.1f} Yıl)",
                                xy=(be_ay, be_kar),
@@ -443,8 +432,6 @@ else:
             else:
                 ax_be.text(df_sc["ay"].iloc[-1], cum_kar.iloc[-1], " Amorti Edilemedi",
                            color=RENK[kod], fontsize=8, linestyle="--")
-
-
 
     # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
