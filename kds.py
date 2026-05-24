@@ -408,13 +408,12 @@ else:
         cum_md = (df_md["yakıt"]+df_md["bakım"]).cumsum()
         for kod, df_sc in [("S1",df_s1),("S2",df_s2),("S3",df_s3)]:
             cum_sc = (df_sc["yakıt"]+df_sc["bakım"]+df_sc["taksit"]).cumsum()
-            cum_kar = (cum_md - cum_sc) / 1e6
-            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
-            pz = df_sc["ay"][cum_kar >= 0]
+            cum_kar = (cum_sc - cum_md) / 1e6
+            kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
+            breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
+
+
             if not pz.empty:
-
-
-
                 
                 be_ay = pz.iloc[0]; be_kar = cum_kar.iloc[be_ay-1]
                 ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
