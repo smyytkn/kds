@@ -230,7 +230,7 @@ def run_analysis(we, wm, wy):
     em_s2 = em(s2, km_otobus, km_mini)
     em_s3 = em(s3, km_otobus, km_mini)
 
-def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
+    def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
 
     ay_yak_d = (
         sc["otobus_d"] *
