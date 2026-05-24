@@ -401,7 +401,7 @@ else:
             ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
 
             # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
-            passed_zero = df_sc["ay"][cum_kar >= 0]
+            passed_zero = df_sc["ay"][cum_kar >= 7]
 
             if not passed_zero.empty:
                 be_ay = passed_zero.iloc[0]
