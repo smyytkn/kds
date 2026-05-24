@@ -411,15 +411,16 @@ else:
             cum_kar = (cum_sc - cum_md) / 1e6
             kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
             breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
+            ax_be.axhline(0, color="black", linewidth=1.2, alpha=0.7)
+            ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)", fontweight="bold", fontsize=12)
+            ax_be.set_xlabel("Zaman (Ay)"); ax_be.set_ylabel("Kümülatif Net Kâr (Milyon TL)")
+            ax_be.legend(loc="upper left", fontsize=9)
+            ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
+            ax_be.grid(True, linestyle=':', alpha=0.5)
+            for y in range(1, ANALIZ_YILI+1): ax_be.axvline(y*12, color="gray", lw=0.4, alpha=0.25)
+            plt.tight_layout(); st.pyplot(fig_be); plt.close(fig_be)
            
-        ax_be.axhline(0, color="black", linewidth=1.2, alpha=0.7)
-        ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)", fontweight="bold", fontsize=12)
-        ax_be.set_xlabel("Zaman (Ay)"); ax_be.set_ylabel("Kümülatif Net Kâr (Milyon TL)")
-        ax_be.legend(loc="upper left", fontsize=9)
-        ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
-        ax_be.grid(True, linestyle=':', alpha=0.5)
-        for y in range(1, ANALIZ_YILI+1): ax_be.axvline(y*12, color="gray", lw=0.4, alpha=0.25)
-        plt.tight_layout(); st.pyplot(fig_be); plt.close(fig_be)
+        
 
         st.markdown("---")
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
