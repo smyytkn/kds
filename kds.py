@@ -423,12 +423,9 @@ else:
     ax_be.grid(True, linestyle=':', alpha=0.5)
     for y in range(1, ANALIZ_YILI+1): ax_be.axvline(y*12, color="gray", lw=0.4, alpha=0.25)
     plt.tight_layout(); st.pyplot(fig_be); plt.close(fig_be)
-
-        
-       
-
-        st.markdown("---")
-        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
+    
+    st.markdown("---")
+    st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
         for df_, kod in [(df_s1,"S1"),(df_s2,"S2"),(df_s3,"S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod=="S2")):
@@ -454,6 +451,7 @@ else:
                     yd["Yıl"] = yd["Yıl"].astype(int)
                     st.dataframe(yd, use_container_width=True, hide_index=True, height=min(40+ANALIZ_YILI*35,500))
     
+        
       # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
         st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
