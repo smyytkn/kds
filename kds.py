@@ -415,16 +415,16 @@ else:
         cum_kar = (cum_sc - cum_md) / 1e6
         
         # ✅ Yeni taşıt (Senaryo) çizgisi
-            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=3, label=f"{ETIKET[kod]} (Kümülatif)")
+        ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=3, label=f"{ETIKET[kod]} (Kümülatif)")
         
         # ✅ Eski taşıt (Modası Geçmiş) çizgisi
-            cum_md_normalized = cum_md / 1e6
-            ax_be.plot(df_sc["ay"], cum_md_normalized.iloc[:len(df_sc)], color="blue", 
-                       linewidth=3, label="Modası Geçmiş Sistem (Kümülatif)", linestyle="--")
+        cum_md_normalized = cum_md / 1e6
+        ax_be.plot(df_sc["ay"], cum_md_normalized.iloc[:len(df_sc)], color="blue", 
+                    linewidth=3, label="Modası Geçmiş Sistem (Kümülatif)", linestyle="--")
         
         # ✅ Başabaş noktasını bul ve işaretle
-            kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
-            breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
+        kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
+        breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
         
         if not breakeven_indices.empty:
             be_idx = breakeven_indices[0]
