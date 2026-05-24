@@ -657,7 +657,7 @@ else:
         cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
 
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
-        senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
+        senaryo_listesi = [("MD",df_md),("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
         for kod, df_sc in senaryo_listesi:
             # Senaryonun toplam maliyet serisi
