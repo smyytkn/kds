@@ -239,11 +239,8 @@ def run_analysis(we, wm, wy):
                   sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
         yat = n_ev_o*f_o + n_ev_m*f_m
         taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
-        if plan==2 and tufe>0:
-            carpan = sum((1+tufe)**t for t in range(yil))
-            tst = yat/carpan if carpan>0 else 0
-        else:
-            tst = yat/yil if plan==2 and yat>0 else 0
+        # SABİT TAKSİT
+        aylik_sabit_taksit = yat / (yil * 12) if yat > 0 else 0
 
         rows = []
         for ay in range(1, yil*12+1):
@@ -251,7 +248,14 @@ def run_analysis(we, wm, wy):
             yc = (1+tufe)**yn
             yak  = (ay_yak_d + ay_yak_e)*yc
             bak  = ay_bak*yc
-            taks = (taksit_sabit if plan==1 else ((tst/12)*yc if yat>0 else 0))
+            # SABİT PLAN
+            if plan == 1:
+                taks = aylik_sabit_taksit
+            
+            # TÜFE BAZLI PLAN
+            else:
+                taks = aylik_sabit_taksit * yc
+    
             rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
         return pd.DataFrame(rows)
 
