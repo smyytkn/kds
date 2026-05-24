@@ -412,17 +412,6 @@ else:
             kar_isareti_degisti = (cum_kar.shift(1) * cum_kar) <= 0
             breakeven_indices = kar_isareti_degisti[kar_isareti_degisti].index
 
-
-            if not pz.empty:
-                
-                be_ay = pz.iloc[0]; be_kar = cum_kar.iloc[be_ay-1]
-                ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
-                off = 5 if kod=="S3" else (-15 if kod=="S1" else -5)
-                ax_be.annotate(f" Amorti: {be_ay}. Ay\n ({be_ay/12:.1f} Yıl)",
-                               xy=(be_ay,be_kar), xytext=(be_ay+3,be_kar+off),
-                               color=RENK[kod], fontsize=8, fontweight="bold",
-                               arrowprops=dict(arrowstyle="->",color=RENK[kod],alpha=0.6),
-                               bbox=dict(facecolor='white',alpha=0.8,edgecolor='none',boxstyle='round,pad=0.2'))
         ax_be.axhline(0, color="black", linewidth=1.2, alpha=0.7)
         ax_be.set_title(f"Zamana Bağlı Kümülatif Kâr ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)", fontweight="bold", fontsize=12)
         ax_be.set_xlabel("Zaman (Ay)"); ax_be.set_ylabel("Kümülatif Net Kâr (Milyon TL)")
