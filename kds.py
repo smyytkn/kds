@@ -399,7 +399,7 @@ else:
         cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
 
             # Grafiğe çizgi ekleme - Eksik ayları engellemek için tüm index boyunca çizdiriyoruz
-            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+        ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
 
             # --- DÜZELTİLEN BAŞABAŞ NOKTASI BULMA MANTIĞI ---
             # Kârın kalıcı olarak veya ilk kez eksi değerlerden ARTIYA geçtiği gerçek ayı bulalım.
