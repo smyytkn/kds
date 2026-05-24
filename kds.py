@@ -360,100 +360,7 @@ else:
     </div>""", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── TOPSIS SEKMESİ ──────────────────────────────────────────
-    with tab_topsis:
-        st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
-        st.caption(f"Kriterler: CO₂e Emisyonu · Toplam Maliyet · Yatırım Maliyeti  |  Ağırlıklar: {w_emisyon:.2f} / {w_maliyet:.2f} / {w_yatirim:.2f}")
-
-        rank_colors = {1:"#1e9e6b", 2:"#F4A100", 3:"#e05c5c"}
-        sen_info = [("S1","1/3 EV Geçişi",RENK["S1"]),("S2","2/3 EV Geçişi",RENK["S2"]),("S3","Tam EV Geçişi",RENK["S3"])]
-        ranks_order = np.argsort(-C)  # index of best->worst
-
-        col1, col2, col3 = st.columns(3)
-        for col, (idx,(kod,ad,renk)) in zip([col1,col2,col3], enumerate(sen_info)):
-            rank = int(np.where(ranks_order==idx)[0][0]) + 1
-            rk_c = rank_colors.get(rank,"#888")
-            with col:
-                st.markdown(f"""
-                <div class="topsis-card" style="border-left-color:{renk};">
-                    <h4>{kod} – {ad}</h4>
-                    <div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
-                        <span class="topsis-rank" style="background:{rk_c};">#{rank}</span>
-                        <span class="topsis-score" style="color:{renk};">{C[idx]:.4f}</span>
-                    </div>
-                    <div style="font-size:0.75rem;color:#6e7781;margin-top:4px;">C* Yakınlık Skoru — Yüksek = Daha İyi</div>
-                    <div style="background:#f0f0f0;border-radius:6px;height:8px;margin-top:10px;overflow:hidden;">
-                        <div style="background:{renk};width:{C[idx]*100:.1f}%;height:100%;border-radius:6px;"></div>
-                    </div>
-                    <div style="font-size:0.7rem;color:#aaa;margin-top:3px;">d⁺={t['d_pos'][idx]:.4f} &nbsp;|&nbsp; d⁻={t['d_neg'][idx]:.4f}</div>
-                </div>""", unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        cg1, cg2 = st.columns(2)
-        with cg1:
-            fig, ax = plt.subplots(figsize=(6,4))
-            labels = ["S1\n1/3 EV","S2\n2/3 EV","S3\nTam EV"]
-            renkler = [RENK["S1"],RENK["S2"],RENK["S3"]]
-            bars = ax.bar(labels, C, color=renkler, width=0.45, edgecolor="white", linewidth=1.5)
-            for bar,cv in zip(bars,C):
-                ax.text(bar.get_x()+bar.get_width()/2, cv+0.005, f"{cv:.4f}", ha="center", va="bottom", fontsize=10, fontweight="bold")
-            ax.set_title("TOPSIS Yakınlık Skorları (C*)", fontweight="bold", fontsize=11)
-            ax.set_ylabel("C* Skoru (0–1)")
-            ax.set_ylim(0, min(1.05, max(C)*1.3))
-            ax.axhline(0.5, color="gray", lw=1, linestyle="--", alpha=0.5)
-            ax.text(2.45, 0.51, "0.5", color="gray", fontsize=8)
-            ax.grid(True, axis='y', linestyle=':', alpha=0.4)
-            ax.spines[["top","right"]].set_visible(False)
-            plt.tight_layout()
-            st.pyplot(fig); plt.close(fig)
-
-        with cg2:
-            fig2, ax2 = plt.subplots(figsize=(6,4))
-            x = np.arange(3)
-            w = 0.35
-            ax2.bar(x-w/2, t["d_pos"], w, label="d⁺ (Pozitif İdeal Uzaklığı)", color=renkler, alpha=0.85, edgecolor="white")
-            ax2.bar(x+w/2, t["d_neg"], w, label="d⁻ (Negatif İdeal Uzaklığı)", color=renkler, alpha=0.4, edgecolor="white", hatch="//")
-            ax2.set_xticks(x); ax2.set_xticklabels(["S1","S2","S3"])
-            ax2.set_title("İdeal Çözüme Öklid Uzaklıkları", fontweight="bold", fontsize=11)
-            ax2.set_ylabel("Normalize Uzaklık")
-            ax2.legend(fontsize=8)
-            ax2.grid(True, axis='y', linestyle=':', alpha=0.4)
-            ax2.spines[["top","right"]].set_visible(False)
-            plt.tight_layout()
-            st.pyplot(fig2); plt.close(fig2)
-
-        st.markdown("---")
-        st.markdown("#### 📋 TOPSIS Adım Adım Hesaplama Tabloları")
-        krit = ["CO₂e Emisyonu (ton/yıl)", f"Toplam Maliyet ({ANALIZ_YILI}yıl, TL)", "Yatırım Maliyeti (TL)"]
-
-        with st.expander("1️⃣ Ham Karar Matrisi", expanded=True):
-            st.dataframe(pd.DataFrame(t["M"], index=["S1","S2","S3"], columns=krit).style.format("{:,.2f}"), use_container_width=True)
-
-        with st.expander("2️⃣ Normalize Edilmiş Matris (R)"):
-            st.dataframe(pd.DataFrame(t["R"], index=["S1","S2","S3"], columns=krit).style.format("{:.6f}"), use_container_width=True)
-
-        with st.expander("3️⃣ Ağırlıklı Normalize Matris (V)"):
-            st.caption(f"Ağırlıklar: Emisyon={w_emisyon:.2f}, Maliyet={w_maliyet:.2f}, Yatırım={w_yatirim:.2f}")
-            st.dataframe(pd.DataFrame(t["V"], index=["S1","S2","S3"], columns=krit).style.format("{:.6f}"), use_container_width=True)
-
-        with st.expander("4️⃣ Pozitif (A⁺) ve Negatif (A⁻) İdeal Çözümler"):
-            df_ideal = pd.DataFrame([t["PIS"],t["NIS"]], index=["A⁺ Pozitif İdeal (en küçük)","A⁻ Negatif İdeal (en büyük)"], columns=krit)
-            st.dataframe(df_ideal.style.format("{:.6f}"), use_container_width=True)
-
-        with st.expander("5️⃣ Uzaklıklar ve C* Nihai Skoru", expanded=True):
-            df_skor = pd.DataFrame({
-                "Senaryo": ["S1 – 1/3 EV","S2 – 2/3 EV","S3 – Tam EV"],
-                "d⁺ (Pozitif İdeal)": t["d_pos"],
-                "d⁻ (Negatif İdeal)": t["d_neg"],
-                "C* Yakınlık Skoru": C,
-                "Sıralama": [int(np.where(ranks_order==i)[0][0])+1 for i in range(3)],
-            })
-            st.dataframe(df_skor.style.format({
-                "d⁺ (Pozitif İdeal)":"{:.6f}","d⁻ (Negatif İdeal)":"{:.6f}","C* Yakınlık Skoru":"{:.4f}"
-            }).background_gradient(subset=["C* Yakınlık Skoru"], cmap="Greens"),
-            use_container_width=True, hide_index=True)
-
+  
     # ── EMİSYON SEKMESİ ─────────────────────────────────────────
     with tab_emisyon:
         st.subheader("IPCC Tier 2 – Senaryo Bazlı Yıllık Emisyon Karşılaştırması")
@@ -549,6 +456,99 @@ else:
                         yd[c] = yd[c].map(lambda x: f"{x:,.0f}")
                     yd["Yıl"] = yd["Yıl"].astype(int)
                     st.dataframe(yd, use_container_width=True, hide_index=True, height=min(40+ANALIZ_YILI*35,500))
+      # ── TOPSIS SEKMESİ ──────────────────────────────────────────
+    with tab_topsis:
+        st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
+        st.caption(f"Kriterler: CO₂e Emisyonu · Toplam Maliyet · Yatırım Maliyeti  |  Ağırlıklar: {w_emisyon:.2f} / {w_maliyet:.2f} / {w_yatirim:.2f}")
+
+        rank_colors = {1:"#1e9e6b", 2:"#F4A100", 3:"#e05c5c"}
+        sen_info = [("S1","1/3 EV Geçişi",RENK["S1"]),("S2","2/3 EV Geçişi",RENK["S2"]),("S3","Tam EV Geçişi",RENK["S3"])]
+        ranks_order = np.argsort(-C)  # index of best->worst
+
+        col1, col2, col3 = st.columns(3)
+        for col, (idx,(kod,ad,renk)) in zip([col1,col2,col3], enumerate(sen_info)):
+            rank = int(np.where(ranks_order==idx)[0][0]) + 1
+            rk_c = rank_colors.get(rank,"#888")
+            with col:
+                st.markdown(f"""
+                <div class="topsis-card" style="border-left-color:{renk};">
+                    <h4>{kod} – {ad}</h4>
+                    <div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+                        <span class="topsis-rank" style="background:{rk_c};">#{rank}</span>
+                        <span class="topsis-score" style="color:{renk};">{C[idx]:.4f}</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#6e7781;margin-top:4px;">C* Yakınlık Skoru — Yüksek = Daha İyi</div>
+                    <div style="background:#f0f0f0;border-radius:6px;height:8px;margin-top:10px;overflow:hidden;">
+                        <div style="background:{renk};width:{C[idx]*100:.1f}%;height:100%;border-radius:6px;"></div>
+                    </div>
+                    <div style="font-size:0.7rem;color:#aaa;margin-top:3px;">d⁺={t['d_pos'][idx]:.4f} &nbsp;|&nbsp; d⁻={t['d_neg'][idx]:.4f}</div>
+                </div>""", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        cg1, cg2 = st.columns(2)
+        with cg1:
+            fig, ax = plt.subplots(figsize=(6,4))
+            labels = ["S1\n1/3 EV","S2\n2/3 EV","S3\nTam EV"]
+            renkler = [RENK["S1"],RENK["S2"],RENK["S3"]]
+            bars = ax.bar(labels, C, color=renkler, width=0.45, edgecolor="white", linewidth=1.5)
+            for bar,cv in zip(bars,C):
+                ax.text(bar.get_x()+bar.get_width()/2, cv+0.005, f"{cv:.4f}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+            ax.set_title("TOPSIS Yakınlık Skorları (C*)", fontweight="bold", fontsize=11)
+            ax.set_ylabel("C* Skoru (0–1)")
+            ax.set_ylim(0, min(1.05, max(C)*1.3))
+            ax.axhline(0.5, color="gray", lw=1, linestyle="--", alpha=0.5)
+            ax.text(2.45, 0.51, "0.5", color="gray", fontsize=8)
+            ax.grid(True, axis='y', linestyle=':', alpha=0.4)
+            ax.spines[["top","right"]].set_visible(False)
+            plt.tight_layout()
+            st.pyplot(fig); plt.close(fig)
+
+        with cg2:
+            fig2, ax2 = plt.subplots(figsize=(6,4))
+            x = np.arange(3)
+            w = 0.35
+            ax2.bar(x-w/2, t["d_pos"], w, label="d⁺ (Pozitif İdeal Uzaklığı)", color=renkler, alpha=0.85, edgecolor="white")
+            ax2.bar(x+w/2, t["d_neg"], w, label="d⁻ (Negatif İdeal Uzaklığı)", color=renkler, alpha=0.4, edgecolor="white", hatch="//")
+            ax2.set_xticks(x); ax2.set_xticklabels(["S1","S2","S3"])
+            ax2.set_title("İdeal Çözüme Öklid Uzaklıkları", fontweight="bold", fontsize=11)
+            ax2.set_ylabel("Normalize Uzaklık")
+            ax2.legend(fontsize=8)
+            ax2.grid(True, axis='y', linestyle=':', alpha=0.4)
+            ax2.spines[["top","right"]].set_visible(False)
+            plt.tight_layout()
+            st.pyplot(fig2); plt.close(fig2)
+
+        st.markdown("---")
+        st.markdown("#### 📋 TOPSIS Adım Adım Hesaplama Tabloları")
+        krit = ["CO₂e Emisyonu (ton/yıl)", f"Toplam Maliyet ({ANALIZ_YILI}yıl, TL)", "Yatırım Maliyeti (TL)"]
+
+        with st.expander("1️⃣ Ham Karar Matrisi", expanded=True):
+            st.dataframe(pd.DataFrame(t["M"], index=["S1","S2","S3"], columns=krit).style.format("{:,.2f}"), use_container_width=True)
+
+        with st.expander("2️⃣ Normalize Edilmiş Matris (R)"):
+            st.dataframe(pd.DataFrame(t["R"], index=["S1","S2","S3"], columns=krit).style.format("{:.6f}"), use_container_width=True)
+
+        with st.expander("3️⃣ Ağırlıklı Normalize Matris (V)"):
+            st.caption(f"Ağırlıklar: Emisyon={w_emisyon:.2f}, Maliyet={w_maliyet:.2f}, Yatırım={w_yatirim:.2f}")
+            st.dataframe(pd.DataFrame(t["V"], index=["S1","S2","S3"], columns=krit).style.format("{:.6f}"), use_container_width=True)
+
+        with st.expander("4️⃣ Pozitif (A⁺) ve Negatif (A⁻) İdeal Çözümler"):
+            df_ideal = pd.DataFrame([t["PIS"],t["NIS"]], index=["A⁺ Pozitif İdeal (en küçük)","A⁻ Negatif İdeal (en büyük)"], columns=krit)
+            st.dataframe(df_ideal.style.format("{:.6f}"), use_container_width=True)
+
+        with st.expander("5️⃣ Uzaklıklar ve C* Nihai Skoru", expanded=True):
+            df_skor = pd.DataFrame({
+                "Senaryo": ["S1 – 1/3 EV","S2 – 2/3 EV","S3 – Tam EV"],
+                "d⁺ (Pozitif İdeal)": t["d_pos"],
+                "d⁻ (Negatif İdeal)": t["d_neg"],
+                "C* Yakınlık Skoru": C,
+                "Sıralama": [int(np.where(ranks_order==i)[0][0])+1 for i in range(3)],
+            })
+            st.dataframe(df_skor.style.format({
+                "d⁺ (Pozitif İdeal)":"{:.6f}","d⁻ (Negatif İdeal)":"{:.6f}","C* Yakınlık Skoru":"{:.4f}"
+            }).background_gradient(subset=["C* Yakınlık Skoru"], cmap="Greens"),
+            use_container_width=True, hide_index=True)
 
     # ── DETAY TABLOLAR ──────────────────────────────────────────
     with tab_tablo:
