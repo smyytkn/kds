@@ -345,7 +345,7 @@ else:
     st.markdown("<br>", unsafe_allow_html=True)
 
     tab_topsis, tab_emisyon, tab_maliyet, tab_tablo = st.tabs([
-        "🎯 TOPSIS ANALİZİ", "♻️ EMİSYON ANALİZİ", "💹 MALİYET ANALİZİ", "📊 DETAY TABLOLAR"
+         "♻️ EMİSYON ANALİZİ", "💹 MALİYET ANALİZİ", "🎯 TOPSIS ANALİZİ","📊 DETAY TABLOLAR"
     ])
 
     # Kazanan kutusu
