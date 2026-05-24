@@ -396,7 +396,7 @@ else:
         cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
 
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
-            cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
+        cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
 
             # Grafiğe çizgi ekleme - Eksik ayları engellemek için tüm index boyunca çizdiriyoruz
             ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
