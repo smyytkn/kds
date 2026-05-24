@@ -378,35 +378,99 @@ else:
  # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
-    with tab_maliyet:
-        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+  with tab_maliyet:
+    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
 
-        # Grafik Hazırlığı
-        fig_be, ax_be = plt.subplots(figsize=(13, 6))
+    fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
-        # Referans dizel maliyet serileri
-        cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
+    # =========================
+    # MEVCUT DURUM (MD)
+    # =========================
+    cum_md_toplam = (df_md["yakıt"] + df_md["bakım"]).cumsum() / 1e6
 
-        # Her senaryo için kümülatif kâr hesaplama ve çizdirme
-        senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
+    # MD referans çizgisi
+    ax_be.plot(
+        df_md["ay"],
+        cum_md_toplam,
+        color="black",
+        linewidth=3,
+        linestyle="--",
+        label="Mevcut Durum (Dizel)"
+    )
 
-        for kod, df_sc in senaryo_listesi:
-            # Senaryonun toplam maliyet serisi
-            cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
+    # =========================
+    # SENARYOLAR
+    # =========================
+    senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
-            # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
-            cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
+    for kod, df_sc in senaryo_listesi:
 
-            # Grafiğe çizgi ekleme
-            ax_be.plot(df_sc["ay"], cum_kar, color=RENK[kod], linewidth=2.5, label=f"{ETIKET[kod]} Kâr Eğrisi")
+        # EV toplam maliyet
+        cum_sc_toplam = (
+            df_sc["yakıt"] +
+            df_sc["bakım"] +
+            df_sc["taksit"]
+        ).cumsum()
 
-            # Başabaş noktasını bulma (Kârın ilk kez >= 0 olduğu ay)
-            passed_zero = df_sc["ay"][cum_kar >= 1]
+        # Dizel referansı
+        cum_md_ref = (
+            df_md["yakıt"] +
+            df_md["bakım"]
+        ).cumsum()
 
-            if not passed_zero.empty:
-                be_ay = passed_zero.iloc[0]
-                be_kar = cum_kar.iloc[be_ay - 1]
-                be_yil = be_ay / 12
+        # Kümülatif Kâr
+        cum_kar = (cum_md_ref - cum_sc_toplam) / 1e6
+
+        # Eğri çizimi
+        ax_be.plot(
+            df_sc["ay"],
+            cum_kar,
+            color=RENK[kod],
+            linewidth=2.5,
+            label=f"{ETIKET[kod]} Kâr Eğrisi"
+        )
+
+        # =========================
+        # BAŞABAŞ NOKTASI
+        # =========================
+        be_noktasi = np.where(cum_kar >= 0)[0]
+
+        if len(be_noktasi) > 0:
+
+            be_index = be_noktasi[0]
+
+            be_ay = df_sc["ay"].iloc[be_index]
+            be_kar = cum_kar.iloc[be_index]
+            be_yil = be_ay / 12
+
+            # Nokta işaretleme
+            ax_be.scatter(
+                be_ay,
+                be_kar,
+                color=RENK[kod],
+                s=120,
+                edgecolors="black",
+                zorder=5
+            )
+
+            # Yazı ekleme
+            ax_be.text(
+                be_ay,
+                be_kar,
+                f"{ETIKET[kod]}\n{be_yil:.1f} yıl",
+                fontsize=9
+            )
+
+    # Sıfır çizgisi
+    ax_be.axhline(0, color="gray", linestyle=":")
+
+    ax_be.set_xlabel("Ay")
+    ax_be.set_ylabel("Kümülatif Kâr (Milyon TL)")
+    ax_be.set_title("Başabaş Analizi")
+    ax_be.legend()
+    ax_be.grid(True)
+
+    st.pyplot(fig_be)
 
                 # Başabaş noktasını kırmızı halka ile işaretle
                 ax_be.plot(be_ay, be_kar, marker="o", color="red", markersize=8, zorder=5)
