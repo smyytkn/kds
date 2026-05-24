@@ -344,7 +344,7 @@ else:
     with c4: st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">S3 Emisyon Azalması</div><div class="val">▼{az3:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-     tab_emisyon, tab_maliyet,tab_topsis, tab_tablo = st.tabs([
+    tab_emisyon, tab_maliyet,tab_topsis, tab_tablo = st.tabs([
          "♻️ EMİSYON ANALİZİ", "💹 MALİYET ANALİZİ", "🎯 TOPSIS ANALİZİ","📊 DETAY TABLOLAR"
     ])
 
