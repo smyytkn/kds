@@ -403,7 +403,7 @@ else:
         st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
 
     with tab_maliyet:
-    st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
+        st.subheader("📈 Senaryo Bazlı Başabaş ve Kümülatif Kâr Analizi")
 
     # ── DEBUG: İlk 6 ayı göster ──
     with st.expander("🔍 DEBUG – İlk 6 Ay Maliyet Verileri", expanded=True):
@@ -499,6 +499,7 @@ else:
     if not herhangi_amorti:
         st.warning(f"⚠️ Hiçbir senaryo {ANALIZ_YILI} yıllık analiz süresinde başabaşa ulaşamadı. "
                    "Analiz yılını artırmayı veya elektrik/dizel fiyatlarını gözden geçirmeyi deneyin.")
+    
     
       # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
