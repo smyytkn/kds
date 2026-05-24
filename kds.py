@@ -409,7 +409,7 @@ else:
         cum_s1_toplam = (
         df_s1["yakıt"] +
         df_s1["bakım"]+
-        df_s1["taksit]
+        df_s1["taksit"]
     ).cumsum() / 1e6
 
     # MD referans çizgisi
@@ -427,7 +427,7 @@ else:
         cum_s2_toplam = (
         df_s2["yakıt"] +
         df_s2["bakım"]+
-        df_s2["taksit]
+        df_s2["taksit"]
     ).cumsum() / 1e6
 
     # MD referans çizgisi
@@ -446,7 +446,7 @@ else:
         cum_s3_toplam = (
         df_s3["yakıt"] +
         df_s3["bakım"]+
-        df_s3["taksit]
+        df_s3["taksit"]
     ).cumsum() / 1e6
 
     # MD referans çizgisi
