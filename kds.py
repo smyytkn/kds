@@ -243,20 +243,37 @@ def run_analysis(we, wm, wy):
         aylik_sabit_taksit = yat / (yil * 12) if yat > 0 else 0
 
         rows = []
-        for ay in range(1, yil*12+1):
-            yn = (ay-1)//12
-            yc = (1+tufe)**yn
-            yak  = (ay_yak_d + ay_yak_e)*yc
-            bak  = ay_bak*yc
-            # SABİT PLAN
-            if plan == 1:
-                taks = aylik_sabit_taksit
-            
-            # TÜFE BAZLI PLAN
-            else:
-                taks = aylik_sabit_taksit * yc
-    
-            rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
+        # SABİT AYLIK TAKSİT
+aylik_taksit = yat / (yil * 12) if yat > 0 else 0
+
+for ay in range(1, yil*12 + 1):
+
+    yn = (ay - 1) // 12
+
+    # ENFLASYON ÇARPANI
+    yc = (1 + tufe) ** yn
+
+    # YAKIT VE BAKIM HER İKİ PLANDA DA ARTAR
+    yak = (ay_yak_d + ay_yak_e) * yc
+    bak = ay_bak * yc
+
+    # ÖDEME PLANI FARKI
+    if plan == 1:
+        # SABİT TAKSİT
+        taks = aylik_taksit
+
+    else:
+        # TÜFE BAZLI TAKSİT
+        taks = aylik_taksit * yc
+
+    rows.append({
+        "ay": ay,
+        "yil": yn + 1,
+        "yakıt": yak,
+        "bakım": bak,
+        "taksit": taks,
+        "toplam": yak + bak + taks
+    })
         return pd.DataFrame(rows)
 
     df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
