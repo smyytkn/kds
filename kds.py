@@ -127,7 +127,7 @@ ETIKET = {
     "S3": "Senaryo 3 – Tam EV Geçişi",
 }
 
-ANALIZ_YILI = 20
+ANALIZ_YILI = 10
 
 # ─── BAŞLIK ───
 st.markdown("""
