@@ -375,7 +375,7 @@ else:
         st.dataframe(pd.DataFrame(tablo), use_container_width=True, hide_index=True)
         st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
 
-    # ──────────────────────────────────────────
+     # ──────────────────────────────────────────
     #  MALİYET SEKMESİ
     # ──────────────────────────────────────────
     with tab_maliyet:
@@ -388,18 +388,11 @@ else:
         cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
 
         # Her senaryo için kümülatif kâr hesaplama ve çizdirme
-        senaryo_listesi = [("MD", df_md),("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
+        senaryo_listesi = [("S1", df_s1), ("S2", df_s2), ("S3", df_s3)]
 
         for kod, df_sc in senaryo_listesi:
             # Senaryonun toplam maliyet serisi
-            
-            cum_sc_toplam = (df_md["yakıt"] + df_md["bakım"] + df_md["taksit"]).cumsum()
-        for kod, df_sc in senaryo_listesi:
-            cum_sc_toplam = (df_s1["yakıt"] + df_s1["bakım"] + df_s1["taksit"]).cumsum()
-        for kod, df_sc in senaryo_listesi:
-            cum_sc_toplam = (df_s2["yakıt"] + df_s2["bakım"] + df_s2["taksit"]).cumsum()
-        for kod, df_sc in senaryo_listesi:
-            cum_sc_toplam = (df_s3["yakıt"] + df_s3["bakım"] + df_s3["taksit"]).cumsum()
+            cum_sc_toplam = (df_sc["yakıt"] + df_sc["bakım"] + df_sc["taksit"]).cumsum()
 
             # Kümülatif Kâr = Dizel Maliyeti - EV Maliyeti (Milyon TL cinsinden)
             cum_kar = (cum_md_yakit_bakim - cum_sc_toplam) / 1e6
@@ -485,6 +478,7 @@ else:
                     yillik_df["Yıl"] = yillik_df["Yıl"].astype(int)
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
                                  height=min(40 + ANALIZ_YILI * 35, 500))
+
 
 
     # ── TOPSIS SEKMESİ ──────────────────────────────────────────
