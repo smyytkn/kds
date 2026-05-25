@@ -143,21 +143,21 @@ with st.sidebar:
     n_otobus  = st.number_input("Dizel Otobüs Sayısı", min_value=1, value=20, step=1)
     n_mini    = st.number_input("Dizel Minibüs Sayısı", min_value=0, value=10, step=1)
 
-    st.markdown("### ARAÇ FİYATLARI (TL)")
+    st.markdown("### ELEKTRİKLİ ARAÇ FİYATLARI (TL)")
     fiyat_otobus_ev = st.number_input("Elektrikli Otobüs Birim Fiyatı", min_value=1.0, value=8_000_000.0, step=100_000.0, format="%.0f")
     fiyat_mini_ev   = st.number_input("Elektrikli Minibüs Birim Fiyatı", min_value=0.0, value=3_500_000.0, step=100_000.0, format="%.0f")
 
     st.markdown("### BAKIM MALİYETLERİ (TL/ARAÇ/YIL)")
-    bak_otobus_d = st.number_input("Dizel Otobüs Bakım", min_value=0.0, value=150_000.0, step=10_000.0, format="%.0f")
-    bak_mini_d   = st.number_input("Dizel Minibüs Bakım", min_value=0.0, value=80_000.0, step=10_000.0, format="%.0f")
-    bak_otobus_e = st.number_input("EV Otobüs Bakım", min_value=0.0, value=60_000.0, step=10_000.0, format="%.0f")
-    bak_mini_e   = st.number_input("EV Minibüs Bakım", min_value=0.0, value=35_000.0, step=10_000.0, format="%.0f")
+    bak_otobus_d = st.number_input("Dizel Otobüs Bakım Maliyeti", min_value=0.0, value=150_000.0, step=10_000.0, format="%.0f")
+    bak_mini_d   = st.number_input("Dizel Minibüs Bakım Maliyeti", min_value=0.0, value=80_000.0, step=10_000.0, format="%.0f")
+    bak_otobus_e = st.number_input("Elektrikli Otobüs Bakım Maliyeti", min_value=0.0, value=60_000.0, step=10_000.0, format="%.0f")
+    bak_mini_e   = st.number_input("Elektrikli Minibüs Bakım Maliyeti", min_value=0.0, value=35_000.0, step=10_000.0, format="%.0f")
 
-    st.markdown("### YAKIT / ENERJİ FİYATLARI")
+    st.markdown("### YAKIT / ELEKTRİK FİYATLARI")
     dizel_fiyat    = st.number_input("Dizel Fiyatı (TL/L)", min_value=0.0, value=45.0, step=1.0)
     elektrik_fiyat = st.number_input("Elektrik Fiyatı (TL/kWh)", min_value=0.0, value=4.5, step=0.1)
 
-    st.markdown("### YILLIK KİLOMETRELER")
+    st.markdown("### YILLIK ARAÇ KİLOMETRELER")
     km_otobus = st.number_input("Otobüs Filosu Toplam Yıllık km", min_value=1.0, value=1_500_000.0, step=10_000.0, format="%.0f")
     km_mini   = st.number_input("Minibüs Filosu Toplam Yıllık km", min_value=0.0, value=600_000.0, step=10_000.0, format="%.0f")
 
@@ -171,14 +171,14 @@ with st.sidebar:
     )
     odeme_plani_adi = "Sabit Ödeme Planı" if odeme_plani == 1 else f"TÜİK Zam Oranı Bazlı Plan (%{tufe_yuzde:.0f}/yıl)"
 
-    st.markdown("### 🎯 TOPSIS KRİTER AĞIRLIKLARI")
+    st.markdown("###  TOPSIS KRİTER AĞIRLIKLARI")
     st.caption("Emisyon + Maliyet ≤ 1.0 olmalı; Yatırım otomatik hesaplanır.")
     w_emisyon = st.slider("Emisyon Ağırlığı",  0.0, 1.0, 0.40, 0.05)
     w_maliyet = st.slider("Maliyet Ağırlığı",  0.0, 1.0 - w_emisyon, 0.35, 0.05)
     w_yatirim = round(max(0.0, 1.0 - w_emisyon - w_maliyet), 4)
-    st.markdown(f"**Yatırım Ağırlığı (otomatik):** `{w_yatirim:.2f}`")
+    st.markdown(f"**Yatırım Ağırlığı :** `{w_yatirim:.2f}`")
 
-    hesapla_btn = st.button("🔍 ANALİZİ ÇALIŞTIR", use_container_width=True)
+    hesapla_btn = st.button(" ANALİZİ ÇALIŞTIR 🔍 ", use_container_width=True)
 
 
 # ─── TOPSIS FONKSİYONU ───
