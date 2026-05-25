@@ -207,11 +207,11 @@ def topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, w
 
 
 # ─── ANA HESAPLAMA ───
-    def run_analysis(we, wm, wy):
-        md = dict(otobus_d=n_otobus, otobus_e=0, mini_d=n_mini, mini_e=0)
-        s1 = dict(otobus_d=n_otobus*(2/3), otobus_e=n_otobus/3, mini_d=n_mini*(2/3), mini_e=n_mini/3)
-        s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
-        s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
+def run_analysis(we, wm, wy):
+    md = dict(otobus_d=n_otobus, otobus_e=0, mini_d=n_mini, mini_e=0)
+    s1 = dict(otobus_d=n_otobus*(2/3), otobus_e=n_otobus/3, mini_d=n_mini*(2/3), mini_e=n_mini/3)
+    s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
+    s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
 
 
     def em(sc, km_o, km_m):
