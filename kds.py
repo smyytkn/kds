@@ -239,12 +239,13 @@ def run_analysis(we, wm, wy):
                   sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
         yat = n_ev_o*f_o + n_ev_m*f_m
         taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
-        if plan==2 and tufe>0:
-            carpan = sum((1+tufe)**t for t in range(yil))
-            tst = yat/carpan if carpan>0 else 0
+        if plan == 2 and tufe > 0:
+            carpan = sum((1 + tufe) ** t for t in range(yil * 12))  # AY bazında
+             tst_aylik = yat / carpan  # İlk ayın taksiti
         else:
-            tst = yat/yil if plan==2 and yat>0 else 0
+            tst_aylik = yat / (yil * 12) if plan == 2 and yat > 0 else 0
 
+    
         rows = []
         for ay in range(1, yil*12+1):
             yn = (ay-1)//12
