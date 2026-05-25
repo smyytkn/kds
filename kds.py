@@ -129,9 +129,9 @@ st.markdown("""
 <div class="hero-block">
   <h1>📈 ELEKTRİKLİ ARACA GEÇİŞ KARAR DESTEK SİSTEMİ</h1>
   <p>
-    Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecinde emisyon ve maliyet
-    parametrelerine dayalı senaryo analizleri gerçekleştirerek geçiş kararlarının optimizasyonunu
-    desteklemektedir. Karar yöntemi: <b>TOPSIS</b> (3 Kriter).
+      Bu uygulama, dizel araç filolarının elektrikli araçlara geçiş sürecini emisyon ve maliyet
+      parametreleri üzerinden analiz eder. Geliştirilen senaryoları 3 temel kritere dayalı TOPSIS
+      algoritması ile değerlendirerek, filonuz için en optimum dönüşüm kararını destekler.
   </p>
 </div>
 """, unsafe_allow_html=True)
