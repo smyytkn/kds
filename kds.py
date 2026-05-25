@@ -430,7 +430,7 @@ else:
             "S3▼": [azalma(em_s3['CO2_kg'], em_md['CO2_kg']), azalma(em_s3['CH4_kg'], em_md['CH4_kg']), azalma(em_s3['N2O_kg'], em_md['N2O_kg']), azalma(em_s3['CO2e_ton'], em_md['CO2e_ton'])],
         }
         st.dataframe(pd.DataFrame(tablo), use_container_width=True, hide_index=True)
-        st.info("AZALMA DEĞERLERİ MEVCUT DURUMA GÖRE KIYASLANMIŞTIR.")
+        st.info("Azalma değerleri mevcut duruma göre kıyaslanmıştır.")
 
     # ── MALİYET SEKMESİ ─────────────────────────────────────────
     with tab_maliyet:
