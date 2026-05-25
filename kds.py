@@ -136,20 +136,54 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-c1, c2 = st.columns(2)
-with c1:
-    st.markdown(f'<div class="metric-card" style="--accent:#555555"><div class="lbl">MD Yıllık Emisyon</div><div class="val">{em_md["CO2e_ton"]:,.0f}</div><div class="lbl">ton CO₂e/yıl</div></div>', unsafe_allow_html=True)
-with c2:
-    st.markdown(f'<div class="metric-card" style="--accent:#2166AC"><div class="lbl">S1 Emisyon Azalması</div><div class="val">▼{az1:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
-
-    # İkinci satır: S2 ve S3
-c3, c4 = st.columns(2)
-with c3:
-    st.markdown(f'<div class="metric-card" style="--accent:#F4A100"><div class="lbl">S2 Emisyon Azalması</div><div class="val">▼{az2:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
-with c4:
-    st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">S3 Emisyon Azalması</div><div class="val">▼{az3:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
+col_md, col_s1 = st.columns(2)
+with col_md:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#555555">
+        <div class="lbl">📋 MEVCUT DURUM</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">🚌</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam Dizel</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Tüm araçlar dizel yakıtıyla işletiliyor. Mevcut durumun temel referans noktasıdır.
+        </div>
+    </div>""", unsafe_allow_html=True)
+ 
+with col_s1:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#2166AC">
+        <div class="lbl">⚡ SENARYO 1</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">1/3</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Araçların üçte biri elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
+ 
+col_s2, col_s3 = st.columns(2)
+with col_s2:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#F4A100">
+        <div class="lbl">⚡ SENARYO 2</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">2/3</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Araçların üçte ikisi elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
+ 
+with col_s3:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#1B7837">
+        <div class="lbl">⚡ SENARYO 3</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">100%</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Tüm araçlar elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
+ 
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
 
 # ─── SIDEBAR ───
