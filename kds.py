@@ -519,8 +519,8 @@ else:
         st.markdown("---")
 
         # ── 2. SENARYO BAZLI KÜMÜLATİF KARŞILAŞTIRMA TABLOLARI & GRAFİKLERİ ──
-        st.subheader("📊 Senaryo Bazlı Kümülatif Maliyet Karşılaştırması (MD vs Senaryo)")
-        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f} | Yatırım tam başlangıçta dahil edilmiştir")
+        st.subheader("📊 Senaryo Bazlı Kümülatif Maliyet Karşılaştırması ")
+        st.caption(f" {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f} | Yakıt ve bakım maliyetleri her yıl TÜFE oranına göre arttırılarak hesaplanmıştır.")
 
         for kod, cum_ev, yat in [("S1", cum_s1, yat1), ("S2", cum_s2, yat2), ("S3", cum_s3, yat3)]:
             with st.expander(f"📋 {ETIKET[kod]} — MD Karşılaştırması", expanded=True):
