@@ -241,7 +241,7 @@ def run_analysis(we, wm, wy):
         taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
         if plan == 2 and tufe > 0:
             carpan = sum((1 + tufe) ** t for t in range(yil * 12))  # AY bazında
-             tst_aylik = yat / carpan  # İlk ayın taksiti
+            tst_aylik = yat / carpan  # İlk ayın taksiti
         else:
             tst_aylik = yat / (yil * 12) if plan == 2 and yat > 0 else 0
 
