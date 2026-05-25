@@ -239,36 +239,36 @@ def run_analysis(we, wm, wy):
                   sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
         yat = n_ev_o*f_o + n_ev_m*f_m
         # Değişken tanımlamalarını fonksiyon başında güvenli yapın
-taksit_sabit = 0
-tst = 0
+    taksit_sabit = 0
+    tst = 0
 
-yat = n_ev_o * f_o + n_ev_m * f_m
-
-if plan == 1:
-    taksit_sabit = yat / (yil * 12) if yat > 0 else 0
-
-elif plan == 2:
-    if tufe > 0:
-        carpan = sum((1 + tufe) ** t for t in range(yil))
-        tst = yat / carpan if carpan > 0 else 0
-    else:
-        tst = yat / yil if yat > 0 else 0
-
-rows = []
-for ay in range(1, yil * 12 + 1):
-    yn = (ay - 1) // 12
-    yc = (1 + tufe) ** yn
-    yak  = (ay_yak_d + ay_yak_e) * yc
-    bak  = ay_bak * yc
+    yat = n_ev_o * f_o + n_ev_m * f_m
 
     if plan == 1:
-        taks = taksit_sabit                        # Sabit, enflasyonsuz
-    elif plan == 2:
-        taks = (tst / 12) * yc if yat > 0 else 0  # TÜFE'ye göre artan
-    else:
-        taks = 0
+        taksit_sabit = yat / (yil * 12) if yat > 0 else 0
 
-    rows.append({
+    elif plan == 2:
+        if tufe > 0:
+            carpan = sum((1 + tufe) ** t for t in range(yil))
+            tst = yat / carpan if carpan > 0 else 0
+        else:
+            tst = yat / yil if yat > 0 else 0
+
+    rows = []
+    for ay in range(1, yil * 12 + 1):
+        yn = (ay - 1) // 12
+        yc = (1 + tufe) ** yn
+        yak  = (ay_yak_d + ay_yak_e) * yc
+        bak  = ay_bak * yc
+
+        if plan == 1:
+            taks = taksit_sabit                        # Sabit, enflasyonsuz
+        elif plan == 2:
+            taks = (tst / 12) * yc if yat > 0 else 0  # TÜFE'ye göre artan
+        else:
+            taks = 0
+
+        rows.append({
         "ay": ay,
         "yil": yn + 1,
         "yakıt": yak,
@@ -279,12 +279,12 @@ for ay in range(1, yil * 12 + 1):
 
     t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
 
-    return {
+     return {
         "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
         "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
         "yat1":yat1,"yat2":yat2,"yat3":yat3,
-        "topsis":t, "en_iyi":t["en_iyi"],
-    }
+        "topsis":t, "en_iyi":t["en_iyi"], }
+   
 
 
 # ─── SESSION STATE ───
