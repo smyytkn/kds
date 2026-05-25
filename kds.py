@@ -96,6 +96,17 @@ hr { border-color: #e1e4e8 !important; margin: 1.5rem 0 !important; }
     border-radius: 0 8px 8px 0; padding: 0.8rem 1rem;
     font-size: 0.85rem; color: #1a3a2a; margin: 0.8rem 0;
 }
+.scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+@media (max-width: 768px) {
+    .scenario-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -136,19 +147,58 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ─── SENARYO TANIMLARI (BAŞLANGIÇTA GÖSTER) ───
+st.markdown("### 📍 Analiz Senaryoları")
+st.markdown("<div class='scenario-grid'>", unsafe_allow_html=True)
 
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    st.markdown('<div class="metric-card" style="--accent:#555555"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">MEVCUT DURUM</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">🚌 Tam Dizel</div><div class="lbl">Tüm araçlar dizel olarak hesaplanır.</div></div>', unsafe_allow_html=True)
-with c2:
-    st.markdown('<div class="metric-card" style="--accent:#2166AC"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 1</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 1/3 Geçiş</div><div class="lbl">Araçların üçte biri elektirkli araca dönüştürülür.</div></div>', unsafe_allow_html=True)
-with c3:
-    st.markdown('<div class="metric-card" style="--accent:#F4A100"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 2</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi elektirkli araca dönüştürülür.</div></div>', unsafe_allow_html=True)
-with c4:
-    st.markdown('<div class="metric-card" style="--accent:#1B7837"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 3</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüştürülür.</div></div>', unsafe_allow_html=True)
+col_md, col_s1 = st.columns(2)
+with col_md:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#555555">
+        <div class="lbl">📋 MEVCUT DURUM</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">🚌</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam Dizel</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Tüm araçlar dizel yakıtıyla işletiliyor. Mevcut durumun temel referans noktasıdır.
+        </div>
+    </div>""", unsafe_allow_html=True)
 
+with col_s1:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#2166AC">
+        <div class="lbl">⚡ SENARYO 1</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">1/3</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Araçların üçte biri elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
 
+col_s2, col_s3 = st.columns(2)
+with col_s2:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#F4A100">
+        <div class="lbl">⚡ SENARYO 2</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">2/3</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Araçların üçte ikisi elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
 
+with col_s3:
+    st.markdown("""
+    <div class="metric-card" style="--accent:#1B7837">
+        <div class="lbl">⚡ SENARYO 3</div>
+        <div class="val" style="font-size:1.1rem;margin:8px 0;">100%</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam EV Geçişi</div>
+        <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
+            Tüm araçlar elektrikli araçlara dönüştürülüyor.
+        </div>
+    </div>""", unsafe_allow_html=True)
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
 # ─── SIDEBAR ───
 with st.sidebar:
@@ -342,18 +392,12 @@ if hesapla_btn:
 
 res = st.session_state["results"]
 
-
-
-
 # ─── SONUÇSUZ EKRAN ───
-
 if res is None:
     st.markdown("""
     <div class="info-box">
     ℹ️ Sol panelden filo bilgilerini ve parametrelerinizi girdikten sonra <b>ANALİZİ ÇALIŞTIR</b> butonuna tıklayın.
     </div>""", unsafe_allow_html=True)
-
-
 
 # ─── SONUÇLU EKRAN ───
 else:
@@ -369,25 +413,28 @@ else:
     C      = t["C"]
     en_iyi = res["en_iyi"]
 
-    # Özet metrik kartları
+    # Özet metrik kartları - 2x2 GRID
     az1 = (1 - em_s1["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     az2 = (1 - em_s2["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
     az3 = (1 - em_s3["CO2e_ton"] / em_md["CO2e_ton"]) * 100 if em_md["CO2e_ton"] > 0 else 0
 
-    c1, c2, c3, c4 = st.columns(4)
+    st.markdown("### 📊 Analiz Sonuçları Özeti")
+    
+    # İlk satır: MD ve S1
+    c1, c2 = st.columns(2)
     with c1:
         st.markdown(f'<div class="metric-card" style="--accent:#555555"><div class="lbl">MD Yıllık Emisyon</div><div class="val">{em_md["CO2e_ton"]:,.0f}</div><div class="lbl">ton CO₂e/yıl</div></div>', unsafe_allow_html=True)
     with c2:
         st.markdown(f'<div class="metric-card" style="--accent:#2166AC"><div class="lbl">S1 Emisyon Azalması</div><div class="val">▼{az1:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
+    
+    # İkinci satır: S2 ve S3
+    c3, c4 = st.columns(2)
     with c3:
         st.markdown(f'<div class="metric-card" style="--accent:#F4A100"><div class="lbl">S2 Emisyon Azalması</div><div class="val">▼{az2:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
     with c4:
         st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">S3 Emisyon Azalması</div><div class="val">▼{az3:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
+    
     st.markdown("<br>", unsafe_allow_html=True)
-
-    tab_emisyon, tab_maliyet, tab_topsis, tab_tablo = st.tabs([
-        "♻️ EMİSYON ANALİZİ", "💹 MALİYET ANALİZİ", "🎯 TOPSIS ANALİZİ", "📊 DETAY TABLOLAR"
-    ])
 
     # Kazanan kutusu
     st.markdown(f"""
@@ -400,6 +447,10 @@ else:
         </div>
     </div>""", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
+
+    tab_emisyon, tab_maliyet, tab_topsis, tab_tablo = st.tabs([
+        "♻️ EMİSYON ANALİZİ", "💹 MALİYET ANALİZİ", "🎯 TOPSIS ANALİZİ", "📊 DETAY TABLOLAR"
+    ])
 
     # ── EMİSYON SEKMESİ ─────────────────────────────────────────
     with tab_emisyon:
@@ -467,9 +518,6 @@ else:
         aylar  = df_md["ay"].values
 
         # ── Senaryo kümülatif maliyetleri: yatırım offset + kümülatif işletme ──
-        # Her iki planda da EV eğrisi yatırım maliyetinden başlasın:
-        # Sabit planda taksit df içinde gömülü, ama görsel için yatırımı başlangıca koyuyoruz.
-        # Bu yüzden sadece işletme (yakıt+bakım) kümülatifine yatırımı baştan ekliyoruz.
         cum_s1_isletme = (df_s1["yakıt"] + df_s1["bakım"]).cumsum().values
         cum_s2_isletme = (df_s2["yakıt"] + df_s2["bakım"]).cumsum().values
         cum_s3_isletme = (df_s3["yakıt"] + df_s3["bakım"]).cumsum().values
@@ -522,7 +570,6 @@ else:
 
         ax_be.set_title(
             f" Başabaş Analizi Grafiği ({ANALIZ_YILI} Yıl)\n",
-           
             fontweight="bold", fontsize=11,
         )
         ax_be.set_xlabel("Zaman (Ay)", fontweight="bold")
@@ -538,7 +585,7 @@ else:
 
         st.markdown("---")
 
-        # ── 2. SENARYO BAZLI KÜMÜLATİF KARŞILAŞTIRMA TABLOLARI & GRAFİKLERİ ──
+        # ── 2. SENARYO BAZLI KÜMÜLATİF KARŞILAŞTIRMA ──
         st.subheader("📊 Senaryo Bazlı Kümülatif Maliyet Karşılaştırması ")
         st.caption(f" {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f} | Yakıt ve bakım maliyetleri her yıl TÜFE oranına göre arttırılarak hesaplanmıştır.")
 
@@ -549,7 +596,7 @@ else:
                 fark   = cum_ev - cum_md
                 durum  = [" Amorti" if f <= 0 else "–" for f in fark]
 
-                # Seçili aylar: her 6 ayda bir + başabaş ayı
+                # Seçili aylar
                 kesisim_idx = np.where(fark <= 0)[0]
                 be_ay = int(aylar[kesisim_idx[0]]) if len(kesisim_idx) > 0 else None
 
