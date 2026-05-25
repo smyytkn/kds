@@ -238,32 +238,44 @@ def run_analysis(we, wm, wy):
         ay_bak = (sc["otobus_d"]*bak_otobus_d + sc["mini_d"]*bak_mini_d +
                   sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
         yat = n_ev_o*f_o + n_ev_m*f_m
-        taksit_sabit = yat/(yil*12) if plan==1 and yat>0 else 0
-        if plan == 2 and tufe > 0:
-            carpan = sum((1 + tufe) ** t for t in range(yil * 12))  # AY bazında
-            tst_aylik = yat / carpan  # İlk ayın taksiti
-        else:
-            tst_aylik = yat / (yil * 12) if plan == 2 and yat > 0 else 0
+        # Değişken tanımlamalarını fonksiyon başında güvenli yapın
+taksit_sabit = 0
+tst = 0
 
-    
-        rows = []
-        for ay in range(1, yil*12+1):
-            yn = (ay-1)//12
-            yc = (1+tufe)**yn
-            yak  = (ay_yak_d + ay_yak_e)*yc
-            bak  = ay_bak*yc
-            taks = (taksit_sabit if plan==1 else ((tst/12)*yc if yat>0 else 0))
-            rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
-        return pd.DataFrame(rows)
+yat = n_ev_o * f_o + n_ev_m * f_m
 
-    df_md = maliyet(md, 0, 0, 0, 0, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s1 = maliyet(s1, n_otobus/3, n_mini/3, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s2 = maliyet(s2, n_otobus*(2/3), n_mini*(2/3), fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
-    df_s3 = maliyet(s3, n_otobus, n_mini, fiyat_otobus_ev, fiyat_mini_ev, tufe_orani, ANALIZ_YILI, odeme_plani)
+if plan == 1:
+    taksit_sabit = yat / (yil * 12) if yat > 0 else 0
 
-    yat1 = (n_otobus/3)*fiyat_otobus_ev + (n_mini/3)*fiyat_mini_ev
-    yat2 = (n_otobus*(2/3))*fiyat_otobus_ev + (n_mini*(2/3))*fiyat_mini_ev
-    yat3 = n_otobus*fiyat_otobus_ev + n_mini*fiyat_mini_ev
+elif plan == 2:
+    if tufe > 0:
+        carpan = sum((1 + tufe) ** t for t in range(yil))
+        tst = yat / carpan if carpan > 0 else 0
+    else:
+        tst = yat / yil if yat > 0 else 0
+
+rows = []
+for ay in range(1, yil * 12 + 1):
+    yn = (ay - 1) // 12
+    yc = (1 + tufe) ** yn
+    yak  = (ay_yak_d + ay_yak_e) * yc
+    bak  = ay_bak * yc
+
+    if plan == 1:
+        taks = taksit_sabit                        # Sabit, enflasyonsuz
+    elif plan == 2:
+        taks = (tst / 12) * yc if yat > 0 else 0  # TÜFE'ye göre artan
+    else:
+        taks = 0
+
+    rows.append({
+        "ay": ay,
+        "yil": yn + 1,
+        "yakıt": yak,
+        "bakım": bak,
+        "taksit": taks,
+        "toplam": yak + bak + taks
+    })
 
     t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
 
