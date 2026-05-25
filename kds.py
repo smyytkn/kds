@@ -439,32 +439,42 @@ else:
 
         fig_be, ax_be = plt.subplots(figsize=(13, 6))
 
-        aylar = df_md["ay"].values  # numpy array
+        aylar = df_md["ay"].values
 
-        # MD: sadece yakıt + bakım (taksit yok, saf işletme maliyeti)
-        cum_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values / 1e6
+        # Yatırım tutarları (başlangıç maliyeti)
+        yat1 = res["yat1"]
+        yat2 = res["yat2"]
+        yat3 = res["yat3"]
 
-        # EV senaryoları: yakıt + bakım + taksit (yatırım dahil toplam maliyet)
-        cum_s1 = df_s1["toplam"].cumsum().values / 1e6
-        cum_s2 = df_s2["toplam"].cumsum().values / 1e6
-        cum_s3 = df_s3["toplam"].cumsum().values / 1e6
+        # MD: kümülatif işletme maliyeti (yakıt + bakım), 0'dan başlar
+        isletme_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values / 1e6
 
-        # MD eğrisi (kesik, kalın, gri)
-        ax_be.plot(aylar, cum_md, color=RENK["MD"], linewidth=3.0,
+        # EV senaryoları: yatırım maliyeti + kümülatif işletme maliyeti
+        # Başlangıç noktası yatırım kadar yukarıda → zamanla MD ile kesişir
+        isletme_s1 = (df_s1["yakıt"] + df_s1["bakım"]).cumsum().values / 1e6
+        isletme_s2 = (df_s2["yakıt"] + df_s2["bakım"]).cumsum().values / 1e6
+        isletme_s3 = (df_s3["yakıt"] + df_s3["bakım"]).cumsum().values / 1e6
+
+        cum_s1 = yat1 / 1e6 + isletme_s1
+        cum_s2 = yat2 / 1e6 + isletme_s2
+        cum_s3 = yat3 / 1e6 + isletme_s3
+
+        # MD eğrisi (kesik çizgi)
+        ax_be.plot(aylar, isletme_md, color=RENK["MD"], linewidth=3.0,
                    linestyle="--", label=ETIKET["MD"], zorder=4)
 
-        # EV eğrileri ve kesişim noktaları
+        # EV eğrileri
         for kod, cum_ev in [("S1", cum_s1), ("S2", cum_s2), ("S3", cum_s3)]:
             ax_be.plot(aylar, cum_ev, color=RENK[kod], linewidth=2.2,
                        linestyle="-", label=ETIKET[kod], zorder=3)
 
-            # Kesişim: EV eğrisi MD'nin altına ilk geçtiği ay
-            diff = cum_ev - cum_md  # başta pozitif (EV pahalı), sonra negatif (EV ucuz)
+            # Kesişim: EV kümülatif maliyeti MD'ye eşitlendiği an
+            diff = cum_ev - isletme_md  # başta pozitif (yatırım yükü), sonra negatif
             kesisim_idx = np.where(diff <= 0)[0]
 
             if len(kesisim_idx) > 0:
-                idx    = kesisim_idx[0]
-                be_ay  = aylar[idx]
+                idx   = kesisim_idx[0]
+                be_ay = aylar[idx]
                 be_val = cum_ev[idx]
                 be_yil = be_ay / 12
 
@@ -472,18 +482,11 @@ else:
                            markersize=10, zorder=6,
                            markeredgecolor="white", markeredgewidth=2)
 
-                # Etiket konumunu senaryoya göre ayarla
-                x_off = 3
-                y_off = be_val * 0.06 + 10
-                if kod == "S2":
-                    y_off = -be_val * 0.12 - 10
-                if kod == "S3":
-                    y_off = -be_val * 0.18 - 15
-
+                y_off = 15 if kod == "S1" else (-20 if kod == "S2" else 10)
                 ax_be.annotate(
                     f"Amorti: {be_ay}. Ay\n({be_yil:.1f} Yıl)",
                     xy=(be_ay, be_val),
-                    xytext=(be_ay + x_off, be_val + y_off),
+                    xytext=(be_ay + 3, be_val + y_off),
                     color=RENK[kod], fontsize=8, fontweight="bold",
                     arrowprops=dict(arrowstyle="->", color=RENK[kod], lw=1.2),
                     bbox=dict(facecolor="white", alpha=0.9,
@@ -491,16 +494,13 @@ else:
                     zorder=7,
                 )
             else:
-                # Analiz süresi boyunca amorti edilemedi
-                ax_be.text(
-                    aylar[-1] * 0.98, cum_ev[-1],
-                    f" {kod}: Amorti Edilemedi",
-                    color=RENK[kod], fontsize=8, va="center", ha="right",
-                )
+                ax_be.text(aylar[-1] * 0.97, cum_ev[-1],
+                           f" {kod}: Amorti Edilemedi",
+                           color=RENK[kod], fontsize=8, va="center")
 
         ax_be.set_title(
             f"Kümülatif Maliyet Karşılaştırması ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)\n"
-            f"(MD = Yakıt+Bakım | S1/S2/S3 = Yakıt+Bakım+Yatırım Taksiti)",
+            "(EV eğrileri yatırım maliyetiyle başlar, zamanla Mevcut Durum eğrisini keser)",
             fontweight="bold", fontsize=11,
         )
         ax_be.set_xlabel("Zaman Ekseni (Ay)", fontweight="bold")
@@ -519,7 +519,7 @@ else:
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
-        for df_, kod in [(df_md,"MD"),(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
+        for df_, kod in [(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
                 col_g, col_t = st.columns([2, 1])
                 with col_g:
