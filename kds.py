@@ -775,7 +775,7 @@ else:
 
     # ── DETAY TABLOLAR ──────────────────────────────────────────
     with tab_tablo:
-        st.subheader("Senaryolara Ait Aylık Ham Veri Çıktıları")
+        st.subheader("Senaryolara Ait Aylık Ödeme Planı")
         sec = st.selectbox("Görüntülemek İstediğiniz Senaryoyu Seçin:", ["S1", "S2", "S3"])
         gdf = {"S1": df_s1, "S2": df_s2, "S3": df_s3}[sec].copy()
         gdf.columns = ["Ay", "Yıl", "Yakıt Maliyeti (TL)", "Bakım Maliyeti (TL)", "Yatırım Taksiti (TL)", "Toplam Aylık Maliyet (TL)"]
