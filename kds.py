@@ -631,7 +631,7 @@ else:
         st.markdown("---")
 
         # ── 3. SENARYO BAZLI AYLIK MALİYET DETAYI ──────────────────────────
-        st.subheader(f"📉 Senaryo Bazlı Aylık Maliyet Bileşen Analizi – {ANALIZ_YILI} Yıl")
+        st.subheader(f"📉 Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
         for df_, kod in [(df_md,"MD"),(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
@@ -647,7 +647,7 @@ else:
                                      (df_["yakıt"] + df_["bakım"]) / 1e6,
                                      alpha=0.4, color="orange", label="Araç Taksiti")
                     ax2.plot(df_["ay"], df_["toplam"] / 1e6, color=renk, linewidth=2, label="Toplam")
-                    ax2.set_title(f"{ETIKET[kod]}: Aylık Maliyet Bileşenleri", fontweight="bold")
+                    ax2.set_title(f"{ETIKET[kod]}: Aylık Maliyet Analizi", fontweight="bold")
                     ax2.set_xlabel("Ay")
                     ax2.set_ylabel("Milyon TL")
                     ax2.legend(loc="upper left", fontsize=8)
