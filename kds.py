@@ -723,17 +723,17 @@ else:
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
                                  height=min(40 + ANALIZ_YILI * 35, 500))
 
-    # ── TOPSIS SEKMESİ ──────────────────────────────────────────
+   # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
         st.subheader("TOPSIS – 3 Kriterli Çok Amaçlı Karar Analizi")
         st.caption(f"Kriterler: CO₂e Emisyonu · Toplam Maliyet · Yatırım Maliyeti  |  Ağırlıklar: {w_emisyon:.2f} / {w_maliyet:.2f} / {w_yatirim:.2f}")
 
         rank_colors = {1: "#1e9e6b", 2: "#F4A100", 3: "#e05c5c"}
-        sen_info    = [("S1", RENK["S1"]), ("S2",  RENK["S2"]), ("S3",  RENK["S3"])]
+        sen_info    = [("S1", "1/3 EV Geçişi", RENK["S1"]), ("S2", "2/3 EV Geçişi", RENK["S2"]), ("S3", "Tam EV Geçişi", RENK["S3"])]
         ranks_order = np.argsort(-C)
 
         col1, col2, col3 = st.columns(3)
-        for col, (idx, (kod, renk)) in zip([col1, col2, col3], enumerate(sen_info)):
+        for col, (idx, (kod, ad, renk)) in zip([col1, col2, col3], enumerate(sen_info)):
             rank = int(np.where(ranks_order == idx)[0][0]) + 1
             rk_c = rank_colors.get(rank, "#888")
             with col:
