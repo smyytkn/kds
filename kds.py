@@ -117,9 +117,9 @@ GWP_N2O = 265
 RENK = {"MD":"#555555","S1":"#2166AC","S2":"#F4A100","S3":"#1B7837"}
 ETIKET = {
     "MD": "Mevcut Durum - Tam Dizel",
-    "S1": "Senaryo 1 – 1/3 Elektrikli Araca Geçiş Senaryo",
-    "S2": "Senaryo 2 – 2/3 Elektrikli Araca Geçiş Senaryo",
-    "S3": "Senaryo 3 – Tam Elektrikli Araca Geçiş Senaryo",
+    "S1": "Senaryo 1 – 1/3 Elektrikli Araca Geçiş ",
+    "S2": "Senaryo 2 – 2/3 Elektrikli Araca Geçiş ",
+    "S3": "Senaryo 3 –  Elektrikli Araca Geçiş ",
 }
 
 ANALIZ_YILI = 10
@@ -153,7 +153,7 @@ with col_s1:
     <div class="metric-card" style="--accent:#2166AC">
         <div class="lbl">⚡ SENARYO 1</div>
         <div class="val" style="font-size:1.1rem;margin:8px 0;">1/3</div>
-        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Elektrikli Araca Geçiş</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Elektrikli Araca Geçiş Senaryosu</div>
         <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
             Araçların üçte biri elektrikli araçlara dönüştürülüyor.
         </div>
@@ -165,7 +165,7 @@ with col_s2:
     <div class="metric-card" style="--accent:#F4A100">
         <div class="lbl">⚡ SENARYO 2</div>
         <div class="val" style="font-size:1.1rem;margin:8px 0;">2/3</div>
-        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Elektrikli Araca Geçiş</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Elektrikli Araca Geçiş Senaryosu</div>
         <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
             Araçların üçte ikisi elektrikli araçlara dönüştürülüyor.
         </div>
@@ -176,7 +176,7 @@ with col_s3:
     <div class="metric-card" style="--accent:#1B7837">
         <div class="lbl">⚡ SENARYO 3</div>
         <div class="val" style="font-size:1.1rem;margin:8px 0;">100%</div>
-        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam Elektrikli Araca Geçiş</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam Elektrikli Araca Geçiş Senaryosu</div>
         <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
             Tüm araçlar elektrikli araçlara dönüştürülüyor.
         </div>
