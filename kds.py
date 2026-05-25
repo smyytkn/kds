@@ -279,7 +279,7 @@ for ay in range(1, yil * 12 + 1):
 
     t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
 
-     return {
+    return {
         "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
         "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
         "yat1":yat1,"yat2":yat2,"yat3":yat3,
