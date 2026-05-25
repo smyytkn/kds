@@ -733,7 +733,7 @@ else:
         ranks_order = np.argsort(-C)
 
         col1, col2, col3 = st.columns(3)
-        for col, (idx, (kod, ad, renk)) in zip([col1, col2, col3], enumerate(sen_info)):
+        for col, (idx, (kod, renk)) in zip([col1, col2, col3], enumerate(sen_info)):
             rank = int(np.where(ranks_order == idx)[0][0]) + 1
             rk_c = rank_colors.get(rank, "#888")
             with col:
