@@ -501,7 +501,7 @@ else:
                            color=RENK[kod], fontsize=8, va="center")
 
         ax_be.set_title(
-            f" Başabaş Analizi Grfaiği ({ANALIZ_YILI} Yıl)\n"
+            f" Başabaş Analizi Grafiği ({ANALIZ_YILI} Yıl)\n",
            
             fontweight="bold", fontsize=11,
         )
