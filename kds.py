@@ -632,7 +632,7 @@ else:
 
         # ── 3. SENARYO BAZLI AYLIK MALİYET DETAYI ──────────────────────────
         st.subheader(f"📉 Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl")
-        st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
+        st.caption(f" {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
         for df_, kod in [(df_md,"MD"),(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
