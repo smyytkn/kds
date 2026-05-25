@@ -1,7 +1,6 @@
 """
 ELEKTRİKLİ ARACA GEÇİŞ SÜRECİ İÇİN KARAR DESTEK SİSTEMİ
 IPCC Tier 2 Metodolojisi & TOPSIS Destekli Senaryo Analizi
-(GÜNCELLENMİŞ - AMORTI ANALİZ GRAFİĞİ İLE)
 """
 
 import streamlit as st
@@ -436,202 +435,122 @@ else:
 
     # ── MALİYET SEKMESİ ─────────────────────────────────────────
     with tab_maliyet:
-        st.subheader("📊 Senaryo Bazlı Amorti Analizi ve Başabaş Noktaları")
-        import matplotlib as mpl
-        mpl.rcParams['font.family'] = 'DejaVu Sans'
-        mpl.rcParams['axes.unicode_minus'] = False
+        st.subheader("📈 Senaryo Bazlı Kümülatif Maliyet ve Başabaş Analizi")
 
-        # ─── AMORTI GRAFİĞİ ─────────────────────────────────────
-        fig_amorti, ax_amorti = plt.subplots(figsize=(16, 8))
-        
-        # MD'nin yakıt + bakım maliyeti (Yatırım yok)
-        cum_md_yakit_bakim = (df_md["yakıt"] + df_md["bakım"]).cumsum()
-        
-        # Senaryo listesi
-        senaryolar_list = [
-            ("MD", df_md, cum_md_yakit_bakim),
-            ("S1", df_s1, (df_s1["yakıt"] + df_s1["bakım"] + df_s1["taksit"]).cumsum()),
-            ("S2", df_s2, (df_s2["yakıt"] + df_s2["bakım"] + df_s2["taksit"]).cumsum()),
-            ("S3", df_s3, (df_s3["yakıt"] + df_s3["bakım"] + df_s3["taksit"]).cumsum()),
-        ]
-        
-        amorti_bulgusu = {}
-        
-        # Her senaryo için eğri çiz
-        for kod, df_sc, cum_sc in senaryolar_list:
-            if kod == "MD":
-                # MD: sadece kümülatif maliyeti göster
-                ax_amorti.plot(df_sc["ay"], cum_sc / 1e6, 
-                              color=RENK[kod], linewidth=3.5, 
-                              label=ETIKET[kod], linestyle="-", alpha=0.95, zorder=4)
+        fig_be, ax_be = plt.subplots(figsize=(13, 6))
+
+        aylar = df_md["ay"].values
+
+        # Yatırım tutarları (başlangıç maliyeti)
+        yat1 = res["yat1"]
+        yat2 = res["yat2"]
+        yat3 = res["yat3"]
+
+        # MD: kümülatif işletme maliyeti (yakıt + bakım), 0'dan başlar
+        isletme_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values / 1e6
+
+        # EV senaryoları: yatırım maliyeti + kümülatif işletme maliyeti
+        # Başlangıç noktası yatırım kadar yukarıda → zamanla MD ile kesişir
+        isletme_s1 = (df_s1["yakıt"] + df_s1["bakım"]).cumsum().values / 1e6
+        isletme_s2 = (df_s2["yakıt"] + df_s2["bakım"]).cumsum().values / 1e6
+        isletme_s3 = (df_s3["yakıt"] + df_s3["bakım"]).cumsum().values / 1e6
+
+        cum_s1 = yat1 / 1e6 + isletme_s1
+        cum_s2 = yat2 / 1e6 + isletme_s2
+        cum_s3 = yat3 / 1e6 + isletme_s3
+
+        # MD eğrisi (kesik çizgi)
+        ax_be.plot(aylar, isletme_md, color=RENK["MD"], linewidth=3.0,
+                   linestyle="--", label=ETIKET["MD"], zorder=4)
+
+        # EV eğrileri
+        for kod, cum_ev in [("S1", cum_s1), ("S2", cum_s2), ("S3", cum_s3)]:
+            ax_be.plot(aylar, cum_ev, color=RENK[kod], linewidth=2.2,
+                       linestyle="-", label=ETIKET[kod], zorder=3)
+
+            # Kesişim: EV kümülatif maliyeti MD'ye eşitlendiği an
+            diff = cum_ev - isletme_md  # başta pozitif (yatırım yükü), sonra negatif
+            kesisim_idx = np.where(diff <= 0)[0]
+
+            if len(kesisim_idx) > 0:
+                idx   = kesisim_idx[0]
+                be_ay = aylar[idx]
+                be_val = cum_ev[idx]
+                be_yil = be_ay / 12
+
+                ax_be.plot(be_ay, be_val, marker="o", color=RENK[kod],
+                           markersize=10, zorder=6,
+                           markeredgecolor="white", markeredgewidth=2)
+
+                y_off = 15 if kod == "S1" else (-20 if kod == "S2" else 10)
+                ax_be.annotate(
+                    f"Amorti: {be_ay}. Ay\n({be_yil:.1f} Yıl)",
+                    xy=(be_ay, be_val),
+                    xytext=(be_ay + 3, be_val + y_off),
+                    color=RENK[kod], fontsize=8, fontweight="bold",
+                    arrowprops=dict(arrowstyle="->", color=RENK[kod], lw=1.2),
+                    bbox=dict(facecolor="white", alpha=0.9,
+                              edgecolor=RENK[kod], boxstyle="round,pad=0.3"),
+                    zorder=7,
+                )
             else:
-                # EV senaryoları: MD'ye kıyasla net kâr göster
-                cum_kar = (cum_md_yakit_bakim - cum_sc) / 1e6
-                
-                ax_amorti.plot(df_sc["ay"], cum_kar, 
-                              color=RENK[kod], linewidth=3.5, 
-                              label=ETIKET[kod], linestyle="-", alpha=0.95, zorder=4)
-                
-                # Amorti noktasını bul
-                if (cum_kar >= 0).any():
-                    amorti_idx = np.argmax(cum_kar >= 0)
-                    amorti_ay = int(df_sc["ay"].iloc[amorti_idx])
-                    amorti_kar = cum_kar.iloc[amorti_idx]
-                    amorti_yil = amorti_ay / 12.0
-                    
-                    amorti_bulgusu[kod] = {
-                        "ay": amorti_ay,
-                        "yil": amorti_yil,
-                        "kar": amorti_kar
-                    }
-                    
-                    # Noktayı işaretle
-                    ax_amorti.plot(amorti_ay, amorti_kar, marker="o", 
-                                  color=RENK[kod], markersize=12, zorder=6,
-                                  markeredgecolor="white", markeredgewidth=2.5)
-                    
-                    # Dik çizgiler
-                    y_min = ax_amorti.get_ylim()[0]
-                    ax_amorti.plot([amorti_ay, amorti_ay], 
-                                  [y_min, amorti_kar],
-                                  color=RENK[kod], linestyle=":", linewidth=1.5, 
-                                  alpha=0.5, zorder=2)
-                    
-                    # Metin etiketi
-                    offset_y_map = {"S1": -25, "S2": -10, "S3": 20}
-                    offset_y = offset_y_map.get(kod, -15)
-                    offset_x = 5 if kod != "S3" else -8
-                    
-                    ax_amorti.annotate(
-                        f"Amorti Yılı\n{amorti_ay}. Ay ({amorti_yil:.2f}Y)",
-                        xy=(amorti_ay, amorti_kar),
-                        xytext=(amorti_ay + offset_x, amorti_kar + offset_y),
-                        color=RENK[kod], fontsize=9, fontweight="bold",
-                        arrowprops=dict(arrowstyle="->", color=RENK[kod], 
-                                      lw=2, alpha=0.8, connectionstyle="arc3,rad=0.2"),
-                        bbox=dict(facecolor='white', alpha=0.9, 
-                                 edgecolor=RENK[kod], boxstyle='round,pad=0.5',
-                                 linewidth=1.5),
-                        zorder=7
-                    )
-                else:
-                    amorti_bulgusu[kod] = {"ay": None, "yil": None, "kar": None}
-        
-        # Başabaş çizgisi
-        ax_amorti.axhline(0, color="black", linestyle="-", linewidth=2, alpha=0.9, zorder=3)
-        
-        # Bölgeler
-        y_min, y_max = ax_amorti.get_ylim()
-        ax_amorti.fill_between(np.arange(1, ANALIZ_YILI * 12 + 1), 
-                               y_min, 0, color="#ffcccc", alpha=0.08, 
-                               label="Zarar Bölgesi", zorder=0)
-        ax_amorti.fill_between(np.arange(1, ANALIZ_YILI * 12 + 1), 
-                               0, y_max, color="#ccffcc", alpha=0.08, 
-                               label="Kâr Bölgesi", zorder=0)
-        
-        # Yıl ayırıcıları
-        for y in range(1, ANALIZ_YILI + 1):
-            x_pos = y * 12
-            ax_amorti.axvline(x_pos, color="gray", lw=0.8, alpha=0.3, linestyle="--", zorder=1)
-            ax_amorti.text(x_pos, y_min * 0.98, f"Yıl {y}", 
-                          ha="center", va="top", fontsize=8, color="gray", alpha=0.6)
-        
-        # Eksen ayarları
-        ax_amorti.set_xlabel("Zaman Ekseni (Ay)", fontsize=13, fontweight="bold", labelpad=10)
-        ax_amorti.set_ylabel("Kümülatif Net Kâr / Tasarruf (Milyon TL)", 
-                            fontsize=13, fontweight="bold", labelpad=10)
-        ax_amorti.set_title(
-            f"Senaryo Bazlı Aylık Maliyet Analizi ve Amorti Noktaları\n"
-            f"({ANALIZ_YILI} Yıllık Analiz Dönem)",
-            fontsize=15, fontweight="bold", pad=20
+                ax_be.text(aylar[-1] * 0.97, cum_ev[-1],
+                           f" {kod}: Amorti Edilemedi",
+                           color=RENK[kod], fontsize=8, va="center")
+
+        ax_be.set_title(
+            f"Kümülatif Maliyet Karşılaştırması ve Başabaş Noktaları ({ANALIZ_YILI} Yıl)\n"
+            "(EV eğrileri yatırım maliyetiyle başlar, zamanla Mevcut Durum eğrisini keser)",
+            fontweight="bold", fontsize=11,
         )
-        
-        # Grid ve stil
-        ax_amorti.grid(True, which='major', linestyle=':', alpha=0.35, zorder=1, linewidth=0.8)
-        ax_amorti.grid(True, which='minor', linestyle=':', alpha=0.1, zorder=1, linewidth=0.5)
-        ax_amorti.legend(loc="upper left", fontsize=11, framealpha=0.97, 
-                        edgecolor="gray", fancybox=True, shadow=True)
-        ax_amorti.set_xlim(0, ANALIZ_YILI * 12 + 8)
-        ax_amorti.margins(y=0.18)
-        ax_amorti.xaxis.set_major_locator(mticker.MultipleLocator(12))
-        ax_amorti.xaxis.set_minor_locator(mticker.MultipleLocator(3))
-        ax_amorti.spines['top'].set_visible(False)
-        ax_amorti.spines['right'].set_visible(False)
-        
+        ax_be.set_xlabel("Zaman Ekseni (Ay)", fontweight="bold")
+        ax_be.set_ylabel("Kümülatif Toplam Maliyet (Milyon TL)", fontweight="bold")
+        ax_be.legend(loc="upper left", fontsize=9)
+        ax_be.xaxis.set_major_locator(mticker.MultipleLocator(12))
+        ax_be.grid(True, which="both", linestyle=":", alpha=0.5)
+        for y in range(1, ANALIZ_YILI + 1):
+            ax_be.axvline(y * 12, color="gray", lw=0.4, alpha=0.2, linestyle="-")
+
         plt.tight_layout()
-        st.pyplot(fig_amorti)
-        plt.close(fig_amorti)
-        
-        # Amorti bulguları özet tablosu
-        st.markdown("---")
-        st.subheader("🎯 Amorti Noktaları Özeti")
-        
-        amorti_data = []
-        for kod in ["S1", "S2", "S3"]:
-            if kod in amorti_bulgusu:
-                info = amorti_bulgusu[kod]
-                if info["ay"] is not None:
-                    amorti_data.append({
-                        "Senaryo": ETIKET[kod],
-                        "Amorti Ayı": f"{info['ay']}. Ay",
-                        "Amorti Yılı": f"{info['yil']:.2f} Yıl",
-                        "Net Kâr": f"₺{info['kar']*1e6:,.0f}"
-                    })
-                else:
-                    amorti_data.append({
-                        "Senaryo": ETIKET[kod],
-                        "Amorti Ayı": "—",
-                        "Amorti Yılı": "—",
-                        "Net Kâr": "Amorti Edilemedi"
-                    })
-        
-        if amorti_data:
-            st.dataframe(pd.DataFrame(amorti_data), use_container_width=True, hide_index=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.pyplot(fig_be)
+        plt.close(fig_be)
 
         st.markdown("---")
-        st.subheader(f"Senaryo Bazlı Aylık Maliyet Detayları – {ANALIZ_YILI} Yıl")
+        st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
         for df_, kod in [(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
                 col_g, col_t = st.columns([2, 1])
                 with col_g:
-                    fig2, ax2 = plt.subplots(figsize=(11, 5))
+                    fig2, ax2 = plt.subplots(figsize=(10, 4))
                     renk = RENK[kod]
-                    ax2.fill_between(df_["ay"], df_["yakıt"] / 1e6, alpha=0.5, 
-                                    color=renk, label="Yakıt Maliyeti")
+                    ax2.fill_between(df_["ay"], df_["yakıt"] / 1e6, alpha=0.4, color=renk, label="Yakıt")
                     ax2.fill_between(df_["ay"], (df_["yakıt"] + df_["bakım"]) / 1e6,
-                                    df_["yakıt"] / 1e6, alpha=0.5, color="gray", label="Bakım Maliyeti")
+                                     df_["yakıt"] / 1e6, alpha=0.4, color="gray", label="Bakım")
                     ax2.fill_between(df_["ay"], df_["toplam"] / 1e6,
-                                    (df_["yakıt"] + df_["bakım"]) / 1e6,
-                                    alpha=0.5, color="orange", label="Araç Taksiti")
-                    ax2.plot(df_["ay"], df_["toplam"] / 1e6, color=renk, linewidth=2.5, 
-                            label="Toplam Aylık Maliyet", zorder=5)
-                    ax2.set_title(f"{ETIKET[kod]}: Aylık Maliyet Bileşenleri", 
-                                 fontweight="bold", fontsize=12)
+                                     (df_["yakıt"] + df_["bakım"]) / 1e6,
+                                     alpha=0.4, color="orange", label="Araç Taksiti")
+                    ax2.plot(df_["ay"], df_["toplam"] / 1e6, color=renk, linewidth=2, label="Toplam")
+                    ax2.set_title(f"{ETIKET[kod]}: Aylık Maliyet Bileşenleri", fontweight="bold")
                     ax2.set_xlabel("Ay")
                     ax2.set_ylabel("Milyon TL")
-                    ax2.legend(loc="upper left", fontsize=9)
+                    ax2.legend(loc="upper left", fontsize=8)
                     ax2.xaxis.set_major_locator(mticker.MultipleLocator(12))
                     for y in range(1, ANALIZ_YILI + 1):
                         ax2.axvline(y * 12, color="gray", lw=0.5, alpha=0.35, linestyle="--")
-                    ax2.grid(True, axis='y', linestyle=':', alpha=0.4)
                     plt.tight_layout()
                     st.pyplot(fig2)
                     plt.close(fig2)
 
                 with col_t:
                     yillik_df = df_.groupby("yil")[["yakıt", "bakım", "taksit", "toplam"]].mean().reset_index()
-                    yillik_df.columns = ["Yıl", "Ortalama Yakıt (TL)", "Ortalama Bakım (TL)", 
-                                        "Ortalama Taksit (TL)", "Ortalama Toplam (TL)"]
-                    for c in ["Ortalama Yakıt (TL)", "Ortalama Bakım (TL)", 
-                             "Ortalama Taksit (TL)", "Ortalama Toplam (TL)"]:
-                        yillik_df[c] = yillik_df[c].map(lambda x: f"₺{x:,.0f}")
+                    yillik_df.columns = ["Yıl", "Yakıt (TL)", "Bakım (TL)", "Taksit (TL)", "Toplam (TL)"]
+                    for c in ["Yakıt (TL)", "Bakım (TL)", "Taksit (TL)", "Toplam (TL)"]:
+                        yillik_df[c] = yillik_df[c].map(lambda x: f"{x:,.0f}")
                     yillik_df["Yıl"] = yillik_df["Yıl"].astype(int)
                     st.dataframe(yillik_df, use_container_width=True, hide_index=True,
-                                height=min(40 + ANALIZ_YILI * 35, 500))
+                                 height=min(40 + ANALIZ_YILI * 35, 500))
 
     # ── TOPSIS SEKMESİ ──────────────────────────────────────────
     with tab_topsis:
@@ -687,7 +606,6 @@ else:
             fig2, ax2 = plt.subplots(figsize=(6, 4))
             x = np.arange(3)
             w = 0.35
-            renkler = [RENK["S1"], RENK["S2"], RENK["S3"]]
             ax2.bar(x - w/2, t["d_pos"], w, label="d⁺ (Pozitif İdeal Uzaklığı)", color=renkler, alpha=0.85, edgecolor="white")
             ax2.bar(x + w/2, t["d_neg"], w, label="d⁻ (Negatif İdeal Uzaklığı)", color=renkler, alpha=0.4,  edgecolor="white", hatch="//")
             ax2.set_xticks(x)
