@@ -138,13 +138,13 @@ st.markdown("""
 
 c1, c2, c3, c4 = st.columns(4)
 with c1:
-    st.markdown(f'<div class="metric-card" style="--accent:#555555"><div class="lbl">Mevcut Durum</div><div class="val">🚌 Tam Dizel</div><div class="lbl">Tüm araçlar dizel kalır</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-card" style="--accent:#555555"><div class="lbl">MD Yıllık Emisyon</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">{em_md["CO2e_ton"]:,.0f}</div><div class="lbl">ton CO₂e/yıl</div></div>', unsafe_allow_html=True)
 with c2:
-    st.markdown(f'<div class="metric-card" style="--accent:#2166AC"><div class="lbl">Senaryo 1</div><div class="val">⚡ 1/3 Geçiş</div><div class="lbl">Araçların üçte biri EV</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-card" style="--accent:#2166AC"><div class="lbl">S1 Emisyon Azalması</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">▼{az1:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
 with c3:
-    st.markdown(f'<div class="metric-card" style="--accent:#F4A100"><div class="lbl">Senaryo 2</div><div class="val">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi EV</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-card" style="--accent:#F4A100"><div class="lbl">S2 Emisyon Azalması</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">▼{az2:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
 with c4:
-    st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">Senaryo 3</div><div class="val">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüşür</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">S3 Emisyon Azalması</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">▼{az3:.1f}%</div><div class="lbl">Mevcut duruma kıyasla</div></div>', unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ─── SIDEBAR ───
