@@ -213,13 +213,6 @@ def run_analysis(we, wm, wy):
     s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
     s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
 
-    t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
-
-    return {
-        "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
-        "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
-        "yat1":yat1,"yat2":yat2,"yat3":yat3,
-        "topsis":t, "en_iyi":t["en_iyi"], }
 
     def em(sc, km_o, km_m):
         o_km_d  = (sc["otobus_d"] / max(n_otobus,1)) * km_o
@@ -239,41 +232,51 @@ def run_analysis(we, wm, wy):
     em_s3 = em(s3, km_otobus, km_mini)
 
     def maliyet(sc, n_ev_o, n_ev_m, f_o, f_m, tufe, yil, plan):
-        # ... (ay_yak_d, ay_yak_e ve ay_bak hesaplamaları aynı kalıyor) ...
-    
+        ay_yak_d = (sc["otobus_d"]*(km_otobus/max(n_otobus,1))*TUK_OTOBUS*dizel_fiyat +
+                    sc["mini_d"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*TUK_MINI*dizel_fiyat) / 12
+        ay_yak_e = (sc["otobus_e"]*(km_otobus/max(n_otobus,1))*(E_OTOBUS_EV/ETA_SARJ)*elektrik_fiyat +
+                    sc["mini_e"]*(km_mini/max(n_mini,1) if n_mini>0 else 0)*(E_MINI_EV/ETA_SARJ)*elektrik_fiyat) / 12
+        ay_bak = (sc["otobus_d"]*bak_otobus_d + sc["mini_d"]*bak_mini_d +
+                  sc["otobus_e"]*bak_otobus_e + sc["mini_e"]*bak_mini_e) / 12
         yat = n_ev_o*f_o + n_ev_m*f_m
-        
-        # Plan 1: Eşit taksitli (Enflasyonsuz düz ödeme)
-        taksit_sabit = yat / (yil * 12) if plan == 1 and yat > 0 else 0
-        
-        # Plan 2: TÜFE endeksli (İlk yıl düşük başlar, her yıl TÜFE kadar artar)
-        if plan == 2 and tufe > 0 and yat > 0:
-            # Geometrik dizi toplamı formülü ile başlangıç (1. yıl) yıllık ödemesini buluyoruz
-            # Çarpan: 1 + (1+TÜFE) + (1+TÜFE)^2 + ...
-            carpan = sum((1 + tufe)**t for t in range(yil))
-            ilk_yil_aylik_taksit = (yat / carpan) / 12
+        # Değişken tanımlamalarını fonksiyon başında güvenli yapın
+    taksit_sabit = 0
+    tst = 0
+
+    yat = n_ev_o * f_o + n_ev_m * f_m
+
+    if plan == 1:
+        taksit_sabit = yat / (yil * 12) if yat > 0 else 0
+
+    elif plan == 2:
+        if tufe > 0:
+            carpan = sum((1 + tufe) ** t for t in range(yil))
+            tst = yat / carpan if carpan > 0 else 0
         else:
-            ilk_yil_aylik_taksit = 0
-    
-        rows = []
-        for ay in range(1, yil*12+1):
-            yn = (ay-1)//12  # Sıfır tabanlı yıl indeksi (0, 1, 2...)
-            yc = (1+tufe)**yn
-            
-            yak = (ay_yak_d + ay_yak_e)*yc
-            bak = ay_bak*yc
-            
-            # TAKSİT HESABI
-            if plan == 1:
-                taks = taksit_sabit
-            elif plan == 2:
-                taks = ilk_yil_aylik_taksit * yc  # Her yıl TÜFE çarpanı ile büyüyor
-            else:
-                taks = 0
-                
-            rows.append({"ay":ay,"yil":yn+1,"yakıt":yak,"bakım":bak,"taksit":taks,"toplam":yak+bak+taks})
-            
-        return pd.DataFrame(rows)
+            tst = yat / yil if yat > 0 else 0
+
+    rows = []
+    for ay in range(1, yil * 12 + 1):
+        yn = (ay - 1) // 12
+        yc = (1 + tufe) ** yn
+        yak  = (ay_yak_d + ay_yak_e) * yc
+        bak  = ay_bak * yc
+
+        if plan == 1:
+            taks = taksit_sabit                        # Sabit, enflasyonsuz
+        elif plan == 2:
+            taks = (tst / 12) * yc if yat > 0 else 0  # TÜFE'ye göre artan
+        else:
+            taks = 0
+
+        rows.append({
+        "ay": ay,
+        "yil": yn + 1,
+        "yakıt": yak,
+        "bakım": bak,
+        "taksit": taks,
+        "toplam": yak + bak + taks
+    })
         
     t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
 
