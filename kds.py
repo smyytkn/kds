@@ -333,13 +333,13 @@ res = st.session_state["results"]
 
 c1, c2, c3, c4 = st.columns(4)
 with c1:
-    st.markdown('<div class="metric-card" style="--accent:#555555"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">MEVCUT DURUM</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">🚌 Tam Dizel</div><div class="lbl">Tüm araçlar dizel kalır</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="metric-card" style="--accent:#555555"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">MEVCUT DURUM</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">🚌 Tam Dizel</div><div class="lbl">Tüm araçlar dizel olarak hesaplanır.</div></div>', unsafe_allow_html=True)
 with c2:
-    st.markdown('<div class="metric-card" style="--accent:#2166AC"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 1</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 1/3 Geçiş</div><div class="lbl">Araçların üçte biri EV</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="metric-card" style="--accent:#2166AC"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 1</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 1/3 Geçiş</div><div class="lbl">Araçların üçte biri elektirkli araca dönüştürülür.</div></div>', unsafe_allow_html=True)
 with c3:
-    st.markdown('<div class="metric-card" style="--accent:#F4A100"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 2</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi EV</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="metric-card" style="--accent:#F4A100"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 2</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi elektirkli araca dönüştürülür.</div></div>', unsafe_allow_html=True)
 with c4:
-    st.markdown('<div class="metric-card" style="--accent:#1B7837"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 3</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüşür</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="metric-card" style="--accent:#1B7837"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 3</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüştürülür.</div></div>', unsafe_allow_html=True)
 
 
 
