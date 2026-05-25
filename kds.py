@@ -527,7 +527,7 @@ else:
 
                 # ── Tablo ──
                 fark   = cum_ev - cum_md
-                durum  = ["✓ Amorti" if f <= 0 else "–" for f in fark]
+                durum  = [" Amorti" if f <= 0 else "–" for f in fark]
 
                 # Seçili aylar: her 6 ayda bir + başabaş ayı
                 kesisim_idx = np.where(fark <= 0)[0]
@@ -558,7 +558,7 @@ else:
                     st.markdown(f"**Yatırım Maliyeti:** `{yat/1e6:.2f} M TL`")
                     if be_ay:
                         be_yil = be_ay / 12
-                        st.markdown(f"**Başabaş:** `Ay {be_ay}` ≈ `{be_yil:.1f} Yıl`")
+                        st.markdown(f"**Başabaş Yılı:** `Ay {be_ay}` ≈ `{be_yil:.1f} Yıl`")
                     else:
                         st.markdown("**Başabaş:** Analiz süresinde gerçekleşmiyor")
                     st.dataframe(df_tablo, use_container_width=True, hide_index=True)
