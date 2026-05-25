@@ -119,7 +119,7 @@ ETIKET = {
     "MD": "Mevcut Durum - Tam Dizel",
     "S1": "Senaryo 1 – 1/3 Elektrikli Araca Geçiş ",
     "S2": "Senaryo 2 – 2/3 Elektrikli Araca Geçiş ",
-    "S3": "Senaryo 3 –  Elektrikli Araca Geçiş ",
+    "S3": "Senaryo 3 –   Tam Elektrikli Araca Geçiş ",
 }
 
 ANALIZ_YILI = 10
@@ -176,7 +176,7 @@ with col_s3:
     <div class="metric-card" style="--accent:#1B7837">
         <div class="lbl">⚡ SENARYO 3</div>
         <div class="val" style="font-size:1.1rem;margin:8px 0;">100%</div>
-        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;">Tam Elektrikli Araca Geçiş Senaryosu</div>
+        <div style="color:#0d1117;font-size:0.95rem;font-weight:600;margin:8px 0;"> Elektrikli Araca Geçiş Senaryosu</div>
         <div style="font-size:0.75rem;color:#6e7781;line-height:1.5;">
             Tüm araçlar elektrikli araçlara dönüştürülüyor.
         </div>
