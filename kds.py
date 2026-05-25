@@ -449,12 +449,13 @@ else:
         # MD: kümülatif işletme maliyeti (yakıt + bakım), 0'dan başlar
         isletme_md = (df_md["yakıt"] + df_md["bakım"]).cumsum().values / 1e6
 
-        # EV senaryoları: yatırım maliyeti + kümülatif işletme maliyeti
-        # Başlangıç noktası yatırım kadar yukarıda → zamanla MD ile kesişir
+        # EV senaryoları: yatırım maliyeti + kümülatif işletme maliyeti (yakıt+bakım)
+        # Taksit ayrıca eklenmez — yatırım zaten offset olarak verildi
         isletme_s1 = (df_s1["yakıt"] + df_s1["bakım"]).cumsum().values / 1e6
         isletme_s2 = (df_s2["yakıt"] + df_s2["bakım"]).cumsum().values / 1e6
         isletme_s3 = (df_s3["yakıt"] + df_s3["bakım"]).cumsum().values / 1e6
 
+        yat1 = res["yat1"]; yat2 = res["yat2"]; yat3 = res["yat3"]
         cum_s1 = yat1 / 1e6 + isletme_s1
         cum_s2 = yat2 / 1e6 + isletme_s2
         cum_s3 = yat3 / 1e6 + isletme_s3
@@ -464,17 +465,17 @@ else:
                    linestyle="--", label=ETIKET["MD"], zorder=4)
 
         # EV eğrileri
+        etiket_y_offset = {"S1": 25, "S2": 0, "S3": -25}
         for kod, cum_ev in [("S1", cum_s1), ("S2", cum_s2), ("S3", cum_s3)]:
             ax_be.plot(aylar, cum_ev, color=RENK[kod], linewidth=2.2,
                        linestyle="-", label=ETIKET[kod], zorder=3)
 
-            # Kesişim: EV kümülatif maliyeti MD'ye eşitlendiği an
-            diff = cum_ev - isletme_md  # başta pozitif (yatırım yükü), sonra negatif
+            diff = cum_ev - isletme_md  # başta pozitif, kesişimde 0
             kesisim_idx = np.where(diff <= 0)[0]
 
             if len(kesisim_idx) > 0:
-                idx   = kesisim_idx[0]
-                be_ay = aylar[idx]
+                idx    = kesisim_idx[0]
+                be_ay  = aylar[idx]
                 be_val = cum_ev[idx]
                 be_yil = be_ay / 12
 
@@ -482,11 +483,11 @@ else:
                            markersize=10, zorder=6,
                            markeredgecolor="white", markeredgewidth=2)
 
-                y_off = 15 if kod == "S1" else (-20 if kod == "S2" else 10)
+                y_off = etiket_y_offset[kod]
                 ax_be.annotate(
-                    f"Amorti: {be_ay}. Ay\n({be_yil:.1f} Yıl)",
+                    f"{kod} Amorti:\n{be_ay}. Ay ({be_yil:.1f} Yıl)",
                     xy=(be_ay, be_val),
-                    xytext=(be_ay + 3, be_val + y_off),
+                    xytext=(be_ay - 18, be_val + y_off),
                     color=RENK[kod], fontsize=8, fontweight="bold",
                     arrowprops=dict(arrowstyle="->", color=RENK[kod], lw=1.2),
                     bbox=dict(facecolor="white", alpha=0.9,
