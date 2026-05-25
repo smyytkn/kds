@@ -335,12 +335,6 @@ if res is None:
     <div class="info-box">
     ℹ️ Sol panelden filo bilgilerini ve parametrelerinizi girdikten sonra <b>ANALİZİ ÇALIŞTIR</b> butonuna tıklayın.
     </div>""", unsafe_allow_html=True)
-    
-if res is None:
-    st.markdown("""
-    <div class="info-box">
-    ℹ️ Sol panelden filo bilgilerini ve parametrelerinizi girdikten sonra <b>ANALİZİ ÇALIŞTIR</b> butonuna tıklayın.
-    </div>""", unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -351,6 +345,7 @@ if res is None:
         st.markdown('<div class="metric-card" style="--accent:#F4A100"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 2</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi EV</div></div>', unsafe_allow_html=True)
     with c4:
         st.markdown('<div class="metric-card" style="--accent:#1B7837"><div class="lbl" style="font-weight:700;font-size:0.85rem;color:#0d1117;">SENARYO 3</div><div class="val" style="font-size:1.5rem;font-weight:700;color:#0d1117;">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüşür</div></div>', unsafe_allow_html=True)
+
 
 
 # ─── SONUÇLU EKRAN ───
