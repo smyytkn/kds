@@ -459,8 +459,7 @@ else:
         cum_s3 = yat3 + cum_s3_isletme
 
         # ── 1. BAŞABAŞ GRAFİĞİ ──────────────────────────────────────────
-        st.subheader("📈 Kümülatif Maliyet Karşılaştırması ve Başabaş Analizi")
-        st.caption("EV senaryoları tam yatırım maliyetinden başlar, MD ile kesişim = başabaş noktası")
+        st.subheader("📈 Başabaş Analizi Grafiği")
 
         fig_be, ax_be = plt.subplots(figsize=(14, 6))
 
@@ -502,8 +501,8 @@ else:
                            color=RENK[kod], fontsize=8, va="center")
 
         ax_be.set_title(
-            f"Kümülatif Maliyet Karşılaştırması & Başabaş Noktaları ({ANALIZ_YILI} Yıl)\n"
-            "EV eğrileri tam yatırım maliyetinden başlar · Kesişim = Amortisman Noktası",
+            f" Başabaş Analizi Grfaiği ({ANALIZ_YILI} Yıl)\n"
+           
             fontweight="bold", fontsize=11,
         )
         ax_be.set_xlabel("Zaman (Ay)", fontweight="bold")
