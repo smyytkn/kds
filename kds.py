@@ -136,6 +136,13 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+- **Mevcut Durum** – Tüm araçlar dizel olarak kalır  
+- **1/3 Geçiş** – Araçların üçte biri elektrikliye dönüşür  
+- **2/3 Geçiş** – Araçların üçte ikisi elektrikliye dönüşür  
+- **Tam Geçiş** – Tüm araçlar elektrikliye dönüşür  
+""")
+
 # ─── SIDEBAR ───
 with st.sidebar:
     st.markdown("## 📋 FİLO BİLGİLERİ")
