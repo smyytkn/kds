@@ -136,12 +136,16 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-- **Mevcut Durum** – Tüm araçlar dizel olarak kalır  
-- **1/3 Geçiş** – Araçların üçte biri elektrikliye dönüşür  
-- **2/3 Geçiş** – Araçların üçte ikisi elektrikliye dönüşür  
-- **Tam Geçiş** – Tüm araçlar elektrikliye dönüşür  
-""")
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    st.markdown(f'<div class="metric-card" style="--accent:#555555"><div class="lbl">Mevcut Durum</div><div class="val">🚌 Tam Dizel</div><div class="lbl">Tüm araçlar dizel kalır</div></div>', unsafe_allow_html=True)
+with c2:
+    st.markdown(f'<div class="metric-card" style="--accent:#2166AC"><div class="lbl">Senaryo 1</div><div class="val">⚡ 1/3 Geçiş</div><div class="lbl">Araçların üçte biri EV</div></div>', unsafe_allow_html=True)
+with c3:
+    st.markdown(f'<div class="metric-card" style="--accent:#F4A100"><div class="lbl">Senaryo 2</div><div class="val">⚡ 2/3 Geçiş</div><div class="lbl">Araçların üçte ikisi EV</div></div>', unsafe_allow_html=True)
+with c4:
+    st.markdown(f'<div class="metric-card" style="--accent:#1B7837"><div class="lbl">Senaryo 3</div><div class="val">⚡ Tam Geçiş</div><div class="lbl">Tüm araçlar elektrikliye dönüşür</div></div>', unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # ─── SIDEBAR ───
 with st.sidebar:
