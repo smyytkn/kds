@@ -213,6 +213,14 @@ def run_analysis(we, wm, wy):
     s2 = dict(otobus_d=n_otobus/3, otobus_e=n_otobus*(2/3), mini_d=n_mini/3, mini_e=n_mini*(2/3))
     s3 = dict(otobus_d=0, otobus_e=n_otobus, mini_d=0, mini_e=n_mini)
 
+    t = topsis(em_s1, em_s2, em_s3, df_s1, df_s2, df_s3, yat1, yat2, yat3, we, wm, wy)
+
+    return {
+        "em_md":em_md,"em_s1":em_s1,"em_s2":em_s2,"em_s3":em_s3,
+        "df_md":df_md,"df_s1":df_s1,"df_s2":df_s2,"df_s3":df_s3,
+        "yat1":yat1,"yat2":yat2,"yat3":yat3,
+        "topsis":t, "en_iyi":t["en_iyi"], }
+
     def em(sc, km_o, km_m):
         o_km_d  = (sc["otobus_d"] / max(n_otobus,1)) * km_o
         o_km_e  = (sc["otobus_e"] / max(n_otobus,1)) * km_o
