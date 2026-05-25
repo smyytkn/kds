@@ -23,7 +23,7 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
 section[data-testid="stSidebar"] { background: #0d1117; border-right: 2px solid #1e9e6b; }
-section[data-testid="stSidebar"] * { color:#162033!important; }
+section[data-testid="stSidebar"] * { color:#223047!important; }
 section[data-testid="stSidebar"] .stSelectbox label,
 section[data-testid="stSidebar"] .stNumberInput label,
 section[data-testid="stSidebar"] .stRadio label,
