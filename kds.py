@@ -652,10 +652,10 @@ else:
                     # Fark alanı gölgelendirme
                     ax_s.fill_between(aylar, cum_md / 1e6, cum_ev / 1e6,
                                       where=(fark > 0), alpha=0.08, color="red",
-                                      label="EV pahalı bölge")
+                                      label="Elekrikli araç zararlı bölge")
                     ax_s.fill_between(aylar, cum_md / 1e6, cum_ev / 1e6,
                                       where=(fark <= 0), alpha=0.12, color=RENK[kod],
-                                      label="EV kârlı bölge")
+                                      label="Elektrikli araç karlı bölge")
 
                     # 24. ay fark notu
                     if ANALIZ_YILI * 12 >= 24:
