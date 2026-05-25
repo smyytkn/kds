@@ -519,7 +519,7 @@ else:
         st.subheader(f"Senaryo Bazlı Aylık Maliyet Analizi – {ANALIZ_YILI} Yıl Detayları")
         st.caption(f"Ödeme Planı: {odeme_plani_adi} | TÜFE: %{tufe_yuzde:.1f}")
 
-        for df_, kod in [(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
+        for df_, kod in [(df_md,"MD"),(df_s1, "S1"), (df_s2, "S2"), (df_s3, "S3")]:
             with st.expander(f"📊 {ETIKET[kod]}", expanded=(kod == "S2")):
                 col_g, col_t = st.columns([2, 1])
                 with col_g:
