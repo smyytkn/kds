@@ -614,7 +614,7 @@ else:
                         )
 
                     ax_s.set_title(
-                        f"{ETIKET[kod]}\nKümülatif Maliyet Karşılaştırması – MD vs {kod}",
+                        f"{ETIKET[kod]}\nKümülatif Maliyet Karşılaştırması ",
                         fontweight="bold", fontsize=10,
                     )
                     ax_s.set_xlabel("Zaman (Ay)", fontweight="bold")
